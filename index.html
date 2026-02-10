@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MY MINI LIBRARY</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
-
     <style>
         body {
             margin: 0;
-            font-family: Calibri, sans-serif;
+            font-family: "Times New Roman", serif;
             background: linear-gradient(135deg, #6a85ff, #b993d6);
             color: #333;
             min-height: 100vh;
@@ -26,8 +23,8 @@
         }
 
         .logo {
-            font-family: 'Playfair Display', serif;
             font-size: 30px;
+            font-weight: bold;
             color: #fff;
         }
 
@@ -43,10 +40,10 @@
             text-decoration: underline;
         }
 
-        /* BOX */
+        /* CONTENT BOX */
         .content {
             background: rgba(255,255,255,0.9);
-            max-width: 700px;
+            max-width: 800px;
             margin: 50px auto;
             padding: 40px;
             border-radius: 20px;
@@ -59,12 +56,51 @@
             display: block;
         }
 
+        /* HOME NAME BOX */
+        .name-box {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            padding: 20px;
+            border-radius: 15px;
+            color: #2c2c2c;
+            margin-bottom: 20px;
+        }
+
+        /* CARD */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #6a85ff;
+        }
+
         footer {
             text-align: center;
             color: #fff;
             font-size: 14px;
             margin-top: 30px;
             padding-bottom: 20px;
+        }
+
+        a.link {
+            color: #6a85ff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a.link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -84,8 +120,11 @@
 
 <!-- HOME -->
 <div id="home" class="content active">
-    <h2>AZRAH HAMIDAH NST</h2>
-    <p>NIM 230709008</p>
+    <div class="name-box">
+        <h2>AZRAH HAMIDAH NST</h2>
+        <p>NIM 230709008</p>
+    </div>
+
     <p>
         Selamat Datang di Mini Library, perpustakaan digital sederhana
         yang mendukung kegiatan literasi dan pembelajaran secara efisien.
@@ -94,28 +133,64 @@
 
 <!-- KOLEKSI -->
 <div id="koleksi" class="content">
-    <h2>Koleksi</h2>
-    <p>
-        Koleksi tersedia berupa e-book, jurnal ilmiah,
-        artikel akademik, dan bahan bacaan pendukung
-        bidang perpustakaan dan sains informasi.
-    </p>
+    <h2>Koleksi Perpustakaan</h2>
+
+    <div class="card-container">
+        <div class="card">
+            <h3>Koleksi Digital</h3>
+            <p>E-book dan bahan bacaan digital untuk pembelajaran.</p>
+        </div>
+
+        <div class="card">
+            <h3>Jurnal Ilmiah</h3>
+            <p>Kumpulan jurnal akademik dan penelitian terbaru.</p>
+        </div>
+
+        <div class="card">
+            <h3>Artikel Akademik</h3>
+            <p>Artikel ilmiah bidang perpustakaan dan informasi.</p>
+        </div>
+    </div>
 </div>
 
 <!-- LAYANAN -->
 <div id="layanan" class="content">
-    <h2>Layanan</h2>
-    <p>
-        Layanan referensi, penelusuran informasi,
-        serta akses koleksi digital untuk kebutuhan akademik.
-    </p>
+    <h2>Layanan Perpustakaan</h2>
+
+    <div class="card-container">
+        <div class="card">
+            <h3>Layanan Referensi</h3>
+            <p>Bantuan pencarian informasi dan sumber akademik.</p>
+        </div>
+
+        <div class="card">
+            <h3>Penelusuran Informasi</h3>
+            <p>Membantu pengguna menemukan sumber terpercaya.</p>
+        </div>
+
+        <div class="card">
+            <h3>Akses Digital</h3>
+            <p>Akses koleksi digital untuk kebutuhan akademik.</p>
+        </div>
+    </div>
 </div>
 
 <!-- KONTAK -->
 <div id="kontak" class="content">
     <h2>Kontak</h2>
-    <p>WhatsApp: 082277225725</p>
-    <p>Instagram: @zraah_h_</p>
+    <p>
+        WhatsApp: 
+        <a class="link" href="https://wa.me/6282277225725" target="_blank">
+            0822-7722-5725
+        </a>
+    </p>
+
+    <p>
+        Instagram: 
+        <a class="link" href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==" target="_blank">
+            @zraah_h_
+        </a>
+    </p>
 </div>
 
 <footer>
@@ -126,7 +201,6 @@
     function openTab(tabId) {
         const contents = document.querySelectorAll('.content');
         contents.forEach(content => content.classList.remove('active'));
-
         document.getElementById(tabId).classList.add('active');
     }
 </script>
