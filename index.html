@@ -2,102 +2,147 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Desri Mini Library</title>
-    <link rel="stylesheet" href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY Library</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Calibri, sans-serif;
+           body {
+    background: radial-gradient(circle at top left,
+        #9b5de5,
+        #f15bb5,
+        #00f5d4
+    );
+}
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+            color: #fff;
+        }
+
+        .menu a {
+            margin-left: 20px;
+            cursor: pointer;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .menu a:hover {
+            text-decoration: underline;
+        }
+
+        /* BOX */
+        .content {
+            background: rgba(255,255,255,0.9);
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            color: #fff;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-bottom: 20px;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="sidebar">
-    <h2>Menu</h2>
-    <a href="index.html">Beranda</a>
-    <a href="koleksi.html">Koleksi</a>
-    <a href="layanan.html">Layanan</a>
-    <a href="kontak.html">Kontak</a>
-    <a href="tentang.html">Tentang</a>
+<!-- NAVBAR -->
+<nav>
+    <div class="logo">AZRAH MINI LIBRARY</div>
+    <div class="menu">
+        <a onclick="openTab('home')">Home</a>
+        <a onclick="openTab('koleksi')">Koleksi</a>
+        <a onclick="openTab('layanan')">Layanan</a>
+        <a onclick="openTab('kontak')">Kontak</a>
+    </div>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="content active">
+    <h2>AZRAH HAMIDAH NST</h2>
+    <p>NIM 230709008</p>
+    <p>
+        Selamat Datang di MINI LIBRARY, perpustakaan digital sederhana
+        yang mendukung kegiatan literasi dan pembelajaran.
+    </p>
 </div>
 
-<div class="content">
-    <h1>Selamat Datang di Desri Mini Library</h1>
-    <p>
-        Desri Mini Library merupakan website perpustakaan personal yang
-        dirancang sebagai media informasi koleksi dan layanan perpustakaan
-        berbasis web.
-    </p>
-
+<!-- KOLEKSI -->
+<div id="koleksi" class="content">
     <h2>Koleksi</h2>
     <p>
-        Bagian koleksi berisi informasi mengenai buku-buku yang tersedia,
-        baik fiksi maupun nonfiksi, sebagai bahan bacaan dan referensi.
+        Koleksi tersedia berupa e-book, jurnal ilmiah,
+        artikel akademik, dan bahan bacaan pendukung
+        bidang perpustakaan dan sains informasi.
     </p>
-
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('../img/library.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-}
-
-.sidebar {
-    width: 220px;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.7);
-    position: fixed;
-    padding: 20px;
-}
-
-.sidebar h2 {
-    color: #4da6ff;
-}
-
-.sidebar a {
-    display: block;
-    color: white;
-    text-decoration: none;
-    margin: 10px 0;
-}
-
-.sidebar a:hover {
-    color: #4da6ff;
-}
-
-.content {
-    margin-left: 260px;
-    padding: 40px;
-    background-color: rgba(0,0,0,0.6);
-    min-height: 100vh;
-}
-
-h1, h2 {
-    color: #4da6ff;
-}
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>Koleksi</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<div class="sidebar">
-    <h2>Menu</h2>
-    <a href="index.html">Beranda</a>
-    <a href="koleksi.html">Koleksi</a>
-    <a href="layanan.html">Layanan</a>
-    <a href="kontak.html">Kontak</a>
-    <a href="tentang.html">Tentang</a>
 </div>
 
-<div class="content">
-    <h1>Koleksi Buku</h1>
+<!-- LAYANAN -->
+<div id="layanan" class="content">
+    <h2>Layanan</h2>
     <p>
-        Koleksi Desri Mini Library terdiri dari buku fiksi, nonfiksi,
-        pendidikan, dan referensi kepustakawanan.
+        Layanan referensi, penelusuran informasi,
+        serta akses koleksi digital untuk kebutuhan akademik.
     </p>
 </div>
+
+<!-- KONTAK -->
+<div id="kontak" class="content">
+    <h2>Kontak</h2>
+    <p>WhatsApp: 082277225725</p>
+   <p>
+        Instagram:
+        <a href="https://www.instagram.com/username_instagram/"
+           target="_blank"
+           style="color:#6a85ff; text-decoration:none; font-weight:bold;">
+           @zraah_h_
+        </a>
+    </p>
+</div>
+
+<footer>
+    © 2026 mini Library
+</footer>
+
+<script>
+    function openTab(tabId) {
+        const contents = document.querySelectorAll('.content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+    }
+</script>
 
 </body>
 </html>
-
- 
