@@ -1,156 +1,225 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY MINI LIBRARY</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY MINI LIBRARY</title>
 
-    <style>
-        body {
-            margin: 0;
-            font-family: "Times New Roman", serif;
-            background: linear-gradient(135deg, #6a85ff, #b993d6);
-            color: #333;
-            min-height: 100vh;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: "Times New Roman", serif;
+    background: linear-gradient(135deg, #6a85ff, #b993d6);
+    color: #333;
+    min-height: 100vh;
+}
 
-        /* NAVBAR */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 40px;
-        }
+/* NAVBAR */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
 
-        .logo {
-            font-size: 30px;
-            font-weight: bold;
-            color: #fff;
-        }
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+}
 
-        .menu a {
-            margin-left: 20px;
-            cursor: pointer;
-            color: #fff;
-            text-decoration: none;
-            font-size: 16px;
-        }
+.menu a {
+    margin-left: 20px;
+    cursor: pointer;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
 
-        .menu a:hover {
-            text-decoration: underline;
-        }
+.menu a:hover {
+    text-decoration: underline;
+}
 
-        /* CONTENT BOX */
-        .content {
-            background: rgba(255,255,255,0.9);
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            display: none;
-        }
+/* CONTENT BOX */
+.content {
+    background: rgba(255,255,255,0.9);
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
 
-        .content.active {
-            display: block;
-        }
+.name-box {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    padding: 20px;
+    border-radius: 15px;
+    color: #2c2c2c;
+    margin-bottom: 20px;
+}
 
-        /* HOME NAME BOX */
-        .name-box {
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            padding: 20px;
-            border-radius: 15px;
-            color: #2c2c2c;
-            margin-bottom: 20px;
-        }
+/* FORM STYLE */
+form {
+    margin-top: 20px;
+    text-align: left;
+}
 
-        /* CARD */
-        .card-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
+form input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0 15px 0;
+}
 
-        .card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
+/* LOGIN POPUP */
+.popup {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
 
-        .card h3 {
-            margin-bottom: 10px;
-            color: #6a85ff;
-        }
+.popup-content {
+    background: #fff;
+    width: 300px;
+    padding: 30px;
+    border-radius: 15px;
+    margin: 100px auto;
+    text-align: left;
+    position: relative;
+}
 
-        footer {
-            text-align: center;
-            color: #fff;
-            font-size: 14px;
-            margin-top: 30px;
-            padding-bottom: 20px;
-        }
+.popup-content input {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0 15px 0;
+}
 
-        a.link {
-            color: #6a85ff;
-            text-decoration: none;
-            font-weight: bold;
-        }
+.popup-content button {
+    width: 100%;
+    padding: 10px;
+    background: #6a85ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
 
-        a.link:hover {
-            text-decoration: underline;
-        }
-    </style>
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    font-size: 20px;
+}
+</style>
 </head>
 
 <body>
 
 <!-- NAVBAR -->
 <nav>
-    <div class="logo">MY MINI LIBRARY</div>
-    <div class="menu">
-        <a onclick="openTab('home')">Home</a>
-        <a onclick="openTab('koleksi')">Koleksi</a>
-        <a onclick="openTab('layanan')">Layanan</a>
-        <a onclick="openTab('kontak')">Kontak</a>
-    </div>
+<div class="logo">MY MINI LIBRARY</div>
+<div class="menu">
+<a>Home</a>
+<a>Koleksi</a>
+<a>Layanan</a>
+<a>Kontak</a>
+<a onclick="openLogin()">Login</a>
+</div>
 </nav>
 
 <!-- HOME -->
-<div id="home" class="content active">
-    <div class="name-box">
-        <h2>Nama	: AZRAH HAMIDAH NST</h2>
-        <p>NIM 		: 230709008</p>
-<H2>TENTANG SAYA</H2>
-<A HREF="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==">INSTAGRAM</A>
-<p><A HREF="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link">Curriculum Vitae</A></p>
+<div class="content">
+<div class="name-box">
+<h2>Nama : AZRAH HAMIDAH NST</h2>
+<p>NIM : 230709008</p>
 
-       <h2>Video lagu favorite</h2>
+<h2>TENTANG SAYA</h2>
+<a href="https://www.instagram.com/zraah_h_" target="_blank">INSTAGRAM</a>
+<p>
+<a href="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link" target="_blank">
+Curriculum Vitae
+</a>
+</p>
 
-<iframe width="560" height="315"
-src="https://www.youtube.com/embed/en6FvG0ngl4?si=ilTr3BDYo7f0wBtQ"
+<h2>Video lagu favorite</h2>
+
+<iframe width="100%" height="315"
+src="https://www.youtube.com/embed/en6FvG0ngl4"
 allowfullscreen>
 </iframe>
 
-<form action="/submit" method="POST">
+<form onsubmit="kirimData(event)">
 
-<label for="firstName">First Name:</label>
-<input type="text" id="firstName" name="firstName" required>
+<label>First Name:</label>
+<input type="text" required>
 
-<label for="lastName">Last Name:</label>
-<input type="text" id="lastName" name="lastName" required>
+<label>Last Name:</label>
+<input type="text" required>
 
-<label for="phone">Nomor HP:</label>
-<input type="text" id="phone" name="phone" required>
+<label>Nomor HP:</label>
+<input type="text" required>
 
-<label for="email">Email:</label>
-<input type="email" id="email" name="email" required>
+<label>Email:</label>
+<input type="email" required>
 
 <input type="submit" value="Kirim">
 
-</form>  
+</form>
 </div>
+</div>
+
+<!-- LOGIN POPUP -->
+<div id="loginPopup" class="popup">
+<div class="popup-content">
+<span class="close" onclick="closeLogin()">&times;</span>
+<h2>Login</h2>
+
+<form onsubmit="prosesLogin(event)">
+<label>Username</label>
+<input type="text" id="username" required>
+
+<label>Password</label>
+<input type="password" id="password" required>
+
+<button type="submit">Masuk</button>
+</form>
+
+</div>
+</div>
+
+<script>
+function openLogin() {
+document.getElementById("loginPopup").style.display = "block";
+}
+
+function closeLogin() {
+document.getElementById("loginPopup").style.display = "none";
+}
+
+function prosesLogin(event) {
+event.preventDefault();
+
+var user = document.getElementById("username").value;
+var pass = document.getElementById("password").value;
+
+if(user === "admin" && pass === "1234") {
+alert("Login berhasil!");
+closeLogin();
+} else {
+alert("Username atau Password salah!");
+}
+}
+
+function kirimData(event) {
+event.preventDefault();
+alert("Data berhasil dikirim!");
+}
+</script>
+
 </body>
 </html>
