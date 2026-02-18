@@ -1,15 +1,155 @@
-<form action="/submit" method="POST>
-    <label for="firstname">First Name:</label>
-    <input type="firstname" id="firstname" name="firstname"required>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Library</title>
 
-    <label for="lastname">Last Name:</label>
-    <input type="lastname" id="lastname" name="lastname"required>
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background: linear-gradient(135deg,#6a85ff,#b993d6);
+}
 
-    <label for="phone">Nomor HP:</label>
-    <input type="phone" id="phone" name="phone"required>
+/* LOGIN PAGE */
+.login-page{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email"required>
+.login-box{
+    background:white;
+    padding:30px;
+    width:300px;
+    border-radius:15px;
+}
 
-    <input type="submit" value="kirim">
+.login-box input{
+    width:100%;
+    padding:8px;
+    margin:8px 0;
+}
+
+/* MAIN PAGE */
+.main-page{
+    display:none;
+}
+
+nav{
+    background:#6a85ff;
+    padding:15px;
+    text-align:center;
+}
+
+nav a{
+    color:white;
+    margin:0 15px;
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+nav a:hover{
+    text-decoration:underline;
+}
+
+.content{
+    background:white;
+    margin:40px auto;
+    padding:30px;
+    max-width:800px;
+    border-radius:15px;
+}
+
+.logout{
+    float:right;
+    color:red;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-page">
+<div class="login-box">
+<h2>LOGIN</h2>
+
+<form onsubmit="login(event)">
+<input type="text" id="firstName" placeholder="First Name" required>
+<input type="text" id="lastName" placeholder="Last Name" required>
+<input type="text" id="phone" placeholder="Nomor HP" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="password" id="password" placeholder="Password" required>
+
+<button type="submit">Masuk</button>
 </form>
+</div>
+</div>
+
+<!-- MAIN PAGE -->
+<div id="mainPage" class="main-page">
+
+<nav>
+<a onclick="openTab('home')">Home</a>
+<a onclick="openTab('koleksi')">Koleksi</a>
+<a onclick="openTab('layanan')">Layanan</a>
+<a onclick="openTab('tentang')">Tentang Saya</a>
+<a class="logout" onclick="logout()">Logout</a>
+</nav>
+
+<div id="home" class="content">
+<h2>Home</h2>
+<p>Selamat datang di Mini Library.</p>
+</div>
+
+<div id="koleksi" class="content" style="display:none;">
+<h2>Koleksi</h2>
+<p>Daftar koleksi buku tersedia di sini.</p>
+</div>
+
+<div id="layanan" class="content" style="display:none;">
+<h2>Layanan</h2>
+<p>Layanan peminjaman, pengembalian, dan referensi.</p>
+</div>
+
+<div id="tentang" class="content" style="display:none;">
+<h2>Tentang Saya</h2>
+<p>Nama: AZRAH HAMIDAH NST</p>
+<p>NIM: 230709008</p>
+</div>
+
+</div>
+
+<script>
+function login(event){
+    event.preventDefault();
+
+    var password = document.getElementById("password").value;
+
+    if(password.length >= 4){
+        document.getElementById("loginPage").style.display="none";
+        document.getElementById("mainPage").style.display="block";
+    }else{
+        alert("Password minimal 4 karakter");
+    }
+}
+
+function logout(){
+    document.getElementById("mainPage").style.display="none";
+    document.getElementById("loginPage").style.display="flex";
+}
+
+function openTab(tabId){
+    var tabs = document.querySelectorAll(".content");
+    tabs.forEach(tab => tab.style.display="none");
+    document.getElementById(tabId).style.display="block";
+}
+</script>
+
+</body>
+</html>
