@@ -80,13 +80,22 @@ nav a:hover{
 <h2>LOGIN</h2>
 
 <form onsubmit="login(event)">
-<input type="text" id="firstName" placeholder="First Name" required>
-<input type="text" id="lastName" placeholder="Last Name" required>
-<input type="text" id="phone" placeholder="Nomor HP" required>
-<input type="email" id="email" placeholder="Email" required>
-<input type="password" id="password" placeholder="Password" required>
+    <form action="/submit" method="POST">
 
-<button type="submit">Masuk</button>
+<label for="firstName">First Name:</label>
+<input type="text" id="firstName" name="firstName" required>
+
+<label for="lastName">Last Name:</label>
+<input type="text" id="lastName" name="lastName" required>
+
+<label for="phone">Nomor HP:</label>
+<input type="text" id="phone" name="phone" required>
+
+<label for="email">Email:</label>
+<input type="email" id="email" name="email" required>
+
+<input type="submit" value="Kirim">
+
 </form>
 </div>
 </div>
@@ -111,14 +120,8 @@ nav a:hover{
 <H2>TENTANG SAYA</H2>
 <A HREF="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==">INSTAGRAM</A>
 <p><A HREF="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link">Curriculum Vitae</A></p>
-
        <h2>Video lagu favorite</h2>
-
-<iframe width="560" height="315"
-src="https://www.youtube.com/embed/en6FvG0ngl4?si=ilTr3BDYo7f0wBtQ"
-allowfullscreen>
-</iframe>
-
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Zm2wlqjVk48?si=r6xB9sXaoT6fro5b"</iframe>
 </div>
 
 <div id="koleksi" class="content" style="display:none;">
