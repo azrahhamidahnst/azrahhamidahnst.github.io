@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpustakaan Sinar Mulia</title>
+<title>Perpustakaan SD Sinar Mulia</title>
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpustakaan Ceria SD</title>
+<title>Perpustakaan SD SINAR MULIA</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
@@ -111,11 +111,13 @@ nav a:hover{
 <!-- LOGIN PAGE -->
 <div id="loginPage" class="login-page">
 <div class="login-box">
-<h2>📚 Login Perpustakaan Ceria</h2>
+<h2>📚 Login Perpustakaan SD SINAR MULIA</h2>
 
 <form onsubmit="login(event)">
 <input type="text" placeholder="Nama Depan" required>
 <input type="text" placeholder="Nama Belakang" required>
+<input type="text" placeholder="Email" required>
+<input type="text" placeholder="Nomor HP" required>
 <input type="password" id="password" placeholder="Password (min 4 karakter)" required>
 <button type="submit">Masuk 🚀</button>
 </form>
@@ -133,11 +135,12 @@ nav a:hover{
 <a onclick="openTab('video')">🎥 Video</a>
 <a onclick="openTab('game')">🎮 Game</a>
 <a onclick="openTab('tentang')">📞 Kontak</a>
+<a onclick="openTab('Profile')">👤 Profile</a>
 <a class="logout" onclick="logout()">Logout</a>
 </nav>
 
 <div id="home" class="content">
-<h2>🌟 Selamat Datang di Perpustakaan Ceria SD 🌟</h2>
+<h2>🌟 Selamat Datang di Perpustakaan SD SINAR MULIA 🌟</h2>
 <p>Ayo membaca dan bermain sambil belajar!</p>
 </div>
 
@@ -156,17 +159,39 @@ nav a:hover{
 <iframe width="100%" height="315"
 src="https://www.youtube.com/embed/Zm2wlqjVk48"
 allowfullscreen></iframe>
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/I7vZTo-X5jI?si=ICpIVa6QKw3-tg2s"
+allowfullscreen></iframe>
+<iframe width="560" height="315" 
+src="https://www.youtube.com/embed/7GSsmQ7piHQ?si=6Yc0C0LLjSetwQuF"
+allowfullscreen></iframe>
+<iframe width="560" height="315" 
+src="https://www.youtube.com/embed/p-mPitGvpR0?si=l9B9vGNilocMrKC9"
+allowfullscreen></iframe>
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/AJK-o-N7i-w?si=Bca3NH8xK3Lhl0rD"
+allowfullscreen></iframe>
 </div>
 
 <div id="game" class="content" style="display:none;">
 <h2>🎮 Game Edukasi</h2>
 <p>Klik link di bawah untuk bermain game edukasi:</p>
 <a href="https://www.educandy.com/" target="_blank">Main Game Seru 🎉</a>
+<a href="https://www.abcya.com/" target="_blank" class="game-btn">🔤 ABCya – Game Bahasa & Logika</a>
+<a href="https://wordwall.net/" target="_blank" class="game-btn">🧠 Wordwall – Game Soal & Puzzle</a>
 </div>
 
-<div id="tentang" class="content" style="display:none;">
+<div id="About US" class="content" style="display:none;">
 <h2>📞 Hubungi Kami</h2>
 <p>Email: azrahhamidahnst@gmail.com</p>
+<p>WhatsApp: 0822-7722-5725</p>
+<h3>Formulir Pesan</h3> 
+<form> Nama:<br> <input type="text"><br>
+<br> Nomor HP:<br> <input type="text"><br>
+<br> Email:<br> <input type="email"><br>
+<br> Pesan:<br> <textarea rows="4" cols="30"></textarea><br>
+<br> <input type="submit" value="Kirim"> 
+</form>
 </div>
 
 <script>
