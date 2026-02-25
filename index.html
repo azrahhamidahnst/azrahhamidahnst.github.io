@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Library</title>
+<title>Perpustakaan Sinar Mulia</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 body{
     margin:0;
-    font-family: Arial;
-    background: linear-gradient(135deg,#6a85ff,#b993d6);
+    font-family: 'Fredoka', sans-serif;
+    background: linear-gradient(135deg,#ff9ec4,#8fd3f4,#a8ff78);
 }
 
 /* LOGIN PAGE */
@@ -23,14 +25,37 @@ body{
 .login-box{
     background:white;
     padding:30px;
-    width:300px;
-    border-radius:15px;
+    width:320px;
+    border-radius:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.2);
+    text-align:center;
+}
+
+.login-box h2{
+    color:#ff69b4;
 }
 
 .login-box input{
     width:100%;
-    padding:8px;
+    padding:10px;
     margin:8px 0;
+    border-radius:15px;
+    border:2px solid #8fd3f4;
+}
+
+.login-box button{
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:20px;
+    background:#ff69b4;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.login-box button:hover{
+    background:#ff1493;
 }
 
 /* MAIN PAGE */
@@ -39,7 +64,7 @@ body{
 }
 
 nav{
-    background:#6a85ff;
+    background:#ff69b4;
     padding:15px;
     text-align:center;
 }
@@ -50,23 +75,26 @@ nav a{
     cursor:pointer;
     text-decoration:none;
     font-weight:bold;
+    font-size:18px;
 }
 
 nav a:hover{
-    text-decoration:underline;
+    color:yellow;
 }
 
 .content{
     background:white;
-    margin:40px auto;
+    margin:30px auto;
     padding:30px;
-    max-width:800px;
-    border-radius:15px;
+    max-width:900px;
+    border-radius:25px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    text-align:center;
 }
 
 .logout{
     float:right;
-    color:red;
+    color:yellow;
     cursor:pointer;
 }
 </style>
@@ -77,19 +105,15 @@ nav a:hover{
 <!-- LOGIN PAGE -->
 <div id="loginPage" class="login-page">
 <div class="login-box">
-<h2>LOGIN</h2>
+<h2>📚 Login Perpustakaan Sinar Mulia</h2>
 
 <form onsubmit="login(event)">
-
-<input type="text" id="firstName" placeholder="First Name" required>
-<input type="text" id="lastName" placeholder="Last Name" required>
-<input type="text" id="phone" placeholder="Nomor HP" required>
-<input type="email" id="email" placeholder="Email" required>
-<input type="password" id="password" placeholder="Password" required>
-
-<button type="submit">Masuk</button>
-
+<input type="text" placeholder="Nama Depan" required>
+<input type="text" placeholder="Nama Belakang" required>
+<input type="password" id="password" placeholder="Password (min 2 karakter)" required>
+<button type="submit">Masuk 🚀</button>
 </form>
+
 </div>
 </div>
 
@@ -97,74 +121,69 @@ nav a:hover{
 <div id="mainPage" class="main-page">
 
 <nav>
-<a onclick="openTab('home')">Home</a>
-<a onclick="openTab('koleksi')">Koleksi</a>
-<a onclick="openTab('layanan')">Layanan</a>
-<a onclick="openTab('tentang')">Hubungi Saya</a>
-<a class="logout" onclick="logout()">Logout</a>
+<a onclick="openTab('home')">🏠 HOME</a>
+<a onclick="openTab('koleksi')">📖 KOLEKSI</a>
+<a onclick="openTab('layanan')">📝 LAYANAN</a>
+<a onclick="openTab('video')">🎥 VIDEO</a>
+<a onclick="openTab('game')">🎮 GAME</a>
+<a onclick="openTab('tentang')">📞 KONTAK</a>
+<a class="logout" onclick="logout()">LOGOUT</a>
 </nav>
 
-<div id="home" class="content">
-<h2>Home</h2>
-<p>Selamat datang di Mini Library.</p>
-
-<h3>Nama : AZRAH HAMIDAH NST</h3>
-<p>NIM : 230709008</p>
-
-<h3>Tentang Saya</h3>
-<A HREF="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==">INSTAGRAM</A>
-<p><A HREF="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link">Curriculum Vitae</A></p>
-
-<iframe width="100%" height="315"
-src="https://www.youtube.com/embed/Zm2wlqjVk48"
-allowfullscreen>
-</iframe>
-
+<div id="HOME" class="content">
+<h2>🌟 Selamat Datang di Perpustakaan Sinar Mulia 🌟</h2>
+<p>Mari Membaca dan Bermain Sambil Belajar!</p>
 </div>
 
-<div id="koleksi" class="content" style="display:none;">
-<h2>Koleksi</h2>
-<p>Daftar koleksi buku tersedia di sini.</p>
+<div id="KOLEKSI" class="content" style="display:none;">
+<h2>📚 Koleksi Buku</h2>
+<p>Buku Cerita Anak, Dongeng, Buku Pelajaran dan komik edukatif tersedia di sini.</p>
 </div>
 
-<div id="layanan" class="content" style="display:none;">
-<h2>Layanan</h2>
-<p>Layanan peminjaman, pengembalian, dan referensi.</p>
+<div id="LAYANAN" class="content" style="display:none;">
+<h2>📝 Layanan</h2>
+<p>Peminjaman buku, pengembalian, dan baca di tempat.</p>
+</div>
+
+<div id="VIDEO" class="content" style="display:none;">
+<h2>🎥 Video Edukasi</h2>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ypfPpHi9tEc?si=O8-Z7gI7jL1RRKzk"allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/2EgP_zSOKN4?si=-OVl-fcqDVOdcJTp"allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/I5E4Z8TEIy4?si=KvHz2ECBAgPIg5XR"allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yh2A5uoK-Wo?si=88_gt0XCg1YltXpP"allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/I7vZTo-X5jI?si=SIw_LTTEpp83g9Cm"allowfullscreen></iframe>
+</div>
+
+<div id="game" class="content" style="display:none;">
+<h2>🎮 Game Edukasi</h2>
+<p>Klik link di bawah untuk bermain game edukasi:</p>
+<a href="https://www.educandy.com/" target="_blank">Main Game Seru 🎉</a>
 </div>
 
 <div id="tentang" class="content" style="display:none;">
-<h2>Hubungi Saya</h2>
-  <p>Email: azrahhamidahnst@gmail.com</p>
-    <p>WhatsApp: 0822-77-22-5725</p>
-
-    <p><a href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==">Instagram</a></p>
-
-    <h3>Formulir Pesan</h3>
-    <form>
-        Nama:<br>
-        <input type="text"><br><br>
-        Nomor HP:<br>
-        <input type="text"><br><br>
-        Email:<br>
-        <input type="email"><br><br>
-        Pesan:<br>
-        <textarea rows="4" cols="30"></textarea><br><br>
-
-        <input type="submit" value="Kirim">
-    </form>
+<h2>📞 Hubungi Kami</h2>
+<p>Email: azrahhamidahnst@gmail.com</p>
+<p>WhatsApp: 0822-77-22-5725</p> 
+<p><a href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==">Instagram</a></p> 
+<h3>Formulir Pesan</h3> 
+<form> Nama:<br> <input type="text"><br>
+    <br> Nomor HP:<br> <input type="text"><br>
+    <br> Email:<br> <input type="email"><br>
+    <br> Pesan:<br> <textarea rows="4" cols="30"></textarea><br>
+    <br><input type="submit" value="Kirim"> 
+</form>
 </div>
 
 <script>
 function login(event){
     event.preventDefault();
-
     var password = document.getElementById("password").value;
 
     if(password.length >= 4){
         document.getElementById("loginPage").style.display="none";
         document.getElementById("mainPage").style.display="block";
     }else{
-        alert("Password minimal 4 karakter");
+        alert("Password minimal 4 karakter ya 😊");
     }
 }
 
