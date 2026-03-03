@@ -23,7 +23,7 @@ body{
 }
 
 .login-box{
-    background:6BAF92;
+    background:#6BAF92;
     padding:30px;
     width:320px;
     border-radius:25px;
@@ -161,35 +161,38 @@ nav a:hover{
     }
   ];
 
-  function login(event) {
-    event.preventDefault();
+<script>
+function login(event) {
+  event.preventDefault();
 
-    const nama = document.getElementById("nama").value;
-    const kelas = document.getElementById("kelas").value;
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+  const nama = document.getElementById("nama").value;
+  const kelas = document.getElementById("kelas").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-    if (password.length < 4) {
-      alert("Password minimal 4 karakter!");
-      return;
-    }
-
-    // Cek apakah user terdaftar
-    const userFound = users.find(user => 
-      user.nama === nama &&
-      user.kelas === kelas &&
-      user.username === username &&
-      user.password === password
-    );
-
-    if (userFound) {
-      alert("Login berhasil! 🎉");
-      document.getElementById("loginPage").style.display = "none";
-      // tampilkan halaman utama di sini
-    } else {
-      alert("Anda belum terdaftar atau data salah!");
-    }
+  if (password.length < 4) {
+    alert("Password minimal 4 karakter!");
+    return;
   }
+
+  const userFound = users.find(user => 
+    user.nama === nama &&
+    user.kelas === kelas &&
+    user.username === username &&
+    user.password === password
+  );
+
+  if (userFound) {
+    alert("Login berhasil! 🎉");
+
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("mainPage").style.display = "block";
+
+    openTab("home"); // langsung buka home
+  } else {
+    alert("Anda belum terdaftar atau data salah!");
+  }
+}
 </script>
 
 <!-- MAIN -->
@@ -201,7 +204,7 @@ nav a:hover{
 <a onclick="openTab('layanan')">LAYANAN</a>
 <a onclick="openTab('game')">GAME EDUKASI</a>
 <a onclick="openTab('kontak')">KONTAK</a>
-<a onclick="openTab('kontak')">ABOUT US</a>
+<a onclick="openTab('about')">ABOUT US</a>
 <a class="logout" onclick="logout()">LOGOUT</a>
 </nav>
 
@@ -1204,5 +1207,16 @@ function openTab(tabId){
     music.pause();
     music.currentTime = 0;
   }
+}
+</script>
+
+<script>
+function logout(){
+  document.getElementById("mainPage").style.display="none";
+  document.getElementById("loginPage").style.display="flex";
+
+  var music = document.getElementById("bgMusic");
+  music.pause();
+  music.currentTime = 0;
 }
 </script>
