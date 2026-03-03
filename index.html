@@ -201,30 +201,148 @@ nav a:hover{
 <a onclick="openTab('layanan')">LAYANAN</a>
 <a onclick="openTab('game')">GAME</a>
 <a onclick="openTab('kontak')">KONTAK</a>
+<a onclick="openTab('kontak')">ABOUT US</a>
 <a class="logout" onclick="logout()">LOGOUT</a>
 </nav>
 
 <!-- HOME -->
 <div id="home" class="content">
-<div class="card-container">
 
-<div class="card">
-<h3>🌟 Tentang Perpustakaan</h3>
-<p>Perpustakaan SD Sinar Mulia adalah tempat belajar dan membaca yang menyenangkan.</p>
+  <div class="menu-container">
+
+    <!-- SEJARAH -->
+    <div class="menu-item" onclick="toggleContent('sejarah')">
+      <div class="menu-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/167/167707.png" width="60">
+        <h3>Sejarah Sekolah</h3>
+      </div>
+      <div id="sejarah" class="menu-content">
+        <p>
+          Sejarah SD Sinar Mulia: Menyalakan Pelita di Tengah Cita-Cita
+1. Awal Mula yang Sederhana (Tahun 2005)
+Lahirnya SD Sinar Mulia tidak dimulai di gedung yang megah, melainkan dari sebuah garasi rumah milik Ibu Azrah Hamidah NST di sudut kecil pinggiran kota. Didorong oleh keresahan melihat banyaknya anak-anak di lingkungan sekitar yang harus menempuh jarak berkilo-kilo meter untuk bersekolah, ia bersama keluarganya memutuskan untuk mendirikan sebuah kelas kecil. Nama "Sinar Mulia" dipilih bukan tanpa alasan. "Sinar" melambangkan ilmu pengetahuan yang menerangi kegelapan, dan "Mulia" merujuk pada pembentukan karakter atau akhlak yang luhur. Pada tahun pertama, sekolah ini hanya memiliki 12 siswa dan 3 orang guru yang mengajar dengan fasilitas seadanya.
+
+2. Masa Perjuangan dan Fondasi Karakter (2007)
+Memasuki era milenium, SD Sinar Mulia menghadapi ujian besar. Persaingan dengan sekolah negeri dan keterbatasan dana sempat membuat operasional sekolah tersendat. Namun, di sinilah keunikan Sinar Mulia muncul. Sekolah ini dikenal bukan karena kemewahannya, melainkan karena pendekatan "Parenting Partnership", di mana orang tua terlibat aktif dalam pendidikan karakter anak. Berkat dedikasi para pengajarnya, pada tahun 2010, sekolah ini berhasil meraih akreditasi A untuk pertama kalinya dan mulai membangun gedung permanen dua lantai di atas lahan wakaf dari salah satu donatur yang tersentuh oleh semangat belajar para siswanya.
+
+3. Era Transformasi dan Digitalisasi (2011 - Sekarang)
+Di bawah kepemimpinan generasi kedua, SD Sinar Mulia bertransformasi menjadi Smart School. Tanpa meninggalkan nilai-nilai religius dan budi pekerti yang menjadi akarnya, sekolah ini mulai mengintegrasikan teknologi dalam pembelajaran. Kini, SD Sinar Mulia telah tumbuh menjadi sekolah swasta unggulan dengan fasilitas laboratorium komputer, perpustakaan digital, dan berbagai ekstrakurikuler yang telah memenangkan berbagai kompetisi tingkat nasional. Dari 12 siswa di sebuah garasi, kini ratusan lulusannya telah tersebar di berbagai jenjang pendidikan terbaik, membawa "sinar" mereka masing-masing ke dunia luar.
+
+Garis Waktu Milestone Utama:
+15 Juli 2005: Peresmian kelas pertama di kediaman kelusrga Azrah Hamidah NST.
+2006: Lulusan angkatan pertama yang berhasil masuk ke SMP negeri favorit.
+2009: Pembangunan laboratorium sains dan seni pertama.
+2020: Peluncuran platform pembelajaran mandiri "Sinar Mulia Online".
+2024: Penghargaan sebagai Sekolah Berwawasan Lingkungan tingkat provinsi.
+        </p>
+      </div>
+    </div>
+
+    <!-- VISI -->
+    <div class="menu-item" onclick="toggleContent('visi')">
+      <div class="menu-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="60">
+        <h3>Visi Sekolah</h3>
+      </div>
+      <div id="visi" class="menu-content">
+        <p>
+        "Menjadi pelita pendidikan yang membentuk generasi cerdas, berkarakter mulia, dan 
+        inovatif dalam menghadapi tantangan global berbasis nilai-nilai kemanusiaan."
+        </p>
+      </div>
+    </div>
+
+    <!-- MISI -->
+    <div class="menu-item" onclick="toggleContent('misi')">
+      <div class="menu-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="60">
+        <h3>Misi Sekolah</h3>
+      </div>
+      <div id="misi" class="menu-content">
+        <p>
+          Untuk mewujudkan visi tersebut, SD Sinar Mulia menetapkan langkah-langkah strategis sebagai berikut:
+1. Keunggulan Akademik & Teknologi:
+    Menyelenggarakan proses pembelajaran berkualitas yang mengintegrasikan kurikulum nasional dengan pemanfaatan teknologi digital (Smart School) guna menyiapkan siswa yang adaptif di era modern.
+
+2. Pembentukan Karakter (Mulia):
+    Menanamkan nilai-nilai religius, kejujuran, dan budi pekerti luhur melalui pembiasaan harian agar siswa tumbuh menjadi pribadi yang berintegritas dan berempati tinggi.
+
+3. Kemitraan Strategis (Parenting Partnership):
+    Membangun kolaborasi yang harmonis dan aktif antara sekolah, orang tua, dan masyarakat dalam mengawal tumbuh kembang anak secara holistik.
+
+4. Pengembangan Potensi Diri:
+    Menyediakan wadah bagi siswa untuk mengeksplorasi bakat, minat, dan kreativitas melalui kegiatan ekstrakurikuler yang variatif dan inspiratif.
+
+5. Kepedulian Sosial & Lingkungan:
+    Menumbuhkan jiwa kepemimpinan serta kesadaran siswa terhadap kelestarian lingkungan hidup dan tanggung jawab sosial terhadap sesama.
+        </p>
+      </div>
+    </div>
+
+  <!-- MOTTO -->
+    <div class="menu-item" onclick="toggleContent('motto')">
+      <div class="menu-header">
+        <img src="https://cdn-icons-png.flaticon.com/512/929/929426.png" width="60">
+        <h3>Motto Sekolah</h3>
+      </div>
+      <div id="motto" class="menu-content">
+        <p style="font-style: italic; font-weight: bold;">
+          "Shine Bright with Noble Heart"
+        (Bersinar Terang dengan Hati yang Mulia)
+        </p>
+      </div>
+    </div>
+
+  </div>
 </div>
 
-<div class="card">
-<h3>📖 Visi</h3>
-<p>Meningkatkan minat baca siswa sejak dini.</p>
-</div>
+<style>
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 500px;
+  margin: auto;
+}
 
-<div class="card">
-<h3>🎯 Misi</h3>
-<p>Menyediakan buku menarik dan layanan ramah anak.</p>
-</div>
+.menu-item {
+  background: #f5f5f5;
+  padding: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
 
-</div>
-</div>
+.menu-item:hover {
+  background: #e0f0ff;
+}
+
+.menu-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.menu-content {
+  display: none;
+  margin-top: 15px;
+  text-align: left;
+}
+</style>
+
+<script>
+function toggleContent(id) {
+  // Tutup semua dulu
+  var contents = document.querySelectorAll(".menu-content");
+  contents.forEach(function(content) {
+    content.style.display = "none";
+  });
+
+  // Buka yang diklik
+  var selected = document.getElementById(id);
+  selected.style.display = "block";
+}
+</script>
 
 <!-- KOLEKSI -->
 <div id="koleksi" class="content">
