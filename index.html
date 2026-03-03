@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perpustakaan Sinar Mulia</title>
+<title>Perpustakaan SD Sinar Mulia</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
@@ -23,7 +23,7 @@ body{
 }
 
 .login-box{
-    background:white;
+    background:6BAF92;
     padding:30px;
     width:320px;
     border-radius:25px;
@@ -130,15 +130,67 @@ nav a:hover{
 
 <!-- LOGIN -->
 <div id="loginPage" class="login-page">
-<div class="login-box">
-<h2>📚 Login Perpustakaan</h2>
-<form onsubmit="login(event)">
-<input type="text" placeholder="Nama" required>
-<input type="password" id="password" placeholder="Password (min 4 karakter)" required>
-<button type="submit">Masuk 🚀</button>
-</form>
+  <div class="login-box">
+    <h2>📚 Login Perpustakaan</h2>
+    <form onsubmit="login(event)">
+      
+      <input type="text" id="nama" placeholder="Nama" required>
+      <input type="text" id="kelas" placeholder="Kelas" required>
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password (min 4 karakter)" required>
+      
+      <button type="submit">Masuk 🚀</button>
+    </form>
+  </div>
 </div>
-</div>
+
+<script>
+  // DATA PENGGUNA YANG SUDAH TERDAFTAR
+  const users = [
+    {
+      nama: "Azrah",
+      kelas: "12A",
+      username: "azrah12",
+      password: "1234"
+    },
+    {
+      nama: "Budi",
+      kelas: "11B",
+      username: "budi11",
+      password: "abcd"
+    }
+  ];
+
+  function login(event) {
+    event.preventDefault();
+
+    const nama = document.getElementById("nama").value;
+    const kelas = document.getElementById("kelas").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    if (password.length < 4) {
+      alert("Password minimal 4 karakter!");
+      return;
+    }
+
+    // Cek apakah user terdaftar
+    const userFound = users.find(user => 
+      user.nama === nama &&
+      user.kelas === kelas &&
+      user.username === username &&
+      user.password === password
+    );
+
+    if (userFound) {
+      alert("Login berhasil! 🎉");
+      document.getElementById("loginPage").style.display = "none";
+      // tampilkan halaman utama di sini
+    } else {
+      alert("Anda belum terdaftar atau data salah!");
+    }
+  }
+</script>
 
 <!-- MAIN -->
 <div id="mainPage" class="main-page">
@@ -158,7 +210,7 @@ nav a:hover{
 
 <div class="card">
 <h3>🌟 Tentang Perpustakaan</h3>
-<p>Perpustakaan Sinar Mulia adalah tempat belajar dan membaca yang menyenangkan.</p>
+<p>Perpustakaan SD Sinar Mulia adalah tempat belajar dan membaca yang menyenangkan.</p>
 </div>
 
 <div class="card">
