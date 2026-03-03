@@ -1065,7 +1065,7 @@ function closeModal() {
 </div>
 
 <!-- WhatsApp Floating Icon -->
-<a href="https://wa.me/082277225725" class="whatsapp-float" target="_blank">
+<a href="https://wa.me/6282277225725" class="whatsapp-float" target="_blank">
 <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp">
 </a>
 
@@ -1076,7 +1076,7 @@ function showAlert() {
 }
 </script>
 
-<!-- ================= ABOUT US PREMIUM ================= -->
+<!-- ================= ABOUT US ================= -->
 <style>
 #about {
   padding: 50px;
@@ -1115,10 +1115,6 @@ function showAlert() {
   max-width: 750px;
 }
 
-.about-box h2 {
-  margin-bottom: 5px;
-}
-
 .about-box a {
   display: inline-block;
   margin: 10px;
@@ -1144,38 +1140,39 @@ iframe {
 }
 
 @media (max-width: 600px) {
-  iframe {
-    height: 200px;
-  }
+  iframe { height: 200px; }
 }
 </style>
 
-<div id="about" class="content">
+<div id="about" class="content" style="display:none;">
 
-<!-- GANTI FOTO DI SINI -->
 <img src="https://via.placeholder.com/170" alt="Foto Profil" class="profile-img">
 
 <div class="about-box">
 
 <h2>AZRAH HAMIDAH NST</h2>
 <p><b>NIM:</b> 230709008</p>
-<p><b>Alamat:</b> Jalan Dokter A Sofian no 10, Padang Bulan, Medan Baru,Kota Medan, Sumatera Utara.</p>
+<p><b>Alamat:</b> Jalan Dokter A Sofian No 10, Padang Bulan, Medan Baru, Kota Medan, Sumatera Utara.</p>
 
 <h3>Tentang Saya</h3>
-<p>i "Saat ini saya sedang menempuh studi di jurusan Perpustakaan dan Sains Informasi. Di era ledakan informasi ini, saya belajar untuk menjadi jembatan antara manusia dan pengetahuan. Bukan sekadar menyusun buku, saya mendalami bagaimana mengorganisasi data, mengelola arsip digital, dan memastikan informasi yang akurat dapat diakses oleh mereka yang membutuhkan".</p>
+<p>
+Saat ini saya sedang menempuh studi di jurusan Perpustakaan dan Sains Informasi.
+Di era ledakan informasi ini, saya belajar menjadi jembatan antara manusia dan pengetahuan.
+Bukan sekadar menyusun buku, saya mendalami bagaimana mengorganisasi data,
+mengelola arsip digital, dan memastikan informasi akurat dapat diakses oleh mereka yang membutuhkan.
+</p>
 
-<a href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==" target="_blank">Instagram</a>
-<a href="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link" target="_blank">Curriculum Vitae</a>
-<a href="https://wa.me/6282277225725" target="_blank"
-    style="background:#25D366; color:white;">
-   WhatsApp Saya
+<a href="https://www.instagram.com/zraah_h_" target="_blank">Instagram</a>
+<a href="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view" target="_blank">Curriculum Vitae</a>
+<a href="https://wa.me/6282277225725" target="_blank" style="background:#25D366;color:white;">
+WhatsApp Saya
 </a>
-    
+
 <h3>🎵 Video Lagu Favorite</h3>
 
 <iframe src="https://www.youtube.com/embed/en6FvG0ngl4"
-        frameborder="0"
-        allowfullscreen>
+frameborder="0"
+allowfullscreen>
 </iframe>
 
 </div>
@@ -1183,33 +1180,13 @@ iframe {
 
 <!-- BACKGROUND MUSIC -->
 <audio id="bgMusic" loop>
-  <!-- GANTI LINK MUSIK MP3 DI BAWAH -->
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+<source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
 </audio>
 
+<!-- ================= SCRIPT UTAMA ================= -->
 <script>
-/* Fungsi untuk menampilkan submenu dan kontrol musik */
-function showContent(id) {
 
-  var contents = document.querySelectorAll('.content');
-  contents.forEach(c => c.style.display = "none");
-
-  document.getElementById(id).style.display = "block";
-
-  var music = document.getElementById("bgMusic");
-
-  if (id === "about") {
-    music.play();
-  } else {
-    music.pause();
-    music.currentTime = 0;
-  }
-}
-</script>
-
-
-
-    
+/* LOGIN */
 function login(event){
 event.preventDefault();
 var password=document.getElementById("password").value;
@@ -1223,17 +1200,28 @@ alert("Password minimal 4 karakter 😊");
 }
 }
 
+/* LOGOUT */
 function logout(){
 document.getElementById("mainPage").style.display="none";
 document.getElementById("loginPage").style.display="flex";
 }
 
+/* NAVIGASI + KONTROL MUSIK */
 function openTab(tabId){
+
 var tabs=document.querySelectorAll(".content");
 tabs.forEach(tab=>tab.style.display="none");
-document.getElementById(tabId).style.display="block";
-}
-</script>
 
-</body>
-</html>
+document.getElementById(tabId).style.display="block";
+
+var music=document.getElementById("bgMusic");
+
+if(tabId==="about"){
+music.play();
+}else{
+music.pause();
+music.currentTime=0;
+}
+}
+
+</script>
