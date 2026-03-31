@@ -64,7 +64,7 @@ nav a {margin:10px; color:white; text-decoration:none; cursor:pointer;}
 <!-- APP -->
 <div id="app" style="display:none;">
 <header>
-<div><img src="https://pin.it/5qEHtVEYA" width="40"> SD Sinar Mulia</div>
+<div><img src="https://via.placeholder.com/40" width="40"> SD Sinar Mulia</div>
 <nav>
 <a onclick="show('beranda')">Beranda</a>
 <a onclick="show('koleksi')">Koleksi</a>
@@ -72,7 +72,7 @@ nav a {margin:10px; color:white; text-decoration:none; cursor:pointer;}
 <a onclick="show('game')">Game</a>
 <a onclick="show('video')">Video</a>
 <a onclick="show('kontak')">Kontak</a>
-<a onclick="show('about')">About</a>
+<a onclick="show('about')">About Me</a>
 <a onclick="logout()">Logout</a>
 </nav>
 </header>
@@ -91,9 +91,11 @@ nav a {margin:10px; color:white; text-decoration:none; cursor:pointer;}
 <li><b>Literasi:</b> Meningkatkan minat baca dan budaya literasi di lingkungan sekolah.</li>
 <li><b>Layanan:</b> Menyediakan koleksi referensi yang lengkap, terkini, dan mudah diakses.</li>
 <li><b>Inovasi:</b> Mengembangkan layanan berbasis digital untuk kemudahan riset dan belajar mandiri.</li>
+<li><a href="https://www.coolmathgames.com" target="_blank">Game Logika</a></li>
+<li><a href="https://www.funbrain.com" target="_blank">Game Edukasi Seru</a></li>
+<li><a href="https://www.splashlearn.com" target="_blank">Game Matematika Interaktif</a></li>
 </ul>
 
-<!-- EVENT DI BERANDA -->
 <div style="margin-top:30px; background:#fff3cd; padding:15px; border-radius:10px;">
 <h3>Event Mendatang</h3>
 <p><b>NONTON BARENG</b></p>
@@ -112,16 +114,83 @@ nav a {margin:10px; color:white; text-decoration:none; cursor:pointer;}
 <div class="circle" onclick="tampilBuku('pelajaran')">Buku Pelajaran</div>
 <div class="circle" onclick="tampilBuku('komik')">Komik</div>
 </div>
-
 <div id="bukuContainer" class="container"></div>
 </div>
 
-<!-- LAINNYA -->
-<div id="layanan" class="section"><h2>Layanan</h2></div>
-<div id="game" class="section"><h2>Game</h2></div>
+<!-- LAYANAN -->
+<div id="layanan" class="section">
+<h2 style="text-align:center;">Layanan</h2>
+<div class="circle-menu">
+<div class="circle" onclick="showLayanan('peminjaman')">Peminjaman</div>
+<div class="circle" onclick="showLayanan('perpanjangan')">Perpanjangan</div>
+<div class="circle" onclick="showLayanan('pengembalian')">Pengembalian</div>
+</div>
+<div id="layananContainer" style="margin-top:20px;"></div>
+</div>
+
+<div id="game" class="section">
+<h2 style="text-align:center;">Game Edukasi</h2>
+
+<!-- KALKULATOR -->
+<div style="text-align:center; margin-top:20px;">
+<h3>Kalkulator Edukasi</h3>
+<input type="number" id="angka1" placeholder="Angka 1">
+<input type="number" id="angka2" placeholder="Angka 2"><br><br>
+<button onclick="hitung('+')">Penjumlahan</button>
+<button onclick="hitung('-')">Pengurangan</button>
+<button onclick="hitung('*')">Perkalian</button>
+<button onclick="hitung('/')">Pembagian</button>
+<p>Hasil: <b id="hasil">0</b></p>
+</div>
+
+<!-- GAME MATEMATIKA -->
+<div style="text-align:center; margin-top:30px;">
+<h3>Game Matematika</h3>
+<p id="soalMath"></p>
+<input type="number" id="jawabanMath" placeholder="Jawaban">
+<button onclick="cekMath()">Cek</button>
+<p id="hasilMath"></p>
+</div>
+
+<!-- GAME BAHASA INDONESIA -->
+<div style="text-align:center; margin-top:30px;">
+<h3>Game Bahasa Indonesia</h3>
+<p id="soalBI">Kata: <b>mkn</b> (lengkapi hurufnya)</p>
+<input id="jawabanBI" placeholder="Jawaban">
+<button onclick="cekBI()">Cek</button>
+<p id="hasilBI"></p>
+</div>
+
+<!-- GAME AGAMA -->
+<div style="text-align:center; margin-top:30px;">
+<h3>Game Agama</h3>
+<p id="soalAgama">Siapa nabi terakhir dalam Islam?</p>
+<input id="jawabanAgama" placeholder="Jawaban">
+<button onclick="cekAgama()">Cek</button>
+<p id="hasilAgama"></p>
+</div>
+
+</div>
+
+</div>
+
+<div style="margin-top:30px; text-align:center;">
+<h3>Game Edukasi (New Tab)</h3>
+<ul style="list-style:none;">
+<li><a href="https://www.mathplayground.com" target="_blank">Game Matematika</a></li>
+<li><a href="https://www.abcya.com" target="_blank">Game Membaca</a></li>
+<li><a href="https://www.education.com/games/" target="_blank">Game Edukasi Anak</a></li>
+<li><a href="https://toytheater.com" target="_blank">Game Interaktif</a></li>
+<li><a href="https://www.coolmathgames.com" target="_blank">Game Logika</a></li>
+<li><a href="https://www.funbrain.com" target="_blank">Game Edukasi Seru</a></li>
+<li><a href="https://www.splashlearn.com" target="_blank">Game Matematika Interaktif</a></li>
+</ul>
+</div>
+
+</div>
 <div id="video" class="section"><h2>Video</h2></div>
 <div id="kontak" class="section"><h2>Kontak</h2></div>
-<div id="about" class="section"><h2>About</h2></div>
+<div id="about" class="section"><h2>About Me</h2></div>
 </div>
 
 <script>
@@ -130,38 +199,54 @@ let user={};
 function register(){
 let nama = document.getElementById('name').value;
 let password = document.getElementById('pass').value;
-
-if(nama === '' || password === ''){
-alert('Harap isi semua data!');
-return;
-}
-
-user.name = nama;
-user.pass = password;
-
+if(nama === '' || password === ''){alert('Harap isi semua data!');return;}
+user.name = nama; user.pass = password;
 alert('Daftar berhasil');
 document.getElementById('registerBox').style.display='none';
 document.getElementById('loginBox').style.display='block';
 }
+
 function login(){
 let namaLogin = document.getElementById('loginName').value;
 let passLogin = document.getElementById('loginPass').value;
-
 if(namaLogin === user.name && passLogin === user.pass){
 document.getElementById('auth').style.display='none';
 document.getElementById('app').style.display='block';
-} else {
-alert('Data tidak cocok! Pastikan sama dengan saat daftar');
+} else {alert('Data tidak cocok!');}
 }
+
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+// reset konten dinamis
+if(id!=='koleksi') document.getElementById('bukuContainer').innerHTML='';
+if(id!=='layanan') document.getElementById('layananContainer').innerHTML='';
 }
-function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
 function logout(){location.reload();}
 
 // DATA BUKU
 const dataBuku={
-cerita:[{judul:'Malin Kundang',img:'https://via.placeholder.com/200',sinopsis:'Cerita anak durhaka...'}],
-pelajaran:[{judul:'Matematika Dasar',img:'https://via.placeholder.com/200',sinopsis:'Belajar angka dan hitungan...'}],
-komik:[{judul:'Komik Sains',img:'https://via.placeholder.com/200',sinopsis:'Belajar sains lewat gambar...'}]
+cerita:[
+{judul:'Malin Kundang',img:'https://via.placeholder.com/200',sinopsis:'Cerita anak durhaka.'},
+{judul:'Sangkuriang',img:'https://via.placeholder.com/200',sinopsis:'Cerita anak durhaka.'},
+{judul:'bawang merah bawang putih',img:'https://via.placeholder.com/200',sinopsis:'Cerita anak durhaka.'},
+{judul:'keong mas',img:'https://via.placeholder.com/200',sinopsis:'Cerita anak durhaka.'}
+],
+
+pelajaran:[
+{judul:'Matematika Dasar',img:'https://via.placeholder.com/200',sinopsis:'Belajar hitung.'},
+{judul:'Bahasa indonesia',img:'https://via.placeholder.com/200',sinopsis:'Belajar hitung.'},
+{judul:'IPA',img:'https://via.placeholder.com/200',sinopsis:'Belajar hitung.'},
+{judul:'Bahasa Ingris',img:'https://via.placeholder.com/200',sinopsis:'Belajar hitung.'}
+],
+  
+komik:[
+{judul:'Komik Sains',img:'https://via.placeholder.com/200',sinopsis:'Belajar lewat gambar.'},
+{judul:'Komik Agama',img:'https://via.placeholder.com/200',sinopsis:'Belajar lewat gambar.'},
+{judul:'Komik Matematika',img:'https://via.placeholder.com/200',sinopsis:'Belajar lewat gambar.'},
+{judul:'Komik Adab',img:'https://via.placeholder.com/200',sinopsis:'Belajar lewat gambar.'}
+]
 };
 
 function tampilBuku(kategori){
@@ -174,6 +259,189 @@ container.innerHTML+=`<div class='card'>
 <div class='sinopsis'>${b.sinopsis}</div>
 </div>`;
 });
+}
+
+let sisaHari = 3;
+
+function showLayanan(jenis){
+let c = document.getElementById('layananContainer');
+
+if(jenis==='peminjaman'){
+c.innerHTML=`<h3>Informasi Peminjaman</h3>
+<p>📚 Buku Cerita: Total 6 | Dipinjam 3 | Tersedia 3</p>
+<p>📘 Buku Pelajaran: Total 6 | Dipinjam 2 | Tersedia 4</p>
+<p>🦸 Komik: Total 6 | Dipinjam 1 | Tersedia 5</p>
+<p><b>Ketentuan:</b> Maksimal 7 hari</p>`;
+}
+
+if(jenis==='perpanjangan'){
+c.innerHTML=`
+<h3>Perpanjangan</h3>
+<p>Sisa waktu sekarang: <b id="sisa">${sisaHari}</b> hari</p>
+<input type="number" id="tambahHari" placeholder="Tambah hari">
+<br><br>
+<button onclick="tambahWaktu()">Submit</button>
+`;
+}
+
+if(jenis==='pengembalian'){
+c.innerHTML=`
+<h3>Pengembalian</h3>
+<input type="number" id="telat" placeholder="Berapa hari terlambat" onkeypress="if(event.key==='Enter') hitungDenda()">
+<p>Total hari: <b id="hariTelat">0</b></p>
+<p>Total denda: <b id="totalDenda">Rp 0</b></p>
+`;
+}
+}
+
+function tambahWaktu(){
+let tambah = parseInt(document.getElementById('tambahHari').value);
+if(!isNaN(tambah)){
+sisaHari += tambah;
+document.getElementById('sisa').innerText = sisaHari;
+}
+}
+
+function hitungDenda(){
+let hari = parseInt(document.getElementById('telat').value);
+let dendaPerHari = 1000;
+
+if(!isNaN(hari)){
+let total = hari * dendaPerHari;
+document.getElementById('hariTelat').innerText = hari;
+document.getElementById('totalDenda').innerText = 'Rp ' + total;
+}
+}
+
+// GAME KALKULATOR
+function hitung(operator){
+let a = parseFloat(document.getElementById('angka1').value);
+let b = parseFloat(document.getElementById('angka2').value);
+let hasil = 0;
+
+if(isNaN(a) || isNaN(b)){
+alert('Masukkan angka terlebih dahulu');
+return;
+}
+
+if(operator==='+') hasil = a + b;
+if(operator==='-') hasil = a - b;
+if(operator==='*') hasil = a * b;
+if(operator==='/') hasil = b !== 0 ? a / b : 'Tidak bisa dibagi 0';
+
+document.getElementById('hasil').innerText = hasil;
+}
+
+<h3>Game Matematika</h3>
+<p id="soalMath"></p>
+<input id="jawabanMath">
+<button onclick="cekMath()">Jawab</button>
+<p id="hasilMath"></p>
+
+<h3>Game Bahasa</h3>
+<p id="soalBI"></p>
+<input id="jawabanBI">
+<button onclick="cekBI()">Jawab</button>
+<p id="hasilBI"></p>
+
+<h3>Game Agama</h3>
+<p id="soalAgama"></p>
+<input id="jawabanAgama">
+<button onclick="cekAgama()">Jawab</button>
+<p id="hasilAgama"></p>
+
+</div>
+</div>
+
+<script>
+let user={};
+function register(){
+let nama=document.getElementById('name').value;
+let password=document.getElementById('pass').value;
+if(nama===''||password===''){alert('Isi semua data');return;}
+user.name=nama;user.pass=password;
+document.getElementById('registerBox').style.display='none';
+document.getElementById('loginBox').style.display='block';
+}
+function login(){
+let namaLogin=document.getElementById('loginName').value;
+let passLogin=document.getElementById('loginPass').value;
+if(namaLogin===user.name&&passLogin===user.pass){
+document.getElementById('auth').style.display='none';
+document.getElementById('app').style.display='block';
+}else{alert('Data salah');}
+}
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function logout(){location.reload();}
+
+function hitung(op){
+let a=parseFloat(document.getElementById('angka1').value);
+let b=parseFloat(document.getElementById('angka2').value);
+if(isNaN(a)||isNaN(b)){alert('Masukkan angka');return;}
+let hasil=0;
+if(op==='+')hasil=a+b;
+if(op==='-')hasil=a-b;
+if(op==='*')hasil=a*b;
+if(op==='/')hasil=b!==0?a/b:'Tidak bisa dibagi 0';
+document.getElementById('hasil').innerText=hasil;
+}
+
+let skor=0;
+function tambahSkor(){skor++;document.getElementById('skor').innerText=skor;}
+
+// MATEMATIKA
+let aMath,bMath;
+function soalBaruMath(){aMath=Math.floor(Math.random()*10);bMath=Math.floor(Math.random()*10);document.getElementById('soalMath').innerText=aMath+' + '+bMath;}
+soalBaruMath();
+function cekMath(){
+let j=parseInt(document.getElementById('jawabanMath').value);
+if(j===aMath+bMath){
+document.getElementById('hasilMath').innerText='Benar';
+tambahSkor();
+soalBaruMath();
+}else{
+document.getElementById('hasilMath').innerText='Salah';
+}
+}
+
+// BAHASA
+let kata=['mkn','bljr','mnm','buku','sklh'];
+let jawab=['makan','belajar','minum','buku','sekolah'];
+let iBI;
+function soalBaruBI(){
+iBI=Math.floor(Math.random()*kata.length);
+document.getElementById('soalBI').innerText=kata[iBI];
+}
+soalBaruBI();
+function cekBI(){
+let j=document.getElementById('jawabanBI').value.toLowerCase();
+if(j===jawab[iBI]){
+document.getElementById('hasilBI').innerText='Benar';
+tambahSkor();
+soalBaruBI();
+}else{
+document.getElementById('hasilBI').innerText='Salah';
+}
+}
+
+// AGAMA
+let soalA=['Nabi terakhir?','Kitab Islam?','Rukun Islam?','Hari raya umat Islam?'];
+let jawabA=['muhammad','alquran','5','idul fitri'];
+let iA;
+function soalBaruAgama(){
+iA=Math.floor(Math.random()*soalA.length);
+document.getElementById('soalAgama').innerText=soalA[iA];
+}
+soalBaruAgama();
+function cekAgama(){
+let j=document.getElementById('jawabanAgama').value.toLowerCase();
+if(j.includes(jawabA[iA])){
+document.getElementById('hasilAgama').innerText='Benar';
+tambahSkor();
+soalBaruAgama();
+}else{
+document.getElementById('hasilAgama').innerText='Salah';
+}
 }
 </script>
 
