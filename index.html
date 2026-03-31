@@ -4,1014 +4,129 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Perpustakaan SD Sinar Mulia</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
-
 <style>
-body{
-    margin:0;
-    font-family:'Fredoka',sans-serif;
-    background:linear-gradient(135deg,#ff9ec4,#8fd3f4,#a8ff78);
-}
-
-/* LOGIN */
-.login-page{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.login-box{
-    background:#6BAF92;
-    padding:30px;
-    width:320px;
-    border-radius:25px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.2);
-    text-align:center;
-}
-
-.login-box input{
-    width:100%;
-    padding:10px;
-    margin:10px 0;
-    border-radius:15px;
-    border:2px solid #8fd3f4;
-}
-
-.login-box button{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:20px;
-    background:#ff69b4;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
-
-/* MAIN */
-.main-page{
-    display:none;
-}
-
-nav{
-    background:#ff69b4;
-    padding:15px;
-    text-align:center;
-}
-
-nav a{
-    color:white;
-    margin:0 15px;
-    cursor:pointer;
-    text-decoration:none;
-    font-weight:bold;
-}
-
-nav a:hover{
-    color:yellow;
-}
-
-/* CONTENT CARD */
-.content{
-    margin:30px auto;
-    max-width:1100px;
-    display:none;
-}
-
-.card-container{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
-
-.card{
-    background:white;
-    padding:20px;
-    border-radius:20px;
-    box-shadow:0 8px 15px rgba(0,0,0,0.2);
-    transition:0.3s;
-}
-
-.card:hover{
-    transform:translateY(-5px);
-}
-
-.card h3{
-    margin-top:0;
-    color:#ff69b4;
-}
-
-.button-link{
-    display:inline-block;
-    padding:8px 15px;
-    margin-top:10px;
-    background:#8fd3f4;
-    border-radius:15px;
-    text-decoration:none;
-    font-weight:bold;
-    color:black;
-}
-
-.button-link:hover{
-    background:#6ec6ff;
-}
-
-.logout{
-    float:right;
-    color:yellow;
-    cursor:pointer;
-}
+body {font-family: Arial; margin:0;}
+header {display:flex; justify-content:space-between; align-items:center; background:#4CAF50; color:white; padding:10px;}
+nav a {margin:10px; color:white; text-decoration:none;}
+.section {display:none; padding:20px;}
+.active {display:block;}
+.marquee {background:yellow; padding:10px; font-weight:bold;}
+.circle-menu {display:flex; gap:20px;}
+.circle {width:120px; height:120px; border-radius:50%; background:#87CEFA; display:flex; align-items:center; justify-content:center; cursor:pointer;}
 </style>
 </head>
-
 <body>
 
-<!-- LOGIN -->
-<div id="loginPage" class="login-page">
-  <div class="login-box">
-    <h2>📚 Login Perpustakaan</h2>
-    <form onsubmit="login(event)">
-      
-      <input type="text" id="nama" placeholder="Nama" required>
-      <input type="text" id="kelas" placeholder="Kelas" required>
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password (min 4 karakter)" required>
-      
-      <button type="submit">Masuk 🚀</button>
-    </form>
-  </div>
+<div id="auth">
+<h2>Daftar</h2>
+<input id="name" placeholder="Nama"><br>
+<input id="dob" type="date"><br>
+<input id="pass" type="password" placeholder="Password"><br>
+<button onclick="register()">Daftar</button>
+
+<h2>Login</h2>
+<input id="loginName" placeholder="Nama"><br>
+<input id="loginPass" type="password" placeholder="Password"><br>
+<button onclick="login()">Login</button>
 </div>
 
-<script>
-  // DATA PENGGUNA YANG SUDAH TERDAFTAR
-  const users = [
-    {
-      nama: "Azrah",
-      kelas: "12A",
-      username: "azrah12",
-      password: "1234"
-    },
-    {
-      nama: "Budi",
-      kelas: "11B",
-      username: "budi11",
-      password: "abcd"
-    }
-  ];
-</script>
-    
-<script>
-function login(event) {
-  event.preventDefault();
-
-  const nama = document.getElementById("nama").value;
-  const kelas = document.getElementById("kelas").value;
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  if (password.length < 4) {
-    alert("Password minimal 4 karakter!");
-    return;
-  }
-
-  const userFound = users.find(user => 
-    user.nama === nama &&
-    user.kelas === kelas &&
-    user.username === username &&
-    user.password === password
-  );
-
-  if (userFound) {
-    alert("Login berhasil! 🎉");
-
-    document.getElementById("loginPage").style.display = "none";
-    document.getElementById("mainPage").style.display = "block";
-
-    openTab("home"); // langsung buka home
-  } else {
-    alert("Anda belum terdaftar atau data salah!");
-  }
-}
-</script>
-
-<!-- MAIN -->
-<div id="mainPage" class="main-page">
-
+<div id="app" style="display:none;">
+<header>
+<div>
+<img src="logo.png" width="40"> SD Sinar Mulia
+</div>
 <nav>
-<a onclick="openTab('home')">HOME</a>
-<a onclick="openTab('koleksi')">KOLEKSI</a>
-<a onclick="openTab('layanan')">LAYANAN</a>
-<a onclick="openTab('game')">GAME EDUKASI</a>
-<a onclick="openTab('kontak')">KONTAK</a>
-<a onclick="openTab('about')">ABOUT US</a>
-<a class="logout" onclick="logout()">LOGOUT</a>
+<a onclick="show('beranda')">Beranda</a>
+<a onclick="show('koleksi')">Koleksi</a>
+<a onclick="show('layanan')">Layanan</a>
+<a onclick="show('game')">Game</a>
+<a onclick="show('video')">Video</a>
+<a onclick="show('kontak')">Kontak</a>
+<a onclick="show('about')">About</a>
+<a onclick="logout()">Logout</a>
 </nav>
+</header>
 
-<!-- HOME -->
-<div id="home" class="content">
-
-  <div class="menu-container">
-
-    <!-- SEJARAH -->
-    <div class="menu-item" onclick="toggleContent('sejarah')">
-      <div class="menu-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/167/167707.png" width="60">
-        <h3>Sejarah Sekolah</h3>
-      </div>
-      <div id="sejarah" class="menu-content">
-        <p>
-          Sejarah SD Sinar Mulia: Menyalakan Pelita di Tengah Cita-Cita<br>
-1. Awal Mula yang Sederhana (Tahun 2005)<br>
-Lahirnya SD Sinar Mulia tidak dimulai di gedung yang megah, melainkan dari sebuah garasi rumah milik Ibu Azrah Hamidah NST di sudut kecil pinggiran kota. Didorong oleh keresahan melihat banyaknya anak-anak di lingkungan sekitar yang harus menempuh jarak berkilo-kilo meter untuk bersekolah, ia bersama keluarganya memutuskan untuk mendirikan sebuah kelas kecil. Nama "Sinar Mulia" dipilih bukan tanpa alasan. "Sinar" melambangkan ilmu pengetahuan yang menerangi kegelapan, dan "Mulia" merujuk pada pembentukan karakter atau akhlak yang luhur. Pada tahun pertama, sekolah ini hanya memiliki 12 siswa dan 3 orang guru yang mengajar dengan fasilitas seadanya. <br>
-2. Masa Perjuangan dan Fondasi Karakter (2007) <br>
-Memasuki era milenium, SD Sinar Mulia menghadapi ujian besar. Persaingan dengan sekolah negeri dan keterbatasan dana sempat membuat operasional sekolah tersendat. Namun, di sinilah keunikan Sinar Mulia muncul. Sekolah ini dikenal bukan karena kemewahannya, melainkan karena pendekatan "Parenting Partnership", di mana orang tua terlibat aktif dalam pendidikan karakter anak. Berkat dedikasi para pengajarnya, pada tahun 2010, sekolah ini berhasil meraih akreditasi A untuk pertama kalinya dan mulai membangun gedung permanen dua lantai di atas lahan wakaf dari salah satu donatur yang tersentuh oleh semangat belajar para siswanya. <br>
-3. Era Transformasi dan Digitalisasi (2011 - Sekarang) <br>
-Di bawah kepemimpinan generasi kedua, SD Sinar Mulia bertransformasi menjadi Smart School. Tanpa meninggalkan nilai-nilai religius dan budi pekerti yang menjadi akarnya, sekolah ini mulai mengintegrasikan teknologi dalam pembelajaran. Kini, SD Sinar Mulia telah tumbuh menjadi sekolah swasta unggulan dengan fasilitas laboratorium komputer, perpustakaan digital, dan berbagai ekstrakurikuler yang telah memenangkan berbagai kompetisi tingkat nasional. Dari 12 siswa di sebuah garasi, kini ratusan lulusannya telah tersebar di berbagai jenjang pendidikan terbaik, membawa "sinar" mereka masing-masing ke dunia luar.<br>
-<br>
-Garis Waktu Milestone Utama:<br>
-15 Juli 2005: Peresmian kelas pertama di kediaman kelusrga Azrah Hamidah NST.<br>
-2006: Lulusan angkatan pertama yang berhasil masuk ke SMP negeri favorit.<br>
-2009: Pembangunan laboratorium sains dan seni pertama.<br>
-2020: Peluncuran platform pembelajaran mandiri "Sinar Mulia Online". <br>
-2024: Penghargaan sebagai Sekolah Berwawasan Lingkungan tingkat provinsi.
-        </p>
-      </div>
-    </div>
-
-    <!-- VISI -->
-    <div class="menu-item" onclick="toggleContent('visi')">
-      <div class="menu-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828884.png" width="60">
-        <h3>Visi Sekolah</h3>
-      </div>
-      <div id="visi" class="menu-content">
-        <p>
-        "Menjadi pelita pendidikan yang membentuk generasi cerdas, berkarakter mulia, dan 
-        inovatif dalam menghadapi tantangan global berbasis nilai-nilai kemanusiaan."
-        </p>
-      </div>
-    </div>
-
-    <!-- MISI -->
-    <div class="menu-item" onclick="toggleContent('misi')">
-      <div class="menu-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/190/190411.png" width="60">
-        <h3>Misi Sekolah</h3>
-      </div>
-      <div id="misi" class="menu-content">
-        <p>
-          Untuk mewujudkan visi tersebut, SD Sinar Mulia menetapkan langkah-langkah strategis sebagai berikut:<br>
-1. Keunggulan Akademik & Teknologi:<br>
-    Menyelenggarakan proses pembelajaran berkualitas yang mengintegrasikan kurikulum nasional dengan pemanfaatan teknologi digital (Smart School) guna menyiapkan siswa yang adaptif di era modern.<br>
-2. Pembentukan Karakter (Mulia):<br>
-    Menanamkan nilai-nilai religius, kejujuran, dan budi pekerti luhur melalui pembiasaan harian agar siswa tumbuh menjadi pribadi yang berintegritas dan berempati tinggi.<br>
-3. Kemitraan Strategis (Parenting Partnership):<br>
-    Membangun kolaborasi yang harmonis dan aktif antara sekolah, orang tua, dan masyarakat dalam mengawal tumbuh kembang anak secara holistik.<br>
-4. Pengembangan Potensi Diri:<br>
-    Menyediakan wadah bagi siswa untuk mengeksplorasi bakat, minat, dan kreativitas melalui kegiatan ekstrakurikuler yang variatif dan inspiratif.<br>
-5. Kepedulian Sosial & Lingkungan:<br>
-    Menumbuhkan jiwa kepemimpinan serta kesadaran siswa terhadap kelestarian lingkungan hidup dan tanggung jawab sosial terhadap sesama.
-        </p>
-      </div>
-    </div>
-
-  <!-- MOTTO -->
-    <div class="menu-item" onclick="toggleContent('motto')">
-      <div class="menu-header">
-        <img src="https://cdn-icons-png.flaticon.com/512/929/929426.png" width="60">
-        <h3>Motto Sekolah</h3>
-      </div>
-      <div id="motto" class="menu-content">
-        <p style="font-style: italic; font-weight: bold;">
-          "Shine Bright with Noble Heart"<br>
-        (Bersinar Terang dengan Hati yang Mulia)
-        </p>
-      </div>
-    </div>
-
-  </div>
+<div id="beranda" class="section active">
+<div class="marquee">SELAMAT DATANG DI PERPUSTAKAAN SINAR MULIA, SELAMAT BELAJAR</div>
+<h3>Sejarah</h3>
+<p>Sekolah ini didirikan untuk mencerdaskan anak bangsa...</p>
+<h3>Visi</h3>
+<p>Menjadi sekolah unggul...</p>
+<h3>Misi</h3>
+<p>Mengembangkan potensi siswa...</p>
+<h3>Motto</h3>
+<p>Belajar, Berkarya, Berprestasi</p>
 </div>
 
-<style>
-.menu-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  max-width: 500px;
-  margin: auto;
-}
+<div id="koleksi" class="section">
+<h2>Koleksi</h2>
+<div class="circle-menu">
+<div class="circle" onclick="alert('Buku Cerita')">Cerita</div>
+<div class="circle" onclick="alert('Buku Pelajaran')">Pelajaran</div>
+<div class="circle" onclick="alert('Komik Edukasi')">Komik</div>
+</div>
+</div>
 
-.menu-item {
-  background: #f5f5f5;
-  padding: 15px;
-  border-radius: 15px;
-  cursor: pointer;
-  transition: 0.3s;
-}
+<div id="layanan" class="section">
+<h2>Layanan</h2>
+<p>Denda: Rp 1000/hari keterlambatan</p>
+<p>Peminjaman maksimal 7 hari</p>
+</div>
 
-.menu-item:hover {
-  background: #e0f0ff;
-}
+<div id="game" class="section">
+<h2>Game Edukasi</h2>
+<ul>
+<li><a href="https://www.mathplayground.com" target="_blank">Game Matematika</a></li>
+<li><a href="https://www.abcya.com" target="_blank">Game Membaca</a></li>
+</ul>
+</div>
 
-.menu-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
+<div id="video" class="section">
+<h2>Video Edukasi</h2>
+<iframe width="300" src="https://www.youtube.com/embed/2ePf9rue1Ao"></iframe>
+</div>
 
-.menu-content {
-  display: none;
-  margin-top: 15px;
-  text-align: left;
-}
-</style>
+<div id="kontak" class="section">
+<h2>Kontak</h2>
+<p>Pustakawan: Ibu Ani</p>
+<p>Jam: 08.00 - 15.00</p>
+<h3>Saran</h3>
+<input id="saran"><button onclick="kirimSaran()">Kirim</button>
+<ul id="listSaran"></ul>
+</div>
+
+<div id="about" class="section">
+<h2>About Me</h2>
+<p>Dibuat oleh Azrah Hamidah</p>
+</div>
+</div>
 
 <script>
-function toggleContent(id) {
-  // Tutup semua dulu
-  var contents = document.querySelectorAll(".menu-content");
-  contents.forEach(function(content) {
-    content.style.display = "none";
-  });
-
-  // Buka yang diklik
-  var selected = document.getElementById(id);
-  selected.style.display = "block";
+let user = {};
+function register(){
+user.name = document.getElementById('name').value;
+user.pass = document.getElementById('pass').value;
+alert('Berhasil daftar');
+}
+function login(){
+if(document.getElementById('loginName').value === user.name && document.getElementById('loginPass').value === user.pass){
+document.getElementById('auth').style.display='none';
+document.getElementById('app').style.display='block';
+}
+}
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+function logout(){location.reload();}
+function kirimSaran(){
+let val=document.getElementById('saran').value;
+let li=document.createElement('li');
+li.textContent=val;
+document.getElementById('listSaran').appendChild(li);
 }
 </script>
 
-<!-- ================= KOLEKSI ================= -->
-<div id="koleksi" class="content">
-  <div class="circle-container">
-
-    <!-- ================= BUKU CERITA ================= -->
-    <div class="circle-card" onclick="toggleSection('cerita')">
-      📚<br>Buku Cerita
-    </div>
-
-    <div id="cerita" class="section-content">
-      <h3>Pengertian Buku Cerita</h3>
-      <p>
-        Buku cerita adalah buku yang berisi kisah fiksi maupun nonfiksi
-        yang bertujuan menghibur sekaligus memberikan pesan moral kepada pembaca.
-      </p>
-
-      <!-- Malin Kundang -->
-      <div class="book" onclick="toggleBook('b1')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Malin_Kundang.jpg">
-        <p><b>Malin Kundang</b><br>Pengarang: Cerita Rakyat Sumatera Barat</p>
-      </div>
-      <div id="b1" class="book-detail">
-        <p><b>Tempat Terbit:</b> Sumatera Barat</p>
-        <p><b>Sinopsis:</b> Kisah anak durhaka yang dikutuk menjadi batu karena tidak mengakui ibunya.</p>
-      </div>
-
-      <!-- Timun Mas -->
-      <div class="book" onclick="toggleBook('b2')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Timun_Mas_story_book_cover.jpg">
-        <p><b>Timun Mas</b><br>Pengarang: Cerita Rakyat Jawa Tengah</p>
-      </div>
-      <div id="b2" class="book-detail">
-        <p><b>Tempat Terbit:</b> Jawa Tengah</p>
-        <p><b>Sinopsis:</b> Seorang gadis pemberani yang melawan raksasa jahat dengan kecerdikan.</p>
-      </div>
-
-      <!-- Bawang Merah Bawang Putih -->
-      <div class="book" onclick="toggleBook('b3')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Bawang_Merah_Bawang_Putih_book_cover.jpg">
-        <p><b>Bawang Merah Bawang Putih</b><br>Pengarang: Cerita Rakyat Riau</p>
-      </div>
-      <div id="b3" class="book-detail">
-        <p><b>Tempat Terbit:</b> Riau</p>
-        <p><b>Sinopsis:</b> Cerita tentang dua saudara dengan sifat berbeda yang mengajarkan kebaikan dan kesabaran.</p>
-      </div>
-    </div>
-
-
-    <!-- ================= BUKU PELAJARAN ================= -->
-    <div class="circle-card" onclick="toggleSection('pelajaran')">
-      📘<br>Buku Pelajaran
-    </div>
-
-    <div id="pelajaran" class="section-content">
-      <h3>Pengertian Buku Pelajaran</h3>
-      <p>
-        Buku pelajaran adalah buku yang digunakan sebagai sumber belajar
-        sesuai kurikulum yang berlaku di sekolah.
-      </p>
-
-      <div class="book" onclick="toggleBook('p1')">
-        <img src="https://via.placeholder.com/120x170">
-        <p><b>IPA SD Kelas 4</b><br>Pengarang: Andi Saputra</p>
-      </div>
-      <div id="p1" class="book-detail">
-        <p><b>Tempat Terbit:</b> Jakarta</p>
-        <p><b>Sinopsis:</b> Materi tentang energi, makhluk hidup, dan lingkungan.</p>
-      </div>
-
-      <div class="book" onclick="toggleBook('p2')">
-        <img src="https://via.placeholder.com/120x170">
-        <p><b>Bahasa Indonesia Kelas 6</b><br>Pengarang: Lina Wati</p>
-      </div>
-      <div id="p2" class="book-detail">
-        <p><b>Tempat Terbit:</b> Bandung</p>
-        <p><b>Sinopsis:</b> Pembelajaran membaca, menulis, dan memahami teks.</p>
-      </div>
-    </div>
-
-
-    <!-- ================= KOMIK EDUKASI ================= -->
-    <div class="circle-card" onclick="toggleSection('komik')">
-      🦸<br>Komik Edukasi
-    </div>
-
-    <div id="komik" class="section-content">
-      <h3>Pengertian Komik Edukasi</h3>
-      <p>
-        Komik edukasi adalah media pembelajaran berbentuk cerita bergambar
-        yang menyampaikan materi pelajaran dengan cara menyenangkan.
-      </p>
-
-      <div class="book" onclick="toggleBook('k1')">
-        <img src="https://via.placeholder.com/120x170">
-        <p><b>Komik Matematika Seru</b><br>Pengarang: Beni Pratama</p>
-      </div>
-      <div id="k1" class="book-detail">
-        <p><b>Tempat Terbit:</b> Bandung</p>
-        <p><b>Sinopsis:</b> Belajar pecahan dan bangun datar lewat cerita lucu.</p>
-      </div>
-
-      <div class="book" onclick="toggleBook('k2')">
-        <img src="https://via.placeholder.com/120x170">
-        <p><b>Komik Sains Petualangan</b><br>Pengarang: Dodi Firmansyah</p>
-      </div>
-      <div id="k2" class="book-detail">
-        <p><b>Tempat Terbit:</b> Jakarta</p>
-        <p><b>Sinopsis:</b> Petualangan mengenal planet dan tata surya.</p>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<style>
-.circle-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
-
-.circle-card {
-  width: 150px;
-  height: 150px;
-  background: #4da6ff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.circle-card:hover {
-  background: #007bff;
-}
-
-.section-content {
-  display: none;
-  max-width: 650px;
-  text-align: left;
-}
-
-.book {
-  margin-top: 20px;
-  cursor: pointer;
-}
-
-.book img {
-  width: 120px;
-  height: 170px;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.book-detail {
-  display: none;
-  background: #f0f0f0;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-</style>
-
-<script>
-function toggleSection(id) {
-  document.querySelectorAll(".section-content")
-    .forEach(sec => sec.style.display = "none");
-
-  document.getElementById(id).style.display = "block";
-}
-
-function toggleBook(id) {
-  const detail = document.getElementById(id);
-  detail.style.display = detail.style.display === "block" ? "none" : "block";
-}
-</script>
-
-
-<!-- ================= LAYANAN ================= -->
-<div id="layanan" class="content">
-  <div class="service-container">
-
-    <!-- ================= PEMINJAMAN ================= -->
-    <div class="service-card" onclick="toggleService('pinjam')">
-      📝<br>Peminjaman
-    </div>
-
-    <div id="pinjam" class="service-content">
-  <h3>Informasi Peminjaman Berdasarkan Koleksi</h3>
-
-  <h4>📚 Buku Cerita</h4>
-  <p>Total Eksemplar: 40 Buku</p>
-  <p>Sedang Dipinjam: 15 Buku</p>
-  <p>Tersedia: 25 Buku</p>
-
-  <hr>
-
-  <h4>📘 Buku Pelajaran</h4>
-  <p>Total Eksemplar: 50 Buku</p>
-  <p>Sedang Dipinjam: 20 Buku</p>
-  <p>Tersedia: 30 Buku</p>
-
-  <hr>
-
-  <h4>🦸 Komik Edukasi</h4>
-  <p>Total Eksemplar: 30 Buku</p>
-  <p>Sedang Dipinjam: 10 Buku</p>
-  <p>Tersedia: 20 Buku</p>
-    </div>
-
-      <p style="margin-top:10px;">
-        📌 <b>Ketentuan:</b> Setiap siswa hanya boleh meminjam buku selama 
-        <b>7 hari (1 minggu)</b>. Jika melewati batas waktu, akan dikenakan denda.
-      </p>
-    </div>
-
-
-    <!-- ================= PENGEMBALIAN ================= -->
-    <div class="service-card" onclick="toggleService('kembali')">
-      📥<br>Pengembalian
-    </div>
-
-    <div id="kembali" class="service-content">
-      <h3>Informasi Denda</h3>
-      <p>Denda keterlambatan adalah <b>Rp 1.000 per hari</b>.</p>
-
-      <label>Masukkan jumlah hari terlambat:</label><br>
-      <input type="number" id="hari" min="0" placeholder="Contoh: 3">
-      <button onclick="hitungDenda()">Hitung Denda</button>
-
-      <p id="hasilDenda" style="margin-top:10px; font-weight:bold;"></p>
-    </div>
-
-    <!-- ================= BACA DI TEMPAT ================= -->
-<div class="service-card" onclick="toggleService('baca')">
-  💻<br>Baca di Tempat
-</div>
-
-<div id="baca" class="service-content">
-  <h3>Sudut-Sudut Perpustakaan</h3>
-
-  <div class="gallery">
-    <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da" title="Ruang Baca Utama">
-    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66" title="Rak Buku">
-    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba" title="Sudut Santai">
-    <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6" title="Area Belajar">
-    <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570" title="Meja Diskusi">
-    <img src="https://images.unsplash.com/photo-1491841573634-28140fc7ced7" title="Sudut Anak">
-  </div>
-
-  <h3>Fasilitas Perpustakaan</h3>
-  <ul>
-    <li>📚 Rak buku tersusun rapi</li>
-    <li>💺 Kursi dan meja nyaman</li>
-    <li>💡 Pencahayaan terang</li>
-    <li>🌬 Ruangan ber-AC</li>
-  </ul>
-
-  <h4>Posisi Membaca yang Tepat:</h4>
-  <ul>
-    <li>Duduk tegak</li>
-    <li>Buku sejajar dengan mata</li>
-    <li>Jarak buku ±30 cm dari mata</li>
-  </ul>
-
-  <h4>Aturan di Perpustakaan:</h4>
-  <ul>
-    <li>🔇 Tidak berisik</li>
-    <li>📵 HP dalam mode senyap</li>
-    <li>🤫 Berbicara pelan</li>
-    <li>📖 Jaga kebersihan buku</li>
-  </ul>
-
-  <h4>Tips Agar Tetap Fokus:</h4>
-  <ul>
-    <li>Tentukan target bacaan</li>
-    <li>Pilih tempat duduk nyaman</li>
-    <li>Jauhkan gangguan</li>
-  </ul>
-</div>
-
-
-<style>
-.service-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-}
-
-.service-card {
-  width: 150px;
-  height: 150px;
-  background: #6ec6ff;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.service-card:hover {
-  background: #0288d1;
-}
-
-.service-content {
-  display: none;
-  max-width: 700px;
-  background: #f5f5f5;
-  padding: 15px;
-  border-radius: 15px;
-  text-align: left;
-}
-
-button {
-  margin-top: 5px;
-  padding: 5px 10px;
-  border: none;
-  background: #0288d1;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-}
-button:hover {
-  background: #01579b;
-}
-</style>
-
-
-<script>
-function toggleService(id) {
-  document.querySelectorAll(".service-content")
-    .forEach(sec => sec.style.display = "none");
-
-  document.getElementById(id).style.display = "block";
-}
-
-function hitungDenda() {
-  var hari = document.getElementById("hari").value;
-  var denda = hari * 1000;
-
-  document.getElementById("hasilDenda").innerHTML =
-    "Total Denda: Rp " + denda.toLocaleString("id-ID");
-}
-</script>
-
-<!-- GAME EDUKASI -->
-<style>
-.card-container{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 kolom */
-  gap: 20px;
-  padding: 30px;
-}
-
-.card{
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  text-align: center;
-  transition: 0.3s;
-}
-
-.card:hover{
-  transform: translateY(-5px);
-}
-
-.button-link{
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 15px;
-  background: #4CAF50;
-  color: white;
-  text-decoration: none;
-  border-radius: 8px;
-}
-
-.button-link:hover{
-  background: #45a049;
-}
-</style>
-
-<div id="game" class="content">
-  <div class="card-container">
-
-    <!-- Baris 1 -->
-    <div class="card">
-      <h3>🎯 Game Matematika</h3>
-      <a href="https://www.mathplayground.com/" target="_blank" class="button-link">Main</a>
-    </div>
-
-    <div class="card">
-      <h3>🧠 Game Kuis</h3>
-      <a href="https://wordwall.net/" target="_blank" class="button-link">Main</a>
-    </div>
-
-    <div class="card">
-      <h3>🔤 Game Bahasa</h3>
-      <a href="https://www.abcya.com/" target="_blank" class="button-link">Main</a>
-    </div>
-
-    <!-- Baris 2 -->
-    <div class="card">
-      <h3>🌍 Game Geografi</h3>
-      <a href="https://world-geography-games.com/" target="_blank" class="button-link">Main</a>
-    </div>
-
-    <div class="card">
-      <h3>🎨 Game Kreativitas</h3>
-      <a href="https://www.tate.org.uk/kids/games-quizzes" target="_blank" class="button-link">Main</a>
-    </div>
-
-    <div class="card">
-      <h3>🔬 Game Sains</h3>
-      <a href="https://www.sciencekids.co.nz/gamesactivities.html" target="_blank" class="button-link">Main</a>
-    </div>
-
-  </div>
-</div>
-
-<!-- ================= KONTAK ================= -->
-<style>
-#kontak {
-  padding: 30px;
-  background: linear-gradient(to right, #f9f7ff, #e3f2fd);
-  border-radius: 20px;
-}
-
-.librarian-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 40px;
-}
-
-.librarian-card {
-  background: white;
-  padding: 20px;
-  border-radius: 20px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.librarian-card img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 10px;
-}
-
-.form-container {
-  background: white;
-  padding: 25px;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.form-container input,
-.form-container textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.form-container button {
-  background: #a8d8ea;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.form-container button:hover {
-  background: #fcbad3;
-}
-
-@media (max-width: 768px) {
-  .librarian-container {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
-
-<div id="kontak" class="content">
-
-<h2 style="text-align:center;">📚 Tim Pustakawan</h2>
-
-<div class="librarian-container">
-
-<div class="librarian-card">
-<!-- GANTI FOTO DI SINI -->
-<img src="https://via.placeholder.com/100" alt="Pustakawan 1">
-<h4>Pustakawan 1</h4>
-<p>Email: pustakawan1@email.com</p>
-</div>
-
-<div class="librarian-card">
-<!-- GANTI FOTO DI SINI -->
-<img src="https://via.placeholder.com/100" alt="Pustakawan 2">
-<h4>Pustakawan 2</h4>
-<p>Email: pustakawan2@email.com</p>
-</div>
-
-<div class="librarian-card">
-<!-- GANTI FOTO DI SINI -->
-<img src="https://via.placeholder.com/100" alt="Pustakawan 3">
-<h4>Pustakawan 3</h4>
-<p>Email: pustakawan3@email.com</p>
-</div>
-
-</div>
-
-<h2 style="text-align:center;">📝 Pengajuan Kritik dan Saran</h2>
-
-<div class="form-container">
-<form>
-<input type="text" placeholder="Nama Lengkap" required>
-<input type="email" placeholder="Email" required>
-<input type="tel" placeholder="Nomor HP" required>
-<textarea rows="5" placeholder="Tulis kritik dan saran Anda di sini..." required></textarea>
-<button type="submit">Kirim</button>
-</form>
-</div>
-
-</div>
-
-<!-- ================= ABOUT US ================= -->
-<style>
-#about {
-  padding: 40px;
-  text-align: center;
-  background: linear-gradient(to right, #fceff9, #e0f7fa);
-  border-radius: 20px;
-}
-
-.profile-img {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 5px solid white;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  margin-bottom: 20px;
-}
-
-.about-box {
-  background: white;
-  padding: 25px;
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  display: inline-block;
-  max-width: 700px;
-}
-
-.about-box h2 {
-  margin-bottom: 10px;
-}
-
-.about-box a {
-  display: inline-block;
-  margin: 10px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  background: #a8d8ea;
-  text-decoration: none;
-  color: black;
-  transition: 0.3s;
-}
-
-.about-box a:hover {
-  background: #fcbad3;
-}
-
-iframe {
-  margin-top: 20px;
-  border-radius: 15px;
-  width: 100%;
-  max-width: 560px;
-  height: 315px;
-}
-
-@media (max-width: 600px) {
-  iframe {
-    height: 200px;
-  }
-}
-</style>
-
-<div id="about" class="content active">
-
-<!-- GANTI FOTO DI BAWAH INI -->
-<img src="https://via.placeholder.com/160" alt="Foto Profil" class="profile-img">
-
-<div class="about-box">
-
-<h2>AZRAH HAMIDAH NST</h2>
-<p><b>NIM:</b> 230709008</p>
-<p><b>Alamat:</b> Jalan Dokter A Sofiana NO 10, Padang Bulan, Medan Baru</p>
-
-<h3>Tentang Saya</h3>
-<p>S "Saat ini saya sedang menempuh studi di jurusan Perpustakaan dan Sains Informasi. Di era ledakan informasi ini, saya belajar untuk menjadi jembatan antara manusia dan pengetahuan. Bukan sekadar menyusun buku, saya mendalami bagaimana mengorganisasi data, mengelola arsip digital, dan memastikan informasi yang akurat dapat diakses oleh mereka yang membutuhkan".</p>
-
-<a href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==" target="_blank">Instagram</a>
-
-<a href="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link" target="_blank">Curriculum Vitae</a>
-
-<h3>🎵 Video Lagu Favorite</h3>
-
-<iframe src="https://www.youtube.com/embed/en6FvG0ngl4"
-        frameborder="0"
-        allowfullscreen>
-</iframe>
-
-</div>
-</div>
-
-<!-- ================= BACKGROUND MUSIC (KHUSUS ABOUT) ================= -->
-<audio id="bgMusic" loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-</audio>
-
-<!-- ================= SCRIPT NAVIGASI + MUSIK ================= -->
-<script>
-function openTab(tabId){
-
-  var tabs = document.querySelectorAll(".content");
-  tabs.forEach(function(tab){
-    tab.style.display = "none";
-  });
-
-  var activeTab = document.getElementById(tabId);
-  if(activeTab){
-    activeTab.style.display = "block";
-  }
-
-  var music = document.getElementById("bgMusic");
-
-  // Musik hanya aktif saat menu About
-  if(tabId === "about"){
-    music.play().catch(function(){});
-  } else {
-    music.pause();
-    music.currentTime = 0;
-  }
-}
-</script>
-
-<script>
-function logout(){
-  document.getElementById("mainPage").style.display="none";
-  document.getElementById("loginPage").style.display="flex";
-
-  var music = document.getElementById("bgMusic");
-  music.pause();
-  music.currentTime = 0;
-}
-</script>
+</body>
+</html>
