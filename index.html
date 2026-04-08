@@ -599,9 +599,128 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 .btn-op:hover { opacity: 0.85; transform: scale(1.04); }
 
 /* ====== VIDEO ====== */
-.video-grid {
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-container">
+        <iframe 
+  width="560" height="315" 
+  src="https://www.youtube.com/embed/vHxWiVL0oWA?si=gJW_BNGY14VIgQIm" 
+  title="YouTube video player" 
+  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerpolicy="strict-origin-when-cross-origin" 
+  allowfullscreen>
+</iframe>
+    </div>
+    <div class="video-info">
+      <h3>Belajar Perkalian</h3>
+      <p>Video ini menjelaskan perkalian sebagai penjumlahan berulang dengan contoh sederhana dan mudah dipahami.</p>
+      <div class="video-meta">
+        <span>1.2M Views</span>
+        <span>2 days ago</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-container">
+     <iframe 
+  width="560" height="315" 
+  src="https://www.youtube.com/embed/RakEW82veFg?si=vh2USolwtnRhMAtK" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerpolicy="strict-origin-when-cross-origin" 
+  allowfullscreen>
+</iframe>
+    </div>
+    <div class="video-info">
+      <h3>Metamorfosisi Kupu-Kupu</h3>
+      <p>Metamorfosis kupu-kupu adalah proses perubahan bentuk dari telur, larva (ulat), pupa (kepompong), hingga menjadi kupu-kupu dewasa.</p>
+      <div class="video-meta">
+        <span>1.2M Views</span>
+        <span>2 days ago</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="video-grid">
+  <div class="video-card">
+    <div class="video-container">
+      <iframe 
+  width="560" height="315" 
+  src="https://www.youtube.com/embed/nlXwuNHF8JM?si=_EI2LLm29FG75XiP" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerpolicy="strict-origin-when-cross-origin" 
+  allowfullscreen>
+</iframe>
+    </div>
+    <div class="video-info">
+      <h3>Proses Fotosintesis</h3>
+      <p>Fotosintesis adalah proses tumbuhan mengubah cahaya matahari, air, dan karbon dioksida menjadi makanan (glukosa) dan oksigen.</p>
+      <div class="video-meta">
+        <span>1.5M Views</span>
+        <span>2 days ago</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-container">
+      <iframe 
+  width="560" height="315" 
+  src="https://www.youtube.com/embed/2EgP_zSOKN4?si=XtdVs1wcdsqtklpn" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerpolicy="strict-origin-when-cross-origin" 
+  allowfullscreen>
+</iframe>
+    </div>
+    <div class="video-info">
+      <h3>Sistem Tata Surya</h3>
+      <p>Kenali 8 Planet dan Benda Langit</p>
+      <div class="video-meta">
+        <span>5.2M Views</span>
+        <span>2 years ago</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+<div class="video-grid">
+  <div class="video-card">
+    <div class="video-container">
+     <iframe 
+  width="560" height="315" 
+  src="https://www.youtube.com/embed/zSRpom4gxGE?si=LfTiqYWlrz0f4o9r" 
+  title="YouTube video player" 
+  frameborder="0" 
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+  referrerpolicy="strict-origin-when-cross-origin" 
+  allowfullscreen>
+</iframe>
+    </div>
+    <div class="video-info">
+      <h3>Siklus Air Hujan</h3>
+      <p>Proses Siklus Air, Manfaat Air bagi Kehidupan, Terjadinya Hujan, Evaporasi, Transpirasi, Kondensasi, Adveksi, Presipitasi</p>
+      <div class="video-meta">
+        <span>9.2M Views</span>
+        <span>9 mount ago</span>
+      </div>
+    </div>
+  </div>
+  </div>
+  
+  .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
@@ -610,39 +729,54 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.video-card:hover { transform: translateY(-6px); box-shadow: 0 16px 35px rgba(0,0,0,0.15); }
+.video-card:hover { 
+  transform: translateY(-6px); 
+  box-shadow: 0 16px 35px rgba(0,0,0,0.15); 
+}
 
-.video-thumb {
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 3.5rem;
+/* Container untuk menjaga rasio video 16:9 */
+.video-container {
   position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* Rasio standar YouTube */
+  height: 0;
+  background: #000;
 }
 
-.video-play {
+.video-container iframe {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.15);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  opacity: 0;
-  transition: opacity 0.3s;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
-
-.video-card:hover .video-play { opacity: 1; }
 
 .video-info { padding: 14px; }
-.video-info h3 { font-family: 'Fredoka One', cursive; font-size: 1rem; color: var(--hijau); margin-bottom: 5px; }
-.video-info p { font-size: 0.82rem; color: var(--teks-sub); font-weight: 600; }
-.video-meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.78rem; color: #AAA; font-weight: 700; }
+
+.video-info h3 { 
+  font-family: 'Fredoka One', cursive; 
+  font-size: 1rem; 
+  color: var(--hijau); 
+  margin-bottom: 5px; 
+}
+
+.video-info p { 
+  font-size: 0.82rem; 
+  color: var(--teks-sub); 
+  font-weight: 600; 
+}
+
+.video-meta { 
+  display: flex; 
+  justify-content: space-between; 
+  margin-top: 8px; 
+  font-size: 0.78rem; 
+  color: #AAA; 
+  font-weight: 700; 
+}
 
 /* ====== KONTAK ====== */
 .kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -787,6 +921,7 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
         <a onclick="show('layanan',this)">⭐ Layanan</a>
         <a onclick="show('game',this)">🎮 Game</a>
         <a onclick="show('video',this)">🎬 Video</a>
+        <a onclick="show('event',this)">🎪 Event</a>
         <a onclick="show('kontak',this)">📞 Kontak</a>
         <a onclick="show('about',this)">👤 About</a>
         <span class="btn-logout" onclick="logout()">⬅ Keluar</span>
@@ -797,8 +932,8 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   <!-- MARQUEE -->
   <div class="marquee-wrap">
     <div class="marquee-track">
-      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI! 📚</span>
-      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI! 📚</span>
+      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI!!! 📚</span>
+      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI!!! 📚</span>
     </div>
   </div>
 
@@ -1008,6 +1143,22 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
     </div>
   </div>
 
+   <!-- ====== EVENT ====== -->
+  <div class="event-card">
+        <div class="event-icon">🎬</div>
+        <div>
+          <h3>Event Mendatang: NONTON BARENG</h3>
+          <p>
+            📌 Menonton film dari adaptasi novel lalu diskusi bersama<br>
+            📅 Sabtu, 04 April 2026<br>
+            🕒 08.00 WIB – Selesai<br>
+            📍 Aula SD Sinar Mulia
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- ====== KONTAK ====== -->
   <div id="kontak" class="section">
     <div class="page-wrap">
