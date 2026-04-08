@@ -158,6 +158,7 @@ header {
   color: white;
   font-size: 1.25rem;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .header-logo span { font-size: 1.8rem; }
@@ -166,14 +167,15 @@ nav {
   display: flex;
   gap: 2px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 nav a {
   color: rgba(255,255,255,0.85);
   text-decoration: none;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 10px;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
@@ -189,8 +191,8 @@ nav .btn-logout {
   background: rgba(255,82,82,0.3);
   color: #FFCDD2;
   border-radius: 10px;
-  padding: 8px 14px;
-  font-size: 0.82rem;
+  padding: 8px 12px;
+  font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
@@ -222,6 +224,41 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   to   { transform: translateX(-50%); }
 }
 
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: white;
+  border-top: 2px solid #E8F5E9;
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0 8px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.12);
+}
+
+.bnav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  flex: 1;
+  max-width: 70px;
+}
+
+.bnav-item .bnav-icon { font-size: 1.4rem; }
+.bnav-item .bnav-lbl { font-size: 0.6rem; font-weight: 800; color: var(--teks-sub); text-align: center; line-height: 1.2; }
+
+.bnav-item.active .bnav-icon { transform: scale(1.15); }
+.bnav-item.active .bnav-lbl { color: var(--hijau); }
+.bnav-item:hover { background: #F1F8E9; }
+
 /* SECTION */
 .section { display: none; }
 .section.active { display: block; }
@@ -229,7 +266,7 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 .page-wrap {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 32px 20px 60px;
+  padding: 32px 20px 100px;
 }
 
 .page-title {
@@ -309,31 +346,6 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 }
 
 .vm-card ul { padding-left: 20px; }
-
-.event-card {
-  background: linear-gradient(135deg, #FFF8E1, #FFFDE7);
-  border: 2px solid var(--kuning);
-  border-radius: var(--radius);
-  padding: 28px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.event-card .event-icon { font-size: 4rem; flex-shrink: 0; }
-
-.event-card h3 {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.3rem;
-  color: #E65100;
-  margin-bottom: 10px;
-}
-
-.event-card p {
-  color: #5D4037;
-  font-weight: 700;
-  line-height: 1.9;
-}
 
 /* ====== CIRCLE MENU ====== */
 .circle-menu {
@@ -558,7 +570,6 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   margin-bottom: 20px;
 }
 
-/* Kalkulator */
 .kalkulator {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -599,128 +610,9 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 .btn-op:hover { opacity: 0.85; transform: scale(1.04); }
 
 /* ====== VIDEO ====== */
-<div class="video-grid">
-  <div class="video-card">
-    <div class="video-container">
-        <iframe 
-  width="560" height="315" 
-  src="https://www.youtube.com/embed/vHxWiVL0oWA?si=gJW_BNGY14VIgQIm" 
-  title="YouTube video player" 
-  frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-  referrerpolicy="strict-origin-when-cross-origin" 
-  allowfullscreen>
-</iframe>
-    </div>
-    <div class="video-info">
-      <h3>Belajar Perkalian</h3>
-      <p>Video ini menjelaskan perkalian sebagai penjumlahan berulang dengan contoh sederhana dan mudah dipahami.</p>
-      <div class="video-meta">
-        <span>1.2M Views</span>
-        <span>2 days ago</span>
-      </div>
-    </div>
-  </div>
-  </div>
-
-<div class="video-grid">
-  <div class="video-card">
-    <div class="video-container">
-     <iframe 
-  width="560" height="315" 
-  src="https://www.youtube.com/embed/RakEW82veFg?si=vh2USolwtnRhMAtK" 
-  title="YouTube video player" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-  referrerpolicy="strict-origin-when-cross-origin" 
-  allowfullscreen>
-</iframe>
-    </div>
-    <div class="video-info">
-      <h3>Metamorfosisi Kupu-Kupu</h3>
-      <p>Metamorfosis kupu-kupu adalah proses perubahan bentuk dari telur, larva (ulat), pupa (kepompong), hingga menjadi kupu-kupu dewasa.</p>
-      <div class="video-meta">
-        <span>1.2M Views</span>
-        <span>2 days ago</span>
-      </div>
-    </div>
-  </div>
-  </div>
-
-  <div class="video-grid">
-  <div class="video-card">
-    <div class="video-container">
-      <iframe 
-  width="560" height="315" 
-  src="https://www.youtube.com/embed/nlXwuNHF8JM?si=_EI2LLm29FG75XiP" 
-  title="YouTube video player" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-  referrerpolicy="strict-origin-when-cross-origin" 
-  allowfullscreen>
-</iframe>
-    </div>
-    <div class="video-info">
-      <h3>Proses Fotosintesis</h3>
-      <p>Fotosintesis adalah proses tumbuhan mengubah cahaya matahari, air, dan karbon dioksida menjadi makanan (glukosa) dan oksigen.</p>
-      <div class="video-meta">
-        <span>1.5M Views</span>
-        <span>2 days ago</span>
-      </div>
-    </div>
-  </div>
-  </div>
-
-<div class="video-grid">
-  <div class="video-card">
-    <div class="video-container">
-      <iframe 
-  width="560" height="315" 
-  src="https://www.youtube.com/embed/2EgP_zSOKN4?si=XtdVs1wcdsqtklpn" 
-  title="YouTube video player" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-  referrerpolicy="strict-origin-when-cross-origin" 
-  allowfullscreen>
-</iframe>
-    </div>
-    <div class="video-info">
-      <h3>Sistem Tata Surya</h3>
-      <p>Kenali 8 Planet dan Benda Langit</p>
-      <div class="video-meta">
-        <span>5.2M Views</span>
-        <span>2 years ago</span>
-      </div>
-    </div>
-  </div>
-  </div>
-
-<div class="video-grid">
-  <div class="video-card">
-    <div class="video-container">
-     <iframe 
-  width="560" height="315" 
-  src="https://www.youtube.com/embed/zSRpom4gxGE?si=LfTiqYWlrz0f4o9r" 
-  title="YouTube video player" 
-  frameborder="0" 
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-  referrerpolicy="strict-origin-when-cross-origin" 
-  allowfullscreen>
-</iframe>
-    </div>
-    <div class="video-info">
-      <h3>Siklus Air Hujan</h3>
-      <p>Proses Siklus Air, Manfaat Air bagi Kehidupan, Terjadinya Hujan, Evaporasi, Transpirasi, Kondensasi, Adveksi, Presipitasi</p>
-      <div class="video-meta">
-        <span>9.2M Views</span>
-        <span>9 mount ago</span>
-      </div>
-    </div>
-  </div>
-  </div>
-  
-  .video-grid {
+.video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
@@ -732,16 +624,15 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.video-card:hover { 
-  transform: translateY(-6px); 
-  box-shadow: 0 16px 35px rgba(0,0,0,0.15); 
+.video-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 35px rgba(0,0,0,0.15);
 }
 
-/* Container untuk menjaga rasio video 16:9 */
 .video-container {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%; /* Rasio standar YouTube */
+  padding-bottom: 56.25%;
   height: 0;
   background: #000;
 }
@@ -752,34 +643,122 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
   left: 0;
   width: 100%;
   height: 100%;
+  border: none;
 }
 
 .video-info { padding: 14px; }
 
-.video-info h3 { 
-  font-family: 'Fredoka One', cursive; 
-  font-size: 1rem; 
-  color: var(--hijau); 
-  margin-bottom: 5px; 
+.video-info h3 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1rem;
+  color: var(--hijau);
+  margin-bottom: 5px;
 }
 
-.video-info p { 
-  font-size: 0.82rem; 
-  color: var(--teks-sub); 
-  font-weight: 600; 
+.video-info p {
+  font-size: 0.82rem;
+  color: var(--teks-sub);
+  font-weight: 600;
 }
 
-.video-meta { 
-  display: flex; 
-  justify-content: space-between; 
-  margin-top: 8px; 
-  font-size: 0.78rem; 
-  color: #AAA; 
-  font-weight: 700; 
+.video-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: #AAA;
+  font-weight: 700;
 }
+
+.btn-yt {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #FF0000;
+  color: white;
+  border-radius: 10px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-yt:hover { background: #CC0000; transform: scale(1.04); }
+
+/* ====== EVENT ====== */
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.event-item {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  border-left: 6px solid var(--kuning);
+  transition: transform 0.2s;
+}
+
+.event-item:hover { transform: translateX(4px); }
+.event-item.event-hijau { border-left-color: var(--hijau-muda); }
+.event-item.event-biru { border-left-color: #1565C0; }
+.event-item.event-ungu { border-left-color: #7B1FA2; }
+.event-item.event-merah { border-left-color: #C62828; }
+
+.event-bulan {
+  background: linear-gradient(135deg, var(--hijau), var(--hijau-muda));
+  color: white;
+  border-radius: 12px;
+  padding: 10px 16px;
+  text-align: center;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.event-bulan .bln { font-family: 'Fredoka One', cursive; font-size: 1.2rem; }
+.event-bulan .tgl { font-size: 2rem; font-family: 'Fredoka One', cursive; line-height: 1; }
+
+.event-content h3 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.25rem;
+  color: var(--hijau);
+  margin-bottom: 8px;
+}
+
+.event-content p {
+  color: var(--teks-sub);
+  font-weight: 700;
+  line-height: 1.9;
+  font-size: 0.92rem;
+}
+
+.btn-daftar-wa {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  color: white;
+  border-radius: 12px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(37,211,102,0.4);
+}
+
+.btn-daftar-wa:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,211,102,0.5); }
 
 /* ====== KONTAK ====== */
-.kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.kontak-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
 
 .kontak-card {
   background: white;
@@ -794,6 +773,143 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 .kontak-icon { font-size: 2.5rem; flex-shrink: 0; }
 .kontak-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--hijau); margin-bottom: 6px; }
 .kontak-card p { color: var(--teks-sub); font-weight: 600; font-size: 0.9rem; line-height: 1.6; }
+
+/* KOTAK SARAN */
+.saran-box {
+  background: white;
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.saran-box h3 {
+  font-family: 'Fredoka One', cursive;
+  font-size: 1.3rem;
+  color: var(--hijau);
+  margin-bottom: 18px;
+}
+
+.saran-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.saran-field input, .saran-field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid #E0E0E0;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+
+.saran-field input:focus, .saran-field textarea:focus { border-color: var(--hijau-muda); }
+
+.rating-wrap {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.rating-wrap label { font-weight: 700; color: var(--teks-sub); min-width: 60px; }
+
+.rating-emot {
+  display: flex;
+  gap: 8px;
+}
+
+.rating-emot button {
+  font-size: 1.8rem;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.5;
+}
+
+.rating-emot button:hover { opacity: 1; transform: scale(1.2); }
+.rating-emot button.selected { opacity: 1; border-color: var(--hijau-muda); background: #E8F5E9; transform: scale(1.15); }
+
+.saran-terkirim {
+  margin-top: 16px;
+  background: #E8F5E9;
+  border: 2px solid var(--hijau-muda);
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-weight: 700;
+  color: var(--hijau);
+  animation: fadeIn 0.4s ease;
+  display: none;
+}
+
+/* ====== MAPS / PANDUAN ====== */
+.maps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.maps-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border-top: 5px solid var(--hijau-muda);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.maps-card:hover { transform: translateY(-5px); box-shadow: 0 14px 30px rgba(0,0,0,0.15); }
+
+.maps-card.kuning { border-top-color: var(--kuning); }
+.maps-card.biru { border-top-color: #1565C0; }
+.maps-card.ungu { border-top-color: #7B1FA2; }
+.maps-card.merah { border-top-color: #C62828; }
+.maps-card.orange { border-top-color: #E65100; }
+.maps-card.teal { border-top-color: #00796B; }
+.maps-card.pink { border-top-color: #AD1457; }
+
+.maps-card-icon { font-size: 3rem; margin-bottom: 12px; }
+.maps-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--hijau); margin-bottom: 8px; }
+.maps-card p { color: var(--teks-sub); font-size: 0.88rem; font-weight: 600; line-height: 1.6; }
+
+.maps-card .go-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, var(--hijau), var(--hijau-muda));
+  color: white;
+  border-radius: 10px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 0.88rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.maps-card .go-btn:hover { transform: scale(1.05); }
+
+.maps-hero {
+  background: linear-gradient(135deg, #E8F5E9, #F1F8E9);
+  border: 2px solid #C8E6C9;
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+
+.maps-hero h3 { font-family: 'Fredoka One', cursive; font-size: 1.4rem; color: var(--hijau); margin-bottom: 8px; }
+.maps-hero p { color: var(--teks-sub); font-weight: 600; line-height: 1.7; }
 
 /* ====== ABOUT ME ====== */
 .about-wrap {
@@ -858,6 +974,35 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 .about-card h3 { font-family: 'Fredoka One', cursive; font-size: 1.2rem; color: var(--hijau); margin-bottom: 10px; }
 .about-card p { color: var(--teks-sub); font-weight: 600; line-height: 1.7; }
 
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.contact-link-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--abu);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--teks);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.contact-link-item:hover {
+  background: #E8F5E9;
+  color: var(--hijau);
+  transform: translateX(4px);
+}
+
+.contact-link-item .ci { font-size: 1.4rem; }
+
 .chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
 .chip {
   padding: 6px 16px;
@@ -870,12 +1015,13 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
 
 /* ====== RESPONSIVE ====== */
 @media (max-width:768px) {
-  nav a:not(.btn-logout) span { display: none; }
   .visi-misi-grid { grid-template-columns: 1fr; }
   .kontak-grid { grid-template-columns: 1fr; }
   .beranda-hero { flex-direction: column; }
-  .event-card { flex-direction: column; text-align: center; }
-  nav a { padding: 8px 8px; font-size: 0.75rem; }
+  .event-item { flex-direction: column; }
+  nav a { padding: 6px 6px; font-size: 0.68rem; }
+  .header-logo { font-size: 1rem; }
+  .header-logo span { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -923,6 +1069,7 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
         <a onclick="show('video',this)">🎬 Video</a>
         <a onclick="show('event',this)">🎪 Event</a>
         <a onclick="show('kontak',this)">📞 Kontak</a>
+        <a onclick="show('maps',this)">🗺️ Panduan</a>
         <a onclick="show('about',this)">👤 About</a>
         <span class="btn-logout" onclick="logout()">⬅ Keluar</span>
       </nav>
@@ -966,18 +1113,6 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
         </div>
       </div>
 
-      <div class="event-card">
-        <div class="event-icon">🎬</div>
-        <div>
-          <h3>Event Mendatang: NONTON BARENG</h3>
-          <p>
-            📌 Menonton film dari adaptasi novel lalu diskusi bersama<br>
-            📅 Sabtu, 04 April 2026<br>
-            🕒 08.00 WIB – Selesai<br>
-            📍 Aula SD Sinar Mulia
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1086,22 +1221,22 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
       <div style="margin-top:36px;background:white;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);">
         <h3 style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--hijau);margin-bottom:16px;">🌐 Game Edukasi Online</h3>
         <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;">
-          <a href="https://www.mathplayground.com" target="_blank" style="text-decoration:none;">
+          <a href="https://www.mathplayground.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#E8F5E9;border-radius:12px;padding:14px;font-weight:700;color:var(--hijau);text-align:center;">🧮 Game Matematika</div>
           </a>
-          <a href="https://www.abcya.com" target="_blank" style="text-decoration:none;">
+          <a href="https://www.abcya.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#E3F2FD;border-radius:12px;padding:14px;font-weight:700;color:#1565C0;text-align:center;">📖 Game Membaca</div>
           </a>
-          <a href="https://www.coolmathgames.com" target="_blank" style="text-decoration:none;">
+          <a href="https://www.coolmathgames.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#FFF3E0;border-radius:12px;padding:14px;font-weight:700;color:#E65100;text-align:center;">💡 Game Logika</div>
           </a>
-          <a href="https://www.funbrain.com" target="_blank" style="text-decoration:none;">
+          <a href="https://www.funbrain.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#FCE4EC;border-radius:12px;padding:14px;font-weight:700;color:#880E4F;text-align:center;">🎉 Game Seru</div>
           </a>
-          <a href="https://www.splashlearn.com" target="_blank" style="text-decoration:none;">
+          <a href="https://www.splashlearn.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#EDE7F6;border-radius:12px;padding:14px;font-weight:700;color:#4A148C;text-align:center;">✨ SplashLearn</div>
           </a>
-          <a href="https://toytheater.com" target="_blank" style="text-decoration:none;">
+          <a href="https://toytheater.com" target="_blank" rel="noopener" style="text-decoration:none;">
             <div style="background:#E0F7FA;border-radius:12px;padding:14px;font-weight:700;color:#006064;text-align:center;">🎭 Toy Theater</div>
           </a>
         </div>
@@ -1115,60 +1250,306 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
       <div class="page-title">🎬 Video Edukasi</div>
       <p class="page-subtitle">Tonton video pembelajaran yang seru dan mudah dipahami</p>
       <div class="video-grid">
+
         <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#FFE0B2,#FF8C00)">🔢<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Belajar Perkalian dengan Lagu</h3><p>Hafal tabel perkalian 1–10</p><div class="video-meta"><span>⏱ 8 mnt</span><span>👁 12.5K</span></div></div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/vHxWiVL0oWA?si=gJW_BNGY14VIgQIm"
+              title="Belajar Perkalian" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="video-info">
+            <h3>Belajar Perkalian</h3>
+            <p>Perkalian sebagai penjumlahan berulang dengan contoh sederhana dan mudah dipahami.</p>
+            <div class="video-meta"><span>⏱ 8 mnt</span><span>👁 1.2M views</span></div>
+            <a href="https://www.youtube.com/watch?v=vHxWiVL0oWA" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a>
+          </div>
         </div>
+
         <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#B2EBF2,#00BCD4)">🦋<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Metamorfosis Kupu-Kupu</h3><p>Siklus hidup dari telur hingga terbang</p><div class="video-meta"><span>⏱ 12 mnt</span><span>👁 8.3K</span></div></div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/RakEW82veFg?si=vh2USolwtnRhMAtK"
+              title="Metamorfosis Kupu-Kupu" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="video-info">
+            <h3>Metamorfosis Kupu-Kupu</h3>
+            <p>Proses perubahan bentuk dari telur, larva (ulat), pupa (kepompong), hingga kupu-kupu dewasa.</p>
+            <div class="video-meta"><span>⏱ 12 mnt</span><span>👁 1.2M views</span></div>
+            <a href="https://www.youtube.com/watch?v=RakEW82veFg" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a>
+          </div>
         </div>
+
         <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#C8E6C9,#4CAF50)">🌱<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Proses Fotosintesis</h3><p>Bagaimana tumbuhan membuat makanan</p><div class="video-meta"><span>⏱ 10 mnt</span><span>👁 6.7K</span></div></div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/nlXwuNHF8JM?si=_EI2LLm29FG75XiP"
+              title="Proses Fotosintesis" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="video-info">
+            <h3>Proses Fotosintesis</h3>
+            <p>Tumbuhan mengubah cahaya matahari, air, dan CO₂ menjadi makanan (glukosa) dan oksigen.</p>
+            <div class="video-meta"><span>⏱ 10 mnt</span><span>👁 1.5M views</span></div>
+            <a href="https://www.youtube.com/watch?v=nlXwuNHF8JM" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a>
+          </div>
         </div>
+
         <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#E1BEE7,#9C27B0)">🌙<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Sistem Tata Surya</h3><p>Kenali 8 planet dan benda langit</p><div class="video-meta"><span>⏱ 15 mnt</span><span>👁 20.1K</span></div></div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/2EgP_zSOKN4?si=XtdVs1wcdsqtklpn"
+              title="Sistem Tata Surya" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="video-info">
+            <h3>Sistem Tata Surya</h3>
+            <p>Kenali 8 Planet dan Benda Langit di Tata Surya kita.</p>
+            <div class="video-meta"><span>⏱ 15 mnt</span><span>👁 5.2M views</span></div>
+            <a href="https://www.youtube.com/watch?v=2EgP_zSOKN4" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a>
+          </div>
         </div>
+
         <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#FFCCBC,#F44336)">🏰<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Kerajaan Majapahit</h3><p>Sejarah kerajaan terbesar Nusantara</p><div class="video-meta"><span>⏱ 18 mnt</span><span>👁 9.2K</span></div></div>
+          <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/zSRpom4gxGE?si=LfTiqYWlrz0f4o9r"
+              title="Siklus Air Hujan" frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+          <div class="video-info">
+            <h3>Siklus Air Hujan</h3>
+            <p>Proses Siklus Air: Evaporasi, Transpirasi, Kondensasi, Adveksi, Presipitasi.</p>
+            <div class="video-meta"><span>⏱ 11 mnt</span><span>👁 9.2M views</span></div>
+            <a href="https://www.youtube.com/watch?v=zSRpom4gxGE" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a>
+          </div>
         </div>
-        <div class="video-card">
-          <div class="video-thumb" style="background:linear-gradient(135deg,#FFF9C4,#FFC107)">🌊<div class="video-play">▶️</div></div>
-          <div class="video-info"><h3>Siklus Air di Bumi</h3><p>Dari penguapan hingga hujan</p><div class="video-meta"><span>⏱ 11 mnt</span><span>👁 7.8K</span></div></div>
-        </div>
+
       </div>
     </div>
   </div>
 
-   <!-- ====== EVENT ====== -->
-  <div class="event-card">
-        <div class="event-icon">🎬</div>
-        <div>
-          <h3>Event Mendatang: NONTON BARENG</h3>
-          <p>
-            📌 Menonton film dari adaptasi novel lalu diskusi bersama<br>
-            📅 Sabtu, 04 April 2026<br>
-            🕒 08.00 WIB – Selesai<br>
-            📍 Aula SD Sinar Mulia
-          </p>
+  <!-- ====== EVENT ====== -->
+  <div id="event" class="section">
+    <div class="page-wrap">
+      <div class="page-title">🎪 Event & Kegiatan</div>
+      <p class="page-subtitle">Jadwal kegiatan perpustakaan — daftar dan ikuti serunya!</p>
+
+      <div class="event-list">
+
+        <!-- EVENT 1 - April -->
+        <div class="event-item">
+          <div class="event-bulan">
+            <div class="bln">APR</div>
+            <div class="tgl">12</div>
+          </div>
+          <div class="event-content">
+            <h3>🎬 Nonton Bareng Film Adaptasi Novel</h3>
+            <p>
+              📌 Menonton film dari adaptasi novel lalu diskusi bersama<br>
+              🕒 08.00 WIB – Selesai<br>
+              📍 Aula SD Sinar Mulia
+            </p>
+            <a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Nonton%20Bareng%20tanggal%2012%20April" target="_blank" rel="noopener" class="btn-daftar-wa">
+              💬 Daftar via WhatsApp
+            </a>
+          </div>
         </div>
+
+        <!-- EVENT 2 - April -->
+        <div class="event-item event-hijau">
+          <div class="event-bulan" style="background:linear-gradient(135deg,#2E7D32,#4CAF50)">
+            <div class="bln">APR</div>
+            <div class="tgl">26</div>
+          </div>
+          <div class="event-content">
+            <h3>📝 Lomba Menulis Cerita Pendek</h3>
+            <p>
+              📌 Lomba menulis cerita pendek bertema lingkungan untuk siswa kelas 4–6<br>
+              🕒 09.00 WIB – 12.00 WIB<br>
+              📍 Ruang Perpustakaan SD Sinar Mulia<br>
+              🏆 Hadiah menarik untuk juara 1, 2, dan 3!
+            </p>
+            <a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Lomba%20Menulis%20Cerita%20tanggal%2026%20April" target="_blank" rel="noopener" class="btn-daftar-wa">
+              💬 Daftar via WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- EVENT 3 - Mei -->
+        <div class="event-item event-biru">
+          <div class="event-bulan" style="background:linear-gradient(135deg,#1565C0,#1976D2)">
+            <div class="bln">MEI</div>
+            <div class="tgl">10</div>
+          </div>
+          <div class="event-content">
+            <h3>🔬 Workshop Sains Seru: Eksperimen Sederhana</h3>
+            <p>
+              📌 Eksperimen sains sederhana yang bisa dilakukan di rumah — belajar sambil bermain!<br>
+              🕒 08.30 WIB – 11.30 WIB<br>
+              📍 Laboratorium Mini SD Sinar Mulia<br>
+              👶 Terbuka untuk kelas 3–6
+            </p>
+            <a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Workshop%20Sains%20tanggal%2010%20Mei" target="_blank" rel="noopener" class="btn-daftar-wa">
+              💬 Daftar via WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- EVENT 4 - Mei -->
+        <div class="event-item event-ungu">
+          <div class="event-bulan" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA)">
+            <div class="bln">MEI</div>
+            <div class="tgl">24</div>
+          </div>
+          <div class="event-content">
+            <h3>🎤 Pojok Baca: Mendongeng Bersama</h3>
+            <p>
+              📌 Sesi mendongeng interaktif bersama penulis tamu — kenali tokoh-tokoh cerita favorit!<br>
+              🕒 09.00 WIB – 11.00 WIB<br>
+              📍 Taman Baca SD Sinar Mulia<br>
+              📚 Gratis untuk seluruh siswa SD Sinar Mulia
+            </p>
+            <a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Pojok%20Baca%20Mendongeng%20tanggal%2024%20Mei" target="_blank" rel="noopener" class="btn-daftar-wa">
+              💬 Daftar via WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- EVENT 5 - Juni -->
+        <div class="event-item event-merah">
+          <div class="event-bulan" style="background:linear-gradient(135deg,#B71C1C,#E53935)">
+            <div class="bln">JUN</div>
+            <div class="tgl">07</div>
+          </div>
+          <div class="event-content">
+            <h3>🏆 Lomba Baca Cepat & Kuis Literasi</h3>
+            <p>
+              📌 Kompetisi membaca cepat dan kuis pengetahuan umum antar kelas<br>
+              🕒 07.30 WIB – 13.00 WIB<br>
+              📍 Aula SD Sinar Mulia<br>
+              🎁 Piala bergilir + sertifikat untuk semua peserta!
+            </p>
+            <a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Lomba%20Baca%20Cepat%20tanggal%207%20Juni" target="_blank" rel="noopener" class="btn-daftar-wa">
+              💬 Daftar via WhatsApp
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
-  
+
   <!-- ====== KONTAK ====== -->
   <div id="kontak" class="section">
     <div class="page-wrap">
       <div class="page-title">📞 Kontak Kami</div>
       <p class="page-subtitle">Hubungi perpustakaan untuk pertanyaan dan informasi lebih lanjut</p>
+
       <div class="kontak-grid">
         <div class="kontak-card"><div class="kontak-icon">📍</div><div><h3>Alamat</h3><p>Jl. Pendidikan No. 10, Kota Sinar Mulia, Indonesia</p></div></div>
         <div class="kontak-card"><div class="kontak-icon">📞</div><div><h3>Telepon</h3><p>(021) 123-4567<br>Senin – Jumat: 07.00 – 15.00 WIB</p></div></div>
         <div class="kontak-card"><div class="kontak-icon">📧</div><div><h3>Email</h3><p>perpustakaan@sinarmulia.sch.id</p></div></div>
         <div class="kontak-card"><div class="kontak-icon">⏰</div><div><h3>Jam Operasional</h3><p>Senin – Sabtu: 07.30 – 14.30 WIB<br>Minggu: Tutup</p></div></div>
+      </div>
+
+      <!-- KOTAK SARAN -->
+      <div class="saran-box">
+        <h3>💌 Kotak Saran</h3>
+        <div class="saran-field">
+          <input type="text" id="saran-nama" placeholder="Nama kamu">
+          <input type="text" id="saran-sosmed" placeholder="Media sosial (contoh: @namakamu)">
+          <textarea id="saran-pesan" rows="4" placeholder="Pesan atau saran kamu untuk perpustakaan..."></textarea>
+          <div class="rating-wrap">
+            <label>⭐ Rating:</label>
+            <div class="rating-emot" id="ratingEmot">
+              <button onclick="pilihRating(this,'😞','Sangat Kecewa')" title="Sangat Kecewa">😞</button>
+              <button onclick="pilihRating(this,'😕','Kecewa')" title="Kecewa">😕</button>
+              <button onclick="pilihRating(this,'😐','Biasa')" title="Biasa">😐</button>
+              <button onclick="pilihRating(this,'😊','Puas')" title="Puas">😊</button>
+              <button onclick="pilihRating(this,'😁','Sangat Puas')" title="Sangat Puas">😁</button>
+            </div>
+          </div>
+          <div>
+            <button class="btn-aksi" onclick="kirimSaran()">📤 Kirim Saran</button>
+          </div>
+        </div>
+        <div id="saranTerkirim" class="saran-terkirim"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== MAPS / PANDUAN ====== -->
+  <div id="maps" class="section">
+    <div class="page-wrap">
+      <div class="page-title">🗺️ Panduan Menu</div>
+      <p class="page-subtitle">Tidak tahu harus kemana? Baca panduan ini untuk menemukan yang kamu cari!</p>
+
+      <div class="maps-hero">
+        <div style="font-size:4rem;margin-bottom:12px;">🧭</div>
+        <h3>Peta Perpustakaan Digital SD Sinar Mulia</h3>
+        <p>Klik tombol "Pergi ke Menu" untuk langsung berpindah ke menu yang kamu inginkan. Panduan ini membantu kamu menemukan fitur yang tepat dengan cepat!</p>
+      </div>
+
+      <div class="maps-grid">
+
+        <div class="maps-card">
+          <div class="maps-card-icon">🏠</div>
+          <h3>Beranda</h3>
+          <p>Halaman utama perpustakaan. Di sini kamu bisa membaca sejarah singkat, visi dan misi perpustakaan SD Sinar Mulia.</p>
+          <button class="go-btn" onclick="show('beranda', null); scrollToTop()">🚀 Pergi ke Beranda</button>
+        </div>
+
+        <div class="maps-card kuning">
+          <div class="maps-card-icon">📖</div>
+          <h3>Koleksi Buku</h3>
+          <p>Ingin mencari buku? Di sini ada koleksi Buku Cerita (dongeng & legenda), Buku Pelajaran (Matematika, IPA, Bahasa), dan Komik Edukasi.</p>
+          <button class="go-btn" onclick="show('koleksi', null); scrollToTop()">🚀 Lihat Koleksi</button>
+        </div>
+
+        <div class="maps-card biru">
+          <div class="maps-card-icon">⭐</div>
+          <h3>Layanan</h3>
+          <p>Ingin meminjam buku, memperpanjang masa pinjam, atau menghitung denda keterlambatan? Semua ada di menu Layanan.</p>
+          <button class="go-btn" onclick="show('layanan', null); scrollToTop()">🚀 Ke Layanan</button>
+        </div>
+
+        <div class="maps-card ungu">
+          <div class="maps-card-icon">🎮</div>
+          <h3>Game Edukasi</h3>
+          <p>Mau belajar sambil main? Ada Kalkulator Edukasi, Game Matematika, Game Bahasa Indonesia, Game Agama, dan link game online seru!</p>
+          <button class="go-btn" onclick="show('game', null); scrollToTop()">🚀 Main Game</button>
+        </div>
+
+        <div class="maps-card merah">
+          <div class="maps-card-icon">🎬</div>
+          <h3>Video Edukasi</h3>
+          <p>Mau belajar lewat video? Tonton video pembelajaran tentang Perkalian, Metamorfosis, Fotosintesis, Tata Surya, dan Siklus Air. Bisa dibuka langsung di YouTube!</p>
+          <button class="go-btn" onclick="show('video', null); scrollToTop()">🚀 Tonton Video</button>
+        </div>
+
+        <div class="maps-card orange">
+          <div class="maps-card-icon">🎪</div>
+          <h3>Event & Kegiatan</h3>
+          <p>Cari info lomba, workshop, atau acara seru perpustakaan? Di menu Event ada jadwal lengkap beserta tombol daftar langsung via WhatsApp!</p>
+          <button class="go-btn" onclick="show('event', null); scrollToTop()">🚀 Lihat Event</button>
+        </div>
+
+        <div class="maps-card teal">
+          <div class="maps-card-icon">📞</div>
+          <h3>Kontak & Kotak Saran</h3>
+          <p>Mau tahu alamat, telepon, atau jam buka perpustakaan? Atau ingin menyampaikan saran dan masukan? Semua ada di menu Kontak!</p>
+          <button class="go-btn" onclick="show('kontak', null); scrollToTop()">🚀 Ke Kontak</button>
+        </div>
+
+        <div class="maps-card pink">
+          <div class="maps-card-icon">👤</div>
+          <h3>About Me</h3>
+          <p>Ingin mengenal pustakawan SD Sinar Mulia? Di sini ada profil Bu Sari Dewi, program unggulan, kontak, dan CV beliau.</p>
+          <button class="go-btn" onclick="show('about', null); scrollToTop()">🚀 Lihat Profil</button>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1187,10 +1568,27 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
           <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Koleksi Buku</span></div>
           <div class="stat"><span class="stat-num">200+</span><span class="stat-lbl">Anggota Aktif</span></div>
         </div>
+
         <div class="about-card">
           <h3>👋 Sapa Kami!</h3>
-          <p>Halo! Saya Bu Sari, pustakawan SD Sinar Mulia sejak tahun 2010. Saya berdedikasi untuk menciptakan suasana perpustakaan yang menyenangkan dan membuat anak-anak semakin cinta membaca. Bersama-sama kita wujudkan generasi cerdas dan berkarakter!</p>
+          <p style="margin-bottom:16px;">Halo! Saya Bu Sari, pustakawan SD Sinar Mulia sejak tahun 2010. Saya berdedikasi untuk menciptakan suasana perpustakaan yang menyenangkan dan membuat anak-anak semakin cinta membaca. Bersama-sama kita wujudkan generasi cerdas dan berkarakter!</p>
+          <div class="contact-links">
+            <div style="font-weight:700;color:var(--hijau);margin-bottom:4px;">📋 Informasi Kontak:</div>
+            <a href="https://drive.google.com/your-cv-link" target="_blank" rel="noopener" class="contact-link-item">
+              <span class="ci">📄</span> CV / Curriculum Vitae (Google Drive)
+            </a>
+            <a href="https://wa.me/628123456789" target="_blank" rel="noopener" class="contact-link-item">
+              <span class="ci">📱</span> +62 812-3456-789
+            </a>
+            <a href="https://instagram.com/busaridewi" target="_blank" rel="noopener" class="contact-link-item">
+              <span class="ci">📸</span> @busaridewi
+            </a>
+            <a href="mailto:saridewi@sinarmulia.sch.id" class="contact-link-item">
+              <span class="ci">📧</span> saridewi@sinarmulia.sch.id
+            </a>
+          </div>
         </div>
+
         <div class="about-card">
           <h3>🌟 Program Unggulan</h3>
           <div class="chips">
@@ -1201,11 +1599,52 @@ nav .btn-logout:hover { background: rgba(255,82,82,0.5); color: white; }
             <span class="chip">🏆 Lomba Baca</span>
           </div>
         </div>
+
         <div class="about-card">
           <h3>💌 Pesan</h3>
           <p>"Setiap buku yang kamu buka adalah jendela menuju dunia yang lebih luas. Jangan berhenti membaca, karena ilmu adalah bekal terbaik untuk masa depanmu!" 🌟</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav" id="bottomNav">
+    <div class="bnav-item active" onclick="show('beranda',null); setBottomNav(this)">
+      <span class="bnav-icon">🏠</span>
+      <span class="bnav-lbl">Beranda</span>
+    </div>
+    <div class="bnav-item" onclick="show('koleksi',null); setBottomNav(this)">
+      <span class="bnav-icon">📖</span>
+      <span class="bnav-lbl">Koleksi</span>
+    </div>
+    <div class="bnav-item" onclick="show('layanan',null); setBottomNav(this)">
+      <span class="bnav-icon">⭐</span>
+      <span class="bnav-lbl">Layanan</span>
+    </div>
+    <div class="bnav-item" onclick="show('game',null); setBottomNav(this)">
+      <span class="bnav-icon">🎮</span>
+      <span class="bnav-lbl">Game</span>
+    </div>
+    <div class="bnav-item" onclick="show('video',null); setBottomNav(this)">
+      <span class="bnav-icon">🎬</span>
+      <span class="bnav-lbl">Video</span>
+    </div>
+    <div class="bnav-item" onclick="show('event',null); setBottomNav(this)">
+      <span class="bnav-icon">🎪</span>
+      <span class="bnav-lbl">Event</span>
+    </div>
+    <div class="bnav-item" onclick="show('kontak',null); setBottomNav(this)">
+      <span class="bnav-icon">📞</span>
+      <span class="bnav-lbl">Kontak</span>
+    </div>
+    <div class="bnav-item" onclick="show('maps',null); setBottomNav(this)">
+      <span class="bnav-icon">🗺️</span>
+      <span class="bnav-lbl">Panduan</span>
+    </div>
+    <div class="bnav-item" onclick="show('about',null); setBottomNav(this)">
+      <span class="bnav-icon">👤</span>
+      <span class="bnav-lbl">About</span>
     </div>
   </div>
 
@@ -1257,30 +1696,54 @@ function logout() {
 function show(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+  // Update header nav
   document.querySelectorAll('nav a').forEach(a => a.classList.remove('active-nav'));
   if (el) el.classList.add('active-nav');
-  event.preventDefault();
+  // Update bottom nav
+  const navMap = ['beranda','koleksi','layanan','game','video','event','kontak','maps','about'];
+  const idx = navMap.indexOf(id);
+  if (idx >= 0) {
+    document.querySelectorAll('.bnav-item').forEach((b,i) => {
+      b.classList.toggle('active', i === idx);
+    });
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function setBottomNav(el) {
+  document.querySelectorAll('.bnav-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  // Update header nav too
+  const navItems = document.querySelectorAll('nav a');
+  const bnav = document.querySelectorAll('.bnav-item');
+  const idx = Array.from(bnav).indexOf(el);
+  navItems.forEach(a => a.classList.remove('active-nav'));
+  if (navItems[idx]) navItems[idx].classList.add('active-nav');
+}
+
+function scrollToTop() {
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
 /* ============= KOLEKSI ============= */
 const dataBuku = {
   cerita: [
-    { judul: 'Malin Kundang',          icon: '🧒', warna: '#FFECB3', sinopsis: 'Kisah anak durhaka yang dikutuk menjadi batu oleh ibunya sendiri.', kat: 'Legenda' },
-    { judul: 'Sangkuriang',            icon: '🏔️', warna: '#B2EBF2', sinopsis: 'Kisah cinta terlarang yang melahirkan Gunung Tangkuban Perahu.', kat: 'Legenda' },
+    { judul: 'Malin Kundang', icon: '🧒', warna: '#FFECB3', sinopsis: 'Kisah anak durhaka yang dikutuk menjadi batu oleh ibunya sendiri.', kat: 'Legenda' },
+    { judul: 'Sangkuriang', icon: '🏔️', warna: '#B2EBF2', sinopsis: 'Kisah cinta terlarang yang melahirkan Gunung Tangkuban Perahu.', kat: 'Legenda' },
     { judul: 'Bawang Merah Bawang Putih', icon: '🌸', warna: '#FCE4EC', sinopsis: 'Kisah kebaikan vs keserakahan yang berujung kebahagiaan.', kat: 'Dongeng' },
-    { judul: 'Keong Mas',              icon: '🐚', warna: '#E8F5E9', sinopsis: 'Putri cantik yang dikutuk menjadi keong mas dan kisah cintanya.', kat: 'Dongeng' },
+    { judul: 'Keong Mas', icon: '🐚', warna: '#E8F5E9', sinopsis: 'Putri cantik yang dikutuk menjadi keong mas dan kisah cintanya.', kat: 'Dongeng' },
   ],
   pelajaran: [
-    { judul: 'Matematika Dasar',       icon: '🔢', warna: '#E3F2FD', sinopsis: 'Belajar penjumlahan, pengurangan, perkalian, dan pembagian.', kat: 'Matematika' },
-    { judul: 'Bahasa Indonesia',       icon: '📝', warna: '#FFF3E0', sinopsis: 'Tata bahasa, menulis, membaca, dan berbicara yang baik dan benar.', kat: 'Bahasa' },
-    { judul: 'IPA (Sains)',            icon: '🔬', warna: '#E8F5E9', sinopsis: 'Mengenal alam, tumbuhan, hewan, dan fenomena ilmu pengetahuan alam.', kat: 'Sains' },
-    { judul: 'Bahasa Inggris',         icon: '🌍', warna: '#EDE7F6', sinopsis: 'Belajar kosakata, percakapan, dan tata bahasa Inggris dasar.', kat: 'Bahasa' },
+    { judul: 'Matematika Dasar', icon: '🔢', warna: '#E3F2FD', sinopsis: 'Belajar penjumlahan, pengurangan, perkalian, dan pembagian.', kat: 'Matematika' },
+    { judul: 'Bahasa Indonesia', icon: '📝', warna: '#FFF3E0', sinopsis: 'Tata bahasa, menulis, membaca, dan berbicara yang baik dan benar.', kat: 'Bahasa' },
+    { judul: 'IPA (Sains)', icon: '🔬', warna: '#E8F5E9', sinopsis: 'Mengenal alam, tumbuhan, hewan, dan fenomena ilmu pengetahuan alam.', kat: 'Sains' },
+    { judul: 'Bahasa Inggris', icon: '🌍', warna: '#EDE7F6', sinopsis: 'Belajar kosakata, percakapan, dan tata bahasa Inggris dasar.', kat: 'Bahasa' },
   ],
   komik: [
-    { judul: 'Komik Sains',            icon: '🧪', warna: '#E0F7FA', sinopsis: 'Petualangan sains yang seru dan mudah dipahami lewat gambar.', kat: 'Sains' },
-    { judul: 'Komik Agama',            icon: '🕌', warna: '#FFF8E1', sinopsis: 'Kisah para nabi dan nilai-nilai agama yang disampaikan dengan menarik.', kat: 'Agama' },
-    { judul: 'Komik Matematika',       icon: '🔢', warna: '#F3E5F5', sinopsis: 'Soal-soal matematika dikemas dalam alur cerita petualangan.', kat: 'Matematika' },
-    { judul: 'Komik Adab',             icon: '🤝', warna: '#E8F5E9', sinopsis: 'Pelajaran sopan santun dan adab sehari-hari lewat tokoh yang lucu.', kat: 'Karakter' },
+    { judul: 'Komik Sains', icon: '🧪', warna: '#E0F7FA', sinopsis: 'Petualangan sains yang seru dan mudah dipahami lewat gambar.', kat: 'Sains' },
+    { judul: 'Komik Agama', icon: '🕌', warna: '#FFF8E1', sinopsis: 'Kisah para nabi dan nilai-nilai agama yang disampaikan dengan menarik.', kat: 'Agama' },
+    { judul: 'Komik Matematika', icon: '🔢', warna: '#F3E5F5', sinopsis: 'Soal-soal matematika dikemas dalam alur cerita petualangan.', kat: 'Matematika' },
+    { judul: 'Komik Adab', icon: '🤝', warna: '#E8F5E9', sinopsis: 'Pelajaran sopan santun dan adab sehari-hari lewat tokoh yang lucu.', kat: 'Karakter' },
   ],
 };
 
@@ -1357,6 +1820,46 @@ function hitungDenda() {
     : '';
 }
 
+/* ============= KOTAK SARAN ============= */
+let ratingDipilih = '';
+
+function pilihRating(btn, emot, label) {
+  document.querySelectorAll('.rating-emot button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  ratingDipilih = emot + ' ' + label;
+}
+
+function kirimSaran() {
+  const nama = document.getElementById('saran-nama').value.trim();
+  const sosmed = document.getElementById('saran-sosmed').value.trim();
+  const pesan = document.getElementById('saran-pesan').value.trim();
+
+  if (!nama || !pesan) { alert('⚠️ Harap isi nama dan pesan terlebih dahulu!'); return; }
+  if (!ratingDipilih) { alert('⚠️ Harap pilih rating terlebih dahulu!'); return; }
+
+  const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
+
+  const kotak = document.getElementById('saranTerkirim');
+  kotak.style.display = 'block';
+  kotak.innerHTML = `
+    <div style="font-size:1.5rem;margin-bottom:8px;">✅ Terima kasih! Saran kamu sudah diterima.</div>
+    <div style="background:white;border-radius:10px;padding:14px;margin-top:10px;border:1px solid #C8E6C9;">
+      <div style="margin-bottom:6px;"><b>👤 Nama:</b> ${nama}</div>
+      ${sosmed ? `<div style="margin-bottom:6px;"><b>📲 Media Sosial:</b> ${sosmed}</div>` : ''}
+      <div style="margin-bottom:6px;"><b>💬 Pesan:</b> ${pesan}</div>
+      <div style="margin-bottom:6px;"><b>⭐ Rating:</b> ${ratingDipilih}</div>
+      <div style="color:#AAA;font-size:0.82rem;"><b>🕐 Dikirim:</b> ${waktu}</div>
+    </div>
+  `;
+
+  // Reset form
+  document.getElementById('saran-nama').value = '';
+  document.getElementById('saran-sosmed').value = '';
+  document.getElementById('saran-pesan').value = '';
+  document.querySelectorAll('.rating-emot button').forEach(b => b.classList.remove('selected'));
+  ratingDipilih = '';
+}
+
 /* ============= GAME ============= */
 let skor = 0;
 
@@ -1371,7 +1874,6 @@ function setHasil(elId, benar) {
   el.className = 'hasil-game ' + (benar ? 'benar' : 'salah');
 }
 
-/* Kalkulator */
 function hitung(op) {
   const a = parseFloat(document.getElementById('angka1').value);
   const b = parseFloat(document.getElementById('angka2').value);
@@ -1386,7 +1888,6 @@ function hitung(op) {
   el.className = 'hasil-game benar';
 }
 
-/* Matematika */
 let aMath, bMath, opMath;
 const ops = ['+', '-', '×'];
 function soalBaruMath() {
@@ -1410,7 +1911,6 @@ function cekMath() {
   if (benar) { tambahSkor(); setTimeout(soalBaruMath, 1000); }
 }
 
-/* Bahasa Indonesia */
 const soalBI_data = [
   { singkat: 'mkn', lengkap: 'makan' },
   { singkat: 'bljr', lengkap: 'belajar' },
@@ -1435,7 +1935,6 @@ function cekBI() {
   if (benar) { tambahSkor(); setTimeout(soalBaruBI, 1000); }
 }
 
-/* Agama */
 const soalAgama_data = [
   { soal: 'Siapa nabi terakhir dalam Islam?', jawab: 'muhammad' },
   { soal: 'Kitab suci umat Islam adalah?', jawab: 'alquran' },
