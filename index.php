@@ -1,1402 +1,523 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-<title>Perpustakaan SD Sinar Mulia</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-:root {
-  --hijau: #2E7D32;
-  --hijau-muda: #4CAF50;
-  --hijau-terang: #81C784;
-  --kuning: #FFC107;
-  --kuning-muda: #FFF9C4;
-  --merah: #C62828;
-  --cream: #FFFDE7;
-  --putih: #FFFFFF;
-  --abu: #F5F5F5;
-  --teks: #1B1B1B;
-  --teks-sub: #555;
-  --shadow: 0 4px 20px rgba(0,0,0,0.12);
-  --radius: 16px;
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: 'Nunito', sans-serif; background: var(--abu); color: var(--teks); overflow-x: hidden; }
+const {
+  Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+  HeadingLevel, AlignmentType, LevelFormat, BorderStyle, WidthType,
+  ShadingType, PageNumber, PageBreak, TabStopType, TabStopPosition
+} = require('docx');
+const fs = require('fs');
 
-/* ===== AUTH ===== */
-#auth {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 40%, #388E3C 70%, #1565C0 100%);
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
-#auth::before { content:'📚'; font-size:300px; position:absolute; opacity:0.05; top:-50px; right:-60px; transform:rotate(-20deg); }
-.auth-card {
-  background: rgba(255,255,255,0.97); padding: 40px 36px; border-radius: 24px;
-  width: 360px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  text-align: center; animation: slideUp 0.5s ease both;
-}
-@keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
-.auth-logo { font-size:3.5rem; margin-bottom:8px; }
-.auth-card h2 { font-family:'Fredoka One',cursive; color:var(--hijau); font-size:1.6rem; margin-bottom:6px; }
-.auth-card p.sub { color:var(--teks-sub); font-size:.9rem; margin-bottom:24px; font-weight:600; }
-.auth-card input {
-  width:100%; padding:12px 16px; margin:8px 0; border-radius:12px;
-  border:2px solid #E0E0E0; font-size:.95rem; font-family:'Nunito',sans-serif;
-  font-weight:600; transition:border-color .2s; outline:none;
-}
-.auth-card input:focus { border-color:var(--hijau-muda); }
-.btn-primary-custom {
-  width:100%; padding:13px;
-  background:linear-gradient(135deg,var(--hijau),var(--hijau-muda));
-  color:white; border:none; border-radius:12px; font-family:'Fredoka One',cursive;
-  font-size:1.1rem; cursor:pointer; margin-top:12px; transition:all .2s;
-  box-shadow:0 4px 15px rgba(46,125,50,.4);
-}
-.btn-primary-custom:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(46,125,50,.5); }
-.auth-switch { margin-top:16px; font-size:.88rem; color:var(--teks-sub); font-weight:600; }
-.auth-switch a { color:var(--hijau); cursor:pointer; font-weight:800; text-decoration:underline; }
+const bold = (text, size = 24) => new TextRun({ text, bold: true, size, font: "Times New Roman" });
+const normal = (text, size = 24) => new TextRun({ text, size, font: "Times New Roman" });
+const italic = (text, size = 24) => new TextRun({ text, italics: true, size, font: "Times New Roman" });
 
-/* ===== APP ===== */
-#app { display:none; min-height:100vh; }
-
-/* ===== HEADER / NAVBAR ===== */
-header {
-  position:sticky; top:0; z-index:1000;
-  background:linear-gradient(135deg,#1B5E20,#2E7D32);
-  box-shadow:0 4px 20px rgba(0,0,0,.3);
-}
-.header-inner {
-  max-width:1200px; margin:0 auto;
-  display:flex; align-items:center; justify-content:space-between;
-  height:64px; padding:0 20px;
-}
-.header-logo {
-  display:flex; align-items:center; gap:10px;
-  font-family:'Fredoka One',cursive; color:white; font-size:1.25rem; flex-shrink:0;
-}
-.header-logo span { font-size:1.8rem; }
-
-/* Desktop nav */
-nav.desktop-nav { display:flex; gap:2px; align-items:center; flex-wrap:wrap; }
-nav.desktop-nav a, nav.desktop-nav .nav-link-custom {
-  color:rgba(255,255,255,.85); text-decoration:none;
-  padding:8px 10px; border-radius:10px; font-size:.78rem; font-weight:700;
-  cursor:pointer; transition:all .2s; white-space:nowrap; background:none; border:none;
-}
-nav.desktop-nav a:hover, nav.desktop-nav a.active-nav,
-nav.desktop-nav .nav-link-custom:hover, nav.desktop-nav .nav-link-custom.active-nav {
-  background:rgba(255,255,255,.2); color:white;
-}
-nav.desktop-nav .btn-logout {
-  background:rgba(255,82,82,.3); color:#FFCDD2;
-  border-radius:10px; padding:8px 12px; font-size:.78rem; font-weight:700;
-  cursor:pointer; transition:all .2s; border:none;
-}
-nav.desktop-nav .btn-logout:hover { background:rgba(255,82,82,.5); color:white; }
-
-/* Dropdown in nav */
-.nav-dropdown { position:relative; display:inline-block; }
-.nav-dropdown-menu {
-  display:none; position:absolute; top:100%; left:0;
-  background:white; border-radius:12px; min-width:160px;
-  box-shadow:0 8px 30px rgba(0,0,0,.2); padding:8px 0; z-index:999;
-  animation:fadeIn .2s ease;
-}
-.nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown.open .nav-dropdown-menu { display:block; }
-.nav-dropdown-menu a {
-  display:block; padding:10px 18px; color:var(--hijau); font-weight:700;
-  font-size:.85rem; text-decoration:none; transition:background .15s;
-}
-.nav-dropdown-menu a:hover { background:#E8F5E9; }
-
-/* Hamburger */
-.hamburger-btn {
-  display:none; background:rgba(255,255,255,.2); border:none;
-  color:white; font-size:1.5rem; padding:8px 12px; border-radius:10px;
-  cursor:pointer; transition:all .2s;
-}
-.hamburger-btn:hover { background:rgba(255,255,255,.35); }
-
-/* Mobile sidebar */
-.mobile-sidebar {
-  display:none; position:fixed; top:0; left:0; width:280px; height:100vh;
-  background:linear-gradient(180deg,#1B5E20,#2E7D32); z-index:2000;
-  overflow-y:auto; padding:20px 0; transform:translateX(-100%);
-  transition:transform .3s ease; box-shadow:4px 0 30px rgba(0,0,0,.4);
-}
-.mobile-sidebar.open { transform:translateX(0); }
-.sidebar-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:10px 20px 20px; border-bottom:1px solid rgba(255,255,255,.2); margin-bottom:12px;
-}
-.sidebar-header .logo { font-family:'Fredoka One',cursive; color:white; font-size:1.1rem; display:flex; gap:8px; align-items:center; }
-.sidebar-close { background:rgba(255,255,255,.2); border:none; color:white; font-size:1.3rem; padding:6px 10px; border-radius:8px; cursor:pointer; }
-.sidebar-link {
-  display:flex; align-items:center; gap:10px; padding:12px 24px;
-  color:rgba(255,255,255,.9); font-weight:700; font-size:.95rem;
-  cursor:pointer; transition:background .2s; border:none; background:none; width:100%; text-align:left;
-}
-.sidebar-link:hover, .sidebar-link.active { background:rgba(255,255,255,.15); color:white; }
-.sidebar-submenu { padding-left:0; background:rgba(0,0,0,.15); }
-.sidebar-submenu .sidebar-link { padding:10px 24px 10px 44px; font-size:.88rem; }
-.sidebar-accordion-btn {
-  display:flex; align-items:center; justify-content:space-between; width:100%;
-  padding:12px 24px; color:rgba(255,255,255,.9); font-weight:700; font-size:.95rem;
-  cursor:pointer; background:none; border:none; transition:background .2s;
-}
-.sidebar-accordion-btn:hover { background:rgba(255,255,255,.15); }
-.sidebar-accordion-body { display:none; }
-.sidebar-accordion-body.open { display:block; }
-.sidebar-overlay {
-  display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,.5); z-index:1999;
-}
-.sidebar-overlay.open { display:block; }
-
-/* MARQUEE */
-.marquee-wrap { background:linear-gradient(90deg,var(--kuning),#FFD54F,var(--kuning)); padding:10px 0; overflow:hidden; }
-.marquee-track { display:flex; width:max-content; animation:marquee 18s linear infinite; }
-.marquee-track span { font-weight:800; font-size:.95rem; color:#4E342E; padding:0 60px; }
-@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-
-/* SECTION */
-.section { display:none; }
-.section.active { display:block; }
-.page-wrap { max-width:1100px; margin:0 auto; padding:32px 20px 60px; }
-.page-title { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--hijau); margin-bottom:6px; }
-.page-title::after { content:''; display:block; width:60px; height:5px; background:linear-gradient(90deg,var(--kuning),var(--hijau-muda)); border-radius:3px; margin-top:8px; }
-.page-subtitle { color:var(--teks-sub); font-weight:600; margin-bottom:28px; margin-top:8px; }
-
-/* ===== BERANDA ===== */
-.beranda-hero { background:linear-gradient(135deg,#E8F5E9,#F1F8E9); border-radius:var(--radius); padding:32px; margin-bottom:28px; border:2px solid #C8E6C9; display:flex; gap:24px; align-items:flex-start; }
-.beranda-hero .hero-icon { font-size:5rem; flex-shrink:0; }
-.beranda-hero h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--hijau); margin-bottom:10px; }
-.beranda-hero p { color:var(--teks-sub); line-height:1.7; font-weight:600; }
-.visi-misi-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:28px; }
-.vm-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); border-top:5px solid var(--hijau-muda); }
-.vm-card.misi { border-top-color:var(--kuning); }
-.vm-card h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--hijau); margin-bottom:12px; }
-.vm-card p, .vm-card li { color:var(--teks-sub); font-weight:600; line-height:1.7; }
-.vm-card ul { padding-left:20px; }
-
-/* Event Notification Box */
-.event-notif-box {
-  position:fixed; bottom:24px; right:24px; width:300px; z-index:500;
-  background:white; border-radius:16px; box-shadow:0 8px 40px rgba(0,0,0,.2);
-  border-left:5px solid var(--kuning); overflow:hidden; animation:slideInRight .4s ease;
-}
-@keyframes slideInRight { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
-.notif-header {
-  background:linear-gradient(135deg,var(--kuning),#FF8F00);
-  padding:10px 14px; display:flex; align-items:center; justify-content:space-between;
-}
-.notif-header span { font-family:'Fredoka One',cursive; font-size:.95rem; color:white; }
-.notif-close { background:none; border:none; color:white; font-size:1.1rem; cursor:pointer; line-height:1; }
-.notif-body { padding:12px 14px; max-height:220px; overflow-y:auto; }
-.notif-item { padding:8px 0; border-bottom:1px dashed #EEE; }
-.notif-item:last-child { border-bottom:none; }
-.notif-item .notif-tgl { font-size:.72rem; color:#FF8F00; font-weight:800; margin-bottom:2px; }
-.notif-item .notif-nama { font-weight:700; font-size:.88rem; color:var(--teks); }
-.notif-btn-show {
-  position:fixed; bottom:24px; right:24px; z-index:499;
-  background:linear-gradient(135deg,var(--kuning),#FF8F00); color:white;
-  border:none; border-radius:50px; padding:12px 18px; font-family:'Fredoka One',cursive;
-  font-size:.9rem; cursor:pointer; box-shadow:0 4px 20px rgba(255,193,7,.5);
-  animation:pulse 2s infinite; display:none;
-}
-@keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-
-/* ===== CIRCLE MENU ===== */
-.circle-menu { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
-.circle-btn {
-  width:130px; height:130px; border-radius:50%;
-  background:linear-gradient(135deg,var(--hijau-muda),var(--hijau));
-  color:white; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  cursor:pointer; font-family:'Fredoka One',cursive; font-size:1rem; text-align:center;
-  transition:all .3s; box-shadow:0 6px 20px rgba(46,125,50,.35); border:none; gap:6px;
-}
-.circle-btn:hover { transform:translateY(-6px) scale(1.06); box-shadow:0 12px 30px rgba(46,125,50,.45); }
-.circle-btn .circle-icon { font-size:2rem; }
-.circle-btn.active-circle { background:linear-gradient(135deg,var(--kuning),#FF8F00); }
-
-/* ===== BUKU GRID ===== */
-.buku-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:20px; }
-.buku-card { background:white; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; transition:all .3s; cursor:pointer; }
-.buku-card:hover { transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,.15); }
-.buku-thumb { height:140px; display:flex; align-items:center; justify-content:center; font-size:3.5rem; }
-.buku-info { padding:14px; }
-.buku-judul { font-family:'Fredoka One',cursive; font-size:.95rem; color:var(--hijau); margin-bottom:5px; }
-.buku-sinopsis { font-size:.78rem; color:var(--teks-sub); font-weight:600; line-height:1.5; }
-.buku-badge { display:inline-block; margin-top:8px; padding:3px 10px; border-radius:10px; font-size:.72rem; font-weight:800; background:#E8F5E9; color:var(--hijau); }
-
-/* ===== LAYANAN ===== */
-.layanan-box { background:white; border-radius:var(--radius); padding:28px; box-shadow:var(--shadow); margin-top:8px; animation:fadeIn .3s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.layanan-box h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--hijau); margin-bottom:16px; }
-.info-row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid #F0F0F0; font-weight:700; }
-.info-row:last-child { border-bottom:none; }
-.info-row .label { color:var(--teks-sub); min-width:160px; }
-.info-row .val { color:var(--hijau); font-size:1rem; }
-.layanan-input { width:100%; max-width:280px; padding:12px 16px; border-radius:12px; border:2px solid #E0E0E0; font-family:'Nunito',sans-serif; font-weight:700; font-size:.95rem; outline:none; transition:border-color .2s; display:block; margin-bottom:14px; }
-.layanan-input:focus { border-color:var(--hijau-muda); }
-.btn-aksi { padding:11px 26px; background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; border:none; border-radius:12px; font-family:'Fredoka One',cursive; font-size:1rem; cursor:pointer; transition:all .2s; box-shadow:0 4px 12px rgba(46,125,50,.35); }
-.btn-aksi:hover { transform:translateY(-2px); }
-.result-text { margin-top:16px; padding:14px 18px; background:#E8F5E9; border-radius:12px; color:var(--hijau); font-weight:800; font-size:1.05rem; }
-
-/* Layanan Dropdown */
-.layanan-sub-tabs { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
-.layanan-tab-btn {
-  padding:10px 20px; background:white; border:2px solid #E0E0E0; border-radius:12px;
-  font-family:'Fredoka One',cursive; font-size:.9rem; cursor:pointer; transition:all .2s; color:var(--teks-sub);
-}
-.layanan-tab-btn.active { border-color:var(--hijau); background:var(--hijau); color:white; }
-
-/* ===== GAME ===== */
-.game-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:24px; }
-.game-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); text-align:center; }
-.game-card h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--hijau); margin-bottom:6px; }
-.game-card p.soal { font-size:1.05rem; font-weight:800; color:var(--teks); margin:14px 0; min-height:36px; background:var(--abu); padding:10px 14px; border-radius:10px; }
-.game-input { width:100%; padding:11px 14px; border-radius:12px; border:2px solid #E0E0E0; font-family:'Nunito',sans-serif; font-weight:700; font-size:1rem; text-align:center; outline:none; margin-bottom:12px; transition:border-color .2s; }
-.game-input:focus { border-color:var(--hijau-muda); }
-.hasil-game { font-size:1rem; font-weight:800; padding:8px 14px; border-radius:10px; margin-top:8px; min-height:36px; }
-.hasil-game.benar { background:#E8F5E9; color:#1B5E20; }
-.hasil-game.salah { background:#FFEBEE; color:#C62828; }
-.skor-badge { display:inline-block; background:linear-gradient(135deg,var(--kuning),#FF8F00); color:#4E342E; padding:6px 18px; border-radius:20px; font-family:'Fredoka One',cursive; font-size:1rem; margin-bottom:20px; }
-.kalkulator { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0; }
-.kalkulator input { grid-column:span 2; padding:11px 14px; border-radius:12px; border:2px solid #E0E0E0; font-family:'Nunito',sans-serif; font-weight:700; font-size:1rem; text-align:center; outline:none; transition:border-color .2s; }
-.kalkulator input:focus { border-color:var(--hijau-muda); }
-.btn-op { padding:11px; border:none; border-radius:12px; font-family:'Fredoka One',cursive; font-size:1rem; cursor:pointer; transition:all .2s; color:white; }
-.btn-op:nth-child(3){background:#1565C0} .btn-op:nth-child(4){background:#C62828} .btn-op:nth-child(5){background:#FF8F00} .btn-op:nth-child(6){background:#6A1B9A}
-.btn-op:hover { opacity:.85; transform:scale(1.04); }
-.game-options { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:10px; }
-.opt-btn { padding:8px 16px; border:2px solid #E0E0E0; border-radius:10px; background:white; font-weight:700; font-size:.9rem; cursor:pointer; transition:all .2s; }
-.opt-btn:hover { border-color:var(--hijau-muda); }
-.opt-btn.benar-opt { background:#E8F5E9; border-color:var(--hijau); color:var(--hijau); }
-.opt-btn.salah-opt { background:#FFEBEE; border-color:#C62828; color:#C62828; }
-
-/* ===== VIDEO ===== */
-.video-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-.video-card { background:white; border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow); transition:transform .3s,box-shadow .3s; }
-.video-card:hover { transform:translateY(-6px); box-shadow:0 16px 35px rgba(0,0,0,.15); }
-.video-container { position:relative; width:100%; padding-bottom:56.25%; height:0; background:#000; }
-.video-container iframe { position:absolute; top:0; left:0; width:100%; height:100%; border:none; }
-.video-info { padding:14px; }
-.video-info h3 { font-family:'Fredoka One',cursive; font-size:1rem; color:var(--hijau); margin-bottom:5px; }
-.video-info p { font-size:.82rem; color:var(--teks-sub); font-weight:600; }
-.video-meta { display:flex; justify-content:space-between; margin-top:8px; font-size:.78rem; color:#AAA; font-weight:700; }
-.btn-yt { display:inline-flex; align-items:center; gap:6px; margin-top:10px; padding:8px 16px; background:#FF0000; color:white; border-radius:10px; font-family:'Fredoka One',cursive; font-size:.85rem; text-decoration:none; transition:all .2s; }
-.btn-yt:hover { background:#CC0000; transform:scale(1.04); }
-
-/* ===== EVENT ===== */
-.event-list { display:flex; flex-direction:column; gap:20px; }
-.event-item { background:white; border-radius:var(--radius); padding:24px 28px; box-shadow:var(--shadow); display:flex; gap:20px; align-items:flex-start; border-left:6px solid var(--kuning); transition:transform .2s; }
-.event-item:hover { transform:translateX(4px); }
-.event-item.event-hijau{border-left-color:var(--hijau-muda)} .event-item.event-biru{border-left-color:#1565C0} .event-item.event-ungu{border-left-color:#7B1FA2} .event-item.event-merah{border-left-color:#C62828}
-.event-bulan { background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; border-radius:12px; padding:10px 16px; text-align:center; min-width:80px; flex-shrink:0; }
-.event-bulan .bln { font-family:'Fredoka One',cursive; font-size:1.2rem; }
-.event-bulan .tgl { font-size:2rem; font-family:'Fredoka One',cursive; line-height:1; }
-.event-content h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--hijau); margin-bottom:8px; }
-.event-content p { color:var(--teks-sub); font-weight:700; line-height:1.9; font-size:.92rem; }
-.btn-daftar-wa { display:inline-flex; align-items:center; gap:8px; margin-top:12px; padding:10px 20px; background:linear-gradient(135deg,#25D366,#128C7E); color:white; border-radius:12px; font-family:'Fredoka One',cursive; font-size:.95rem; text-decoration:none; transition:all .2s; box-shadow:0 4px 12px rgba(37,211,102,.4); }
-.btn-daftar-wa:hover { transform:translateY(-2px); }
-
-/* ===== KONTAK ===== */
-.kontak-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:28px; }
-.kontak-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); display:flex; gap:16px; align-items:flex-start; }
-.kontak-icon { font-size:2.5rem; flex-shrink:0; }
-.kontak-card h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--hijau); margin-bottom:6px; }
-.kontak-card p { color:var(--teks-sub); font-weight:600; font-size:.9rem; line-height:1.6; }
-
-/* DISKUSI */
-.diskusi-tabs { display:flex; gap:0; margin-bottom:24px; border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }
-.diskusi-tab { flex:1; padding:13px; background:white; border:none; font-family:'Fredoka One',cursive; font-size:1rem; cursor:pointer; transition:all .2s; color:var(--teks-sub); }
-.diskusi-tab.active { background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; }
-.diskusi-panel { display:none; }
-.diskusi-panel.active { display:block; }
-
-/* RUANG DISKUSI */
-.chat-box {
-  background:white; border-radius:var(--radius); box-shadow:var(--shadow);
-  overflow:hidden; margin-bottom:0;
-}
-.chat-header { background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); padding:14px 20px; display:flex; align-items:center; gap:10px; }
-.chat-header h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:white; }
-.chat-online { background:rgba(255,255,255,.25); color:white; font-size:.75rem; font-weight:800; padding:3px 10px; border-radius:20px; }
-.chat-messages { height:320px; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:12px; }
-.chat-msg { display:flex; gap:10px; animation:fadeIn .3s ease; }
-.chat-msg.mine { flex-direction:row-reverse; }
-.chat-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.2rem; background:#E8F5E9; flex-shrink:0; font-weight:800; }
-.chat-bubble { max-width:75%; padding:10px 14px; border-radius:14px; font-size:.88rem; font-weight:600; line-height:1.5; }
-.chat-msg:not(.mine) .chat-bubble { background:#F1F8E9; border-bottom-left-radius:4px; }
-.chat-msg.mine .chat-bubble { background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; border-bottom-right-radius:4px; }
-.chat-meta { font-size:.7rem; color:#AAA; margin-top:3px; }
-.chat-msg.mine .chat-meta { text-align:right; }
-.chat-input-row { display:flex; gap:10px; padding:12px 16px; border-top:2px solid #F0F0F0; }
-.chat-input-row input { flex:1; padding:10px 14px; border-radius:12px; border:2px solid #E0E0E0; font-family:'Nunito',sans-serif; font-weight:600; font-size:.92rem; outline:none; transition:border-color .2s; }
-.chat-input-row input:focus { border-color:var(--hijau-muda); }
-.chat-send { padding:10px 18px; background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; border:none; border-radius:12px; font-family:'Fredoka One',cursive; font-size:.9rem; cursor:pointer; transition:all .2s; }
-.chat-send:hover { transform:scale(1.05); }
-
-/* KOTAK SARAN */
-.saran-box { background:white; border-radius:var(--radius); padding:28px; box-shadow:var(--shadow); }
-.saran-box h3 { font-family:'Fredoka One',cursive; font-size:1.3rem; color:var(--hijau); margin-bottom:18px; }
-.saran-field { display:flex; flex-direction:column; gap:12px; }
-.saran-field input, .saran-field textarea { width:100%; padding:12px 16px; border-radius:12px; border:2px solid #E0E0E0; font-family:'Nunito',sans-serif; font-weight:600; font-size:.95rem; outline:none; transition:border-color .2s; resize:vertical; }
-.saran-field input:focus, .saran-field textarea:focus { border-color:var(--hijau-muda); }
-.rating-wrap { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.rating-wrap label { font-weight:700; color:var(--teks-sub); min-width:60px; }
-.rating-emot { display:flex; gap:8px; }
-.rating-emot button { font-size:1.8rem; background:none; border:2px solid transparent; border-radius:10px; padding:4px 8px; cursor:pointer; transition:all .2s; opacity:.5; }
-.rating-emot button:hover { opacity:1; transform:scale(1.2); }
-.rating-emot button.selected { opacity:1; border-color:var(--hijau-muda); background:#E8F5E9; transform:scale(1.15); }
-.saran-terkirim { margin-top:16px; background:#E8F5E9; border:2px solid var(--hijau-muda); border-radius:12px; padding:16px 20px; font-weight:700; color:var(--hijau); animation:fadeIn .4s ease; display:none; }
-
-/* Daftar saran publik */
-.saran-list-box { margin-top:24px; background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); }
-.saran-list-box h3 { font-family:'Fredoka One',cursive; color:var(--hijau); font-size:1.1rem; margin-bottom:16px; }
-.saran-item { padding:14px 0; border-bottom:1px dashed #EEE; }
-.saran-item:last-child { border-bottom:none; }
-.saran-item .si-head { display:flex; justify-content:space-between; margin-bottom:4px; }
-.saran-item .si-nama { font-weight:800; color:var(--hijau); font-size:.9rem; }
-.saran-item .si-rating { font-size:1rem; }
-.saran-item .si-pesan { color:var(--teks-sub); font-weight:600; font-size:.88rem; line-height:1.6; }
-.saran-item .si-tgl { font-size:.72rem; color:#AAA; margin-top:3px; }
-
-/* ===== MAPS / PANDUAN ===== */
-.maps-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:20px; }
-.maps-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); border-top:5px solid var(--hijau-muda); cursor:pointer; transition:all .3s; }
-.maps-card:hover { transform:translateY(-5px); box-shadow:0 14px 30px rgba(0,0,0,.15); }
-.maps-card.kuning{border-top-color:var(--kuning)} .maps-card.biru{border-top-color:#1565C0} .maps-card.ungu{border-top-color:#7B1FA2} .maps-card.merah{border-top-color:#C62828} .maps-card.orange{border-top-color:#E65100} .maps-card.teal{border-top-color:#00796B} .maps-card.pink{border-top-color:#AD1457}
-.maps-card-icon { font-size:3rem; margin-bottom:12px; }
-.maps-card h3 { font-family:'Fredoka One',cursive; font-size:1.1rem; color:var(--hijau); margin-bottom:8px; }
-.maps-card p { color:var(--teks-sub); font-size:.88rem; font-weight:600; line-height:1.6; }
-.maps-card .go-btn { display:inline-flex; align-items:center; gap:6px; margin-top:14px; padding:8px 18px; background:linear-gradient(135deg,var(--hijau),var(--hijau-muda)); color:white; border-radius:10px; font-family:'Fredoka One',cursive; font-size:.88rem; border:none; cursor:pointer; transition:all .2s; }
-.maps-card .go-btn:hover { transform:scale(1.05); }
-.maps-hero { background:linear-gradient(135deg,#E8F5E9,#F1F8E9); border:2px solid #C8E6C9; border-radius:var(--radius); padding:28px; margin-bottom:28px; text-align:center; }
-.maps-hero h3 { font-family:'Fredoka One',cursive; font-size:1.4rem; color:var(--hijau); margin-bottom:8px; }
-.maps-hero p { color:var(--teks-sub); font-weight:600; line-height:1.7; }
-
-/* ===== ABOUT ===== */
-.about-wrap { max-width:650px; margin:0 auto; }
-.about-avatar { width:140px; height:140px; background:linear-gradient(135deg,var(--kuning),#FF8F00); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:5rem; margin:0 auto 20px; box-shadow:0 8px 30px rgba(255,193,7,.4); animation:float 4s ease-in-out infinite; }
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-.about-name { font-family:'Fredoka One',cursive; font-size:2rem; color:var(--hijau); text-align:center; margin-bottom:4px; }
-.about-sub { text-align:center; color:var(--teks-sub); font-weight:700; margin-bottom:28px; }
-.about-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:24px; }
-.stat { background:white; border-radius:var(--radius); padding:18px 10px; text-align:center; box-shadow:var(--shadow); }
-.stat-num { font-family:'Fredoka One',cursive; font-size:1.8rem; color:var(--hijau); display:block; }
-.stat-lbl { font-size:.8rem; color:var(--teks-sub); font-weight:700; }
-.about-card { background:white; border-radius:var(--radius); padding:24px; box-shadow:var(--shadow); margin-bottom:16px; }
-.about-card h3 { font-family:'Fredoka One',cursive; font-size:1.2rem; color:var(--hijau); margin-bottom:10px; }
-.about-card p { color:var(--teks-sub); font-weight:600; line-height:1.7; }
-.contact-links { display:flex; flex-direction:column; gap:10px; margin-top:10px; }
-.contact-link-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:12px; background:var(--abu); font-weight:700; font-size:.9rem; color:var(--teks); text-decoration:none; transition:all .2s; }
-.contact-link-item:hover { background:#E8F5E9; color:var(--hijau); transform:translateX(4px); }
-.contact-link-item .ci { font-size:1.4rem; }
-.chips { display:flex; flex-wrap:wrap; gap:10px; margin-top:12px; }
-.chip { padding:6px 16px; border-radius:20px; font-size:.85rem; font-weight:800; background:linear-gradient(135deg,var(--hijau-muda),var(--hijau)); color:white; }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width:991px) {
-  nav.desktop-nav { display:none; }
-  .hamburger-btn { display:block; }
-  .mobile-sidebar { display:block; }
-}
-@media (max-width:768px) {
-  .visi-misi-grid, .kontak-grid { grid-template-columns:1fr; }
-  .beranda-hero { flex-direction:column; }
-  .event-item { flex-direction:column; }
-  .page-title { font-size:1.5rem; }
-  .event-notif-box { width:calc(100vw - 32px); right:16px; bottom:16px; }
-  .buku-grid { grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); }
-  .circle-btn { width:100px; height:100px; font-size:.85rem; }
-  .circle-btn .circle-icon { font-size:1.6rem; }
-}
-@media (max-width:576px) {
-  .page-wrap { padding:20px 14px 60px; }
-  .header-inner { padding:0 14px; }
-  .buku-grid { grid-template-columns:repeat(2,1fr); }
-  .game-grid { grid-template-columns:1fr; }
-  .video-grid { grid-template-columns:1fr; }
-  .about-stats { grid-template-columns:repeat(3,1fr); }
-}
-</style>
-</head>
-<body>
-
-<!-- AUTH -->
-<div id="auth">
-  <div id="registerBox" class="auth-card">
-    <div class="auth-logo">📚</div>
-    <h2>Daftar Anggota</h2>
-    <p class="sub">Perpustakaan SD Sinar Mulia</p>
-    <input id="reg-nama" placeholder="Nama lengkap">
-    <input id="reg-tgl" type="date">
-    <input id="reg-pass" type="password" placeholder="Buat password">
-    <button class="btn-primary-custom" onclick="daftar()">✅ Daftar Sekarang</button>
-    <div class="auth-switch">Sudah punya akun? <a onclick="toggleAuth('login')">Login di sini</a></div>
-  </div>
-  <div id="loginBox" class="auth-card" style="display:none">
-    <div class="auth-logo">🔑</div>
-    <h2>Login Anggota</h2>
-    <p class="sub">Perpustakaan SD Sinar Mulia</p>
-    <input id="login-nama" placeholder="Nama kamu">
-    <input id="login-pass" type="password" placeholder="Password">
-    <button class="btn-primary-custom" onclick="masuk()">🚀 Masuk</button>
-    <div class="auth-switch">Belum punya akun? <a onclick="toggleAuth('register')">Daftar di sini</a></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app">
-
-  <!-- Sidebar overlay -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-
-  <!-- Mobile Sidebar -->
-  <div class="mobile-sidebar" id="mobileSidebar">
-    <div class="sidebar-header">
-      <div class="logo"><span>📚</span> SD Sinar Mulia</div>
-      <button class="sidebar-close" onclick="closeSidebar()">✕</button>
-    </div>
-    <button class="sidebar-link" onclick="show('beranda'); closeSidebar()">🏠 Beranda</button>
-    <button class="sidebar-link" onclick="show('koleksi'); closeSidebar()">📖 Koleksi Buku</button>
-    <button class="sidebar-accordion-btn" onclick="toggleAccordion('acc-layanan')">
-      <span>⭐ Layanan & Media</span><span id="acc-layanan-icon">▼</span>
-    </button>
-    <div class="sidebar-accordion-body" id="acc-layanan">
-      <div class="sidebar-submenu">
-        <button class="sidebar-link" onclick="show('layanan'); closeSidebar()">⭐ Layanan</button>
-        <button class="sidebar-link" onclick="show('game'); closeSidebar()">🎮 Game Edukasi</button>
-        <button class="sidebar-link" onclick="show('video'); closeSidebar()">🎬 Video Edukasi</button>
-      </div>
-    </div>
-    <button class="sidebar-link" onclick="show('event'); closeSidebar()">🎪 Event</button>
-    <button class="sidebar-link" onclick="show('kontak'); closeSidebar()">📞 Kontak</button>
-    <button class="sidebar-link" onclick="show('maps'); closeSidebar()">🗺️ Panduan</button>
-    <button class="sidebar-link" onclick="show('about'); closeSidebar()">👤 About</button>
-    <div style="padding:16px 20px;margin-top:auto;border-top:1px solid rgba(255,255,255,.2);margin-top:20px;">
-      <button onclick="logout()" style="width:100%;padding:12px;background:rgba(255,82,82,.4);border:none;border-radius:12px;color:white;font-family:'Fredoka One',cursive;font-size:.95rem;cursor:pointer;">⬅ Keluar</button>
-    </div>
-  </div>
-
-  <!-- Header -->
-  <header>
-    <div class="header-inner">
-      <div class="header-logo"><span>📚</span> SD Sinar Mulia</div>
-      <!-- Desktop Nav -->
-      <nav class="desktop-nav">
-        <a onclick="show('beranda',this)">🏠 Beranda</a>
-        <a onclick="show('koleksi',this)">📖 Koleksi</a>
-        <div class="nav-dropdown">
-          <a class="nav-link-custom" id="navLayananBtn" onclick="toggleNavDropdown(this)">⭐ Layanan ▾</a>
-          <div class="nav-dropdown-menu">
-            <a onclick="show('layanan'); closeDropdowns()">⭐ Layanan</a>
-            <a onclick="show('game'); closeDropdowns()">🎮 Game Edukasi</a>
-            <a onclick="show('video'); closeDropdowns()">🎬 Video Edukasi</a>
-          </div>
-        </div>
-        <a onclick="show('event',this)">🎪 Event</a>
-        <a onclick="show('kontak',this)">📞 Kontak</a>
-        <a onclick="show('maps',this)">🗺️ Panduan</a>
-        <a onclick="show('about',this)">👤 About</a>
-        <button class="btn-logout" onclick="logout()">⬅ Keluar</button>
-      </nav>
-      <!-- Hamburger -->
-      <button class="hamburger-btn" onclick="openSidebar()">☰</button>
-    </div>
-  </header>
-
-  <!-- Marquee -->
-  <div class="marquee-wrap">
-    <div class="marquee-track">
-      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI!!! 📚</span>
-      <span>🌟 SELAMAT DATANG DI PERPUSTAKAAN SD SINAR MULIA — RAJIN MEMBACA, CERDAS BERPRESTASI!!! 📚</span>
-    </div>
-  </div>
-
-  <!-- Event Notification Widget -->
-  <div class="event-notif-box" id="eventNotifBox">
-    <div class="notif-header">
-      <span>🎪 Event Mendatang</span>
-      <button class="notif-close" onclick="hideNotif()">✕</button>
-    </div>
-    <div class="notif-body" id="notifBody">
-      <div class="notif-item"><div class="notif-tgl">12 April 2026</div><div class="notif-nama">🎬 Nonton Bareng Film Adaptasi Novel</div></div>
-      <div class="notif-item"><div class="notif-tgl">26 April 2026</div><div class="notif-nama">📝 Lomba Menulis Cerita Pendek</div></div>
-      <div class="notif-item"><div class="notif-tgl">10 Mei 2026</div><div class="notif-nama">🔬 Workshop Sains Seru</div></div>
-      <div class="notif-item"><div class="notif-tgl">24 Mei 2026</div><div class="notif-nama">🎤 Pojok Baca: Mendongeng Bersama</div></div>
-      <div class="notif-item"><div class="notif-tgl">7 Juni 2026</div><div class="notif-nama">🏆 Lomba Baca Cepat & Kuis Literasi</div></div>
-    </div>
-  </div>
-  <button class="notif-btn-show" id="notifBtnShow" onclick="showNotif()">🎪 Event</button>
-
-  <!-- ====== BERANDA ====== -->
-  <div id="beranda" class="section active">
-    <div class="page-wrap">
-      <div class="page-title">🏠 Beranda</div>
-      <p class="page-subtitle">Selamat datang, <b id="namaUser">Pengguna</b>! Selamat belajar.</p>
-      <div class="beranda-hero">
-        <div class="hero-icon">🏫</div>
-        <div>
-          <h3>Sejarah Perpustakaan</h3>
-          <p>Perpustakaan SD Sinar Mulia berdiri sejak tahun 2010 sebagai pilar pendukung kegiatan belajar mengajar. Seiring waktu, perpustakaan ini terus berkembang dari sekadar ruang penyimpanan buku menjadi pusat literasi digital yang modern, guna menyediakan akses informasi yang luas bagi seluruh siswa dan tenaga pendidik.</p>
-        </div>
-      </div>
-      <div class="visi-misi-grid">
-        <div class="vm-card">
-          <h3>🎯 Visi</h3>
-          <p>Menjadi pusat sumber belajar yang inspiratif, unggul dalam literasi, dan berwawasan teknologi untuk seluruh warga sekolah SD Sinar Mulia.</p>
-        </div>
-        <div class="vm-card misi">
-          <h3>📋 Misi</h3>
-          <ul>
-            <li>Meningkatkan minat baca dan budaya literasi di lingkungan sekolah</li>
-            <li>Menyediakan koleksi referensi yang lengkap, terkini, dan mudah diakses</li>
-            <li>Mengembangkan layanan berbasis digital untuk kemudahan belajar mandiri</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== KOLEKSI ====== -->
-  <div id="koleksi" class="section">
-    <div class="page-wrap">
-      <div class="page-title">📖 Koleksi Buku</div>
-      <p class="page-subtitle">Pilih kategori buku yang ingin kamu jelajahi</p>
-      <div class="circle-menu">
-        <button class="circle-btn" onclick="tampilBuku('cerita',this)"><span class="circle-icon">📖</span>Buku Cerita</button>
-        <button class="circle-btn" onclick="tampilBuku('pelajaran',this)"><span class="circle-icon">📘</span>Buku Pelajaran</button>
-        <button class="circle-btn" onclick="tampilBuku('komik',this)"><span class="circle-icon">🦸</span>Komik</button>
-      </div>
-      <div id="bukuGrid" class="buku-grid"></div>
-    </div>
-  </div>
-
-  <!-- ====== LAYANAN ====== -->
-  <div id="layanan" class="section">
-    <div class="page-wrap">
-      <div class="page-title">⭐ Layanan</div>
-      <p class="page-subtitle">Pilih layanan perpustakaan yang kamu butuhkan</p>
-      <div class="circle-menu">
-        <button class="circle-btn" onclick="showLayanan('peminjaman',this)"><span class="circle-icon">📥</span>Peminjaman</button>
-        <button class="circle-btn" onclick="showLayanan('perpanjangan',this)"><span class="circle-icon">🔄</span>Perpanjangan</button>
-        <button class="circle-btn" onclick="showLayanan('pengembalian',this)"><span class="circle-icon">📤</span>Pengembalian</button>
-      </div>
-      <div id="layananBox"></div>
-    </div>
-  </div>
-
-  <!-- ====== GAME ====== -->
-  <div id="game" class="section">
-    <div class="page-wrap">
-      <div class="page-title">🎮 Game Edukasi</div>
-      <p class="page-subtitle">Belajar sambil bermain — seru dan tetap cerdas!</p>
-      <div class="skor-badge">🏆 Skor Total: <span id="skorTotal">0</span></div>
-      <div class="game-grid">
-
-        <!-- KALKULATOR -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🧮</div>
-          <h3>Kalkulator Edukasi</h3>
-          <div class="kalkulator">
-            <input type="number" id="angka1" placeholder="Angka pertama">
-            <input type="number" id="angka2" placeholder="Angka kedua">
-            <button class="btn-op" onclick="hitung('+')">➕ Tambah</button>
-            <button class="btn-op" onclick="hitung('-')">➖ Kurang</button>
-            <button class="btn-op" onclick="hitung('*')">✖ Kali</button>
-            <button class="btn-op" onclick="hitung('/')">➗ Bagi</button>
-          </div>
-          <div class="hasil-game" id="hasilKalkulator">Hasil: —</div>
-        </div>
-
-        <!-- MATEMATIKA -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🔢</div>
-          <h3>Game Matematika</h3>
-          <p class="soal" id="soalMath">Memuat soal...</p>
-          <input type="number" class="game-input" id="jawabanMath" placeholder="Ketik jawaban..." onkeydown="if(event.key==='Enter') cekMath()">
-          <button class="btn-aksi" onclick="cekMath()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilMath"></div>
-        </div>
-
-        <!-- BAHASA INDONESIA -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">📝</div>
-          <h3>Game Bahasa Indonesia</h3>
-          <p style="font-size:.85rem;color:var(--teks-sub);font-weight:600;margin-bottom:4px">Lengkapi kata singkatan berikut:</p>
-          <p class="soal" id="soalBI">Memuat soal...</p>
-          <input class="game-input" id="jawabanBI" placeholder="Tulis kata lengkap..." onkeydown="if(event.key==='Enter') cekBI()">
-          <button class="btn-aksi" onclick="cekBI()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilBI"></div>
-        </div>
-
-        <!-- AGAMA -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🕌</div>
-          <h3>Game Agama</h3>
-          <p class="soal" id="soalAgama">Memuat soal...</p>
-          <input class="game-input" id="jawabanAgama" placeholder="Ketik jawaban..." onkeydown="if(event.key==='Enter') cekAgama()">
-          <button class="btn-aksi" onclick="cekAgama()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilAgama"></div>
-        </div>
-
-        <!-- IPA PILIHAN GANDA -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🔬</div>
-          <h3>Game IPA</h3>
-          <p class="soal" id="soalIPA">Memuat soal...</p>
-          <div class="game-options" id="opsiIPA"></div>
-          <div class="hasil-game" id="hasilIPA"></div>
-        </div>
-
-        <!-- IPS -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🌏</div>
-          <h3>Game IPS</h3>
-          <p class="soal" id="soalIPS">Memuat soal...</p>
-          <input class="game-input" id="jawabanIPS" placeholder="Ketik jawaban..." onkeydown="if(event.key==='Enter') cekIPS()">
-          <button class="btn-aksi" onclick="cekIPS()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilIPS"></div>
-        </div>
-
-        <!-- TEBAK KATA -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🔤</div>
-          <h3>Tebak Kata</h3>
-          <p style="font-size:.82rem;color:var(--teks-sub);font-weight:600;margin-bottom:4px">Tebak kata dari definisinya!</p>
-          <p class="soal" id="soalTebakKata">Memuat soal...</p>
-          <input class="game-input" id="jawabanTebakKata" placeholder="Ketik jawabanmu..." onkeydown="if(event.key==='Enter') cekTebakKata()">
-          <button class="btn-aksi" onclick="cekTebakKata()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilTebakKata"></div>
-        </div>
-
-        <!-- TEBAK GAMBAR EMOJI -->
-        <div class="game-card">
-          <div style="font-size:2.5rem;margin-bottom:8px">🎭</div>
-          <h3>Tebak Emoji</h3>
-          <p style="font-size:.82rem;color:var(--teks-sub);font-weight:600;margin-bottom:4px">Tebak benda dari emoji berikut:</p>
-          <p class="soal" id="soalEmoji" style="font-size:2rem;letter-spacing:4px">...</p>
-          <input class="game-input" id="jawabanEmoji" placeholder="Nama bendanya..." onkeydown="if(event.key==='Enter') cekEmoji()">
-          <button class="btn-aksi" onclick="cekEmoji()">✅ Jawab</button>
-          <div class="hasil-game" id="hasilEmoji"></div>
-        </div>
-
-      </div>
-
-      <!-- GAME ONLINE -->
-      <div style="margin-top:36px;background:white;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)">
-        <h3 style="font-family:'Fredoka One',cursive;font-size:1.3rem;color:var(--hijau);margin-bottom:16px">🌐 Game Edukasi Online</h3>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px">
-          <a href="https://www.mathplayground.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#E8F5E9;border-radius:12px;padding:14px;font-weight:700;color:var(--hijau);text-align:center">🧮 Game Matematika</div></a>
-          <a href="https://www.abcya.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#E3F2FD;border-radius:12px;padding:14px;font-weight:700;color:#1565C0;text-align:center">📖 Game Membaca</div></a>
-          <a href="https://www.coolmathgames.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#FFF3E0;border-radius:12px;padding:14px;font-weight:700;color:#E65100;text-align:center">💡 Game Logika</div></a>
-          <a href="https://www.funbrain.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#FCE4EC;border-radius:12px;padding:14px;font-weight:700;color:#880E4F;text-align:center">🎉 Game Seru</div></a>
-          <a href="https://www.splashlearn.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#EDE7F6;border-radius:12px;padding:14px;font-weight:700;color:#4A148C;text-align:center">✨ SplashLearn</div></a>
-          <a href="https://toytheater.com" target="_blank" rel="noopener" style="text-decoration:none"><div style="background:#E0F7FA;border-radius:12px;padding:14px;font-weight:700;color:#006064;text-align:center">🎭 Toy Theater</div></a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== VIDEO ====== -->
-  <div id="video" class="section">
-    <div class="page-wrap">
-      <div class="page-title">🎬 Video Edukasi</div>
-      <p class="page-subtitle">Tonton video pembelajaran yang seru dan mudah dipahami</p>
-      <div class="video-grid">
-        <div class="video-card"><div class="video-container"><iframe src="https://www.youtube.com/embed/vHxWiVL0oWA" title="Belajar Perkalian" allowfullscreen></iframe></div><div class="video-info"><h3>Belajar Perkalian</h3><p>Perkalian sebagai penjumlahan berulang dengan contoh sederhana.</p><div class="video-meta"><span>⏱ 8 mnt</span><span>👁 1.2M views</span></div><a href="https://www.youtube.com/watch?v=vHxWiVL0oWA" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a></div></div>
-        <div class="video-card"><div class="video-container"><iframe src="https://www.youtube.com/embed/RakEW82veFg" title="Metamorfosis" allowfullscreen></iframe></div><div class="video-info"><h3>Metamorfosis Kupu-Kupu</h3><p>Proses perubahan dari telur, larva, pupa, hingga kupu-kupu dewasa.</p><div class="video-meta"><span>⏱ 12 mnt</span><span>👁 1.2M views</span></div><a href="https://www.youtube.com/watch?v=RakEW82veFg" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a></div></div>
-        <div class="video-card"><div class="video-container"><iframe src="https://www.youtube.com/embed/nlXwuNHF8JM" title="Fotosintesis" allowfullscreen></iframe></div><div class="video-info"><h3>Proses Fotosintesis</h3><p>Tumbuhan mengubah cahaya matahari, air, dan CO₂ menjadi makanan dan oksigen.</p><div class="video-meta"><span>⏱ 10 mnt</span><span>👁 1.5M views</span></div><a href="https://www.youtube.com/watch?v=nlXwuNHF8JM" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a></div></div>
-        <div class="video-card"><div class="video-container"><iframe src="https://www.youtube.com/embed/2EgP_zSOKN4" title="Tata Surya" allowfullscreen></iframe></div><div class="video-info"><h3>Sistem Tata Surya</h3><p>Kenali 8 Planet dan Benda Langit di Tata Surya kita.</p><div class="video-meta"><span>⏱ 15 mnt</span><span>👁 5.2M views</span></div><a href="https://www.youtube.com/watch?v=2EgP_zSOKN4" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a></div></div>
-        <div class="video-card"><div class="video-container"><iframe src="https://www.youtube.com/embed/zSRpom4gxGE" title="Siklus Air" allowfullscreen></iframe></div><div class="video-info"><h3>Siklus Air Hujan</h3><p>Proses Siklus Air: Evaporasi, Kondensasi, Adveksi, Presipitasi.</p><div class="video-meta"><span>⏱ 11 mnt</span><span>👁 9.2M views</span></div><a href="https://www.youtube.com/watch?v=zSRpom4gxGE" target="_blank" rel="noopener" class="btn-yt">▶ Buka di YouTube</a></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== EVENT ====== -->
-  <div id="event" class="section">
-    <div class="page-wrap">
-      <div class="page-title">🎪 Event & Kegiatan</div>
-      <p class="page-subtitle">Jadwal kegiatan perpustakaan — daftar dan ikuti serunya!</p>
-      <div class="event-list">
-        <div class="event-item">
-          <div class="event-bulan"><div class="bln">APR</div><div class="tgl">12</div></div>
-          <div class="event-content"><h3>🎬 Nonton Bareng Film Adaptasi Novel</h3><p>📌 Menonton film dari adaptasi novel lalu diskusi bersama<br>🕒 08.00 WIB – Selesai<br>📍 Aula SD Sinar Mulia</p><a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20event%20Nonton%20Bareng" target="_blank" rel="noopener" class="btn-daftar-wa">💬 Daftar via WhatsApp</a></div>
-        </div>
-        <div class="event-item event-hijau">
-          <div class="event-bulan" style="background:linear-gradient(135deg,#2E7D32,#4CAF50)"><div class="bln">APR</div><div class="tgl">26</div></div>
-          <div class="event-content"><h3>📝 Lomba Menulis Cerita Pendek</h3><p>📌 Lomba menulis cerita pendek bertema lingkungan untuk siswa kelas 4–6<br>🕒 09.00 – 12.00 WIB<br>📍 Ruang Perpustakaan<br>🏆 Hadiah menarik untuk juara 1, 2, dan 3!</p><a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20Lomba%20Menulis" target="_blank" rel="noopener" class="btn-daftar-wa">💬 Daftar via WhatsApp</a></div>
-        </div>
-        <div class="event-item event-biru">
-          <div class="event-bulan" style="background:linear-gradient(135deg,#1565C0,#1976D2)"><div class="bln">MEI</div><div class="tgl">10</div></div>
-          <div class="event-content"><h3>🔬 Workshop Sains Seru: Eksperimen Sederhana</h3><p>📌 Eksperimen sains sederhana yang bisa dilakukan di rumah<br>🕒 08.30 – 11.30 WIB<br>📍 Laboratorium Mini SD Sinar Mulia<br>👶 Terbuka untuk kelas 3–6</p><a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20Workshop%20Sains" target="_blank" rel="noopener" class="btn-daftar-wa">💬 Daftar via WhatsApp</a></div>
-        </div>
-        <div class="event-item event-ungu">
-          <div class="event-bulan" style="background:linear-gradient(135deg,#6A1B9A,#8E24AA)"><div class="bln">MEI</div><div class="tgl">24</div></div>
-          <div class="event-content"><h3>🎤 Pojok Baca: Mendongeng Bersama</h3><p>📌 Sesi mendongeng interaktif bersama penulis tamu<br>🕒 09.00 – 11.00 WIB<br>📍 Taman Baca SD Sinar Mulia<br>📚 Gratis untuk seluruh siswa</p><a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20Pojok%20Baca" target="_blank" rel="noopener" class="btn-daftar-wa">💬 Daftar via WhatsApp</a></div>
-        </div>
-        <div class="event-item event-merah">
-          <div class="event-bulan" style="background:linear-gradient(135deg,#B71C1C,#E53935)"><div class="bln">JUN</div><div class="tgl">07</div></div>
-          <div class="event-content"><h3>🏆 Lomba Baca Cepat & Kuis Literasi</h3><p>📌 Kompetisi membaca cepat dan kuis pengetahuan umum antar kelas<br>🕒 07.30 – 13.00 WIB<br>📍 Aula SD Sinar Mulia<br>🎁 Piala bergilir + sertifikat untuk semua peserta!</p><a href="https://wa.me/628123456789?text=Halo%2C%20saya%20ingin%20mendaftar%20Lomba%20Baca%20Cepat" target="_blank" rel="noopener" class="btn-daftar-wa">💬 Daftar via WhatsApp</a></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== KONTAK ====== -->
-  <div id="kontak" class="section">
-    <div class="page-wrap">
-      <div class="page-title">📞 Kontak Kami</div>
-      <p class="page-subtitle">Hubungi perpustakaan untuk pertanyaan dan informasi lebih lanjut</p>
-      <div class="kontak-grid">
-        <div class="kontak-card"><div class="kontak-icon">📍</div><div><h3>Alamat</h3><p>Jl. Pendidikan No. 10, Kota Medan,Sumatera Utara, Indonesia</p></div></div>
-        <div class="kontak-card"><div class="kontak-icon">📞</div><div><h3>Telepon</h3><p>+6282277225725</p></div></div>
-        <div class="kontak-card"><div class="kontak-icon">📧</div><div><h3>Email</h3><p>perpustakaan@sinarmulia.sch.id</p></div></div>
-        <div class="kontak-card"><div class="kontak-icon">⏰</div><div><h3>Jam Operasional</h3><p>Senin – Jum'at: 08.00 – 15.00 WIB<br>Sabtu: 09.00 - 12.00<br>Minggu & Tanggal Merah: TUTUP</p></div></div>
-      </div>
-
-      <!-- TABS: Diskusi & Saran -->
-      <div class="diskusi-tabs">
-        <button class="diskusi-tab active" onclick="switchKontakTab('diskusi',this)">💬 Ruang Diskusi</button>
-        <button class="diskusi-tab" onclick="switchKontakTab('saran',this)">💌 Kotak Saran</button>
-      </div>
-
-      <!-- DISKUSI PANEL -->
-      <div class="diskusi-panel active" id="panel-diskusi">
-        <div class="chat-box">
-          <div class="chat-header">
-            <h3>💬 Ruang Diskusi Perpustakaan</h3>
-            <span class="chat-online" id="onlineCount">● 1 online</span>
-          </div>
-          <div class="chat-messages" id="chatMessages">
-            <!-- Pesan default -->
-            <div class="chat-msg">
-              <div class="chat-avatar">🤖</div>
-              <div>
-                <div class="chat-bubble">Halo! Selamat datang di Ruang Diskusi Perpustakaan SD Sinar Mulia! Silakan berdiskusi, bertanya, atau berbagi tentang buku dan kegiatan perpustakaan. 📚</div>
-                <div class="chat-meta">Bot Perpustakaan • Selalu aktif</div>
-              </div>
-            </div>
-          </div>
-          <div class="chat-input-row">
-            <input type="text" id="chatInput" placeholder="Tulis pesan..." onkeydown="if(event.key==='Enter') kirimChat()">
-            <button class="chat-send" onclick="kirimChat()">Kirim ➤</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- SARAN PANEL -->
-      <div class="diskusi-panel" id="panel-saran">
-        <div class="saran-box">
-          <h3>💌 Kotak Saran</h3>
-          <div class="saran-field">
-            <input type="text" id="saran-nama" placeholder="Nama kamu">
-            <input type="text" id="saran-sosmed" placeholder="Media sosial (contoh: @namakamu)">
-            <textarea id="saran-pesan" rows="4" placeholder="Pesan atau saran kamu untuk perpustakaan..."></textarea>
-            <div class="rating-wrap">
-              <label>⭐ Rating:</label>
-              <div class="rating-emot" id="ratingEmot">
-                <button onclick="pilihRating(this,'😞','Sangat Kecewa')">😞</button>
-                <button onclick="pilihRating(this,'😕','Kecewa')">😕</button>
-                <button onclick="pilihRating(this,'😐','Biasa')">😐</button>
-                <button onclick="pilihRating(this,'😊','Puas')">😊</button>
-                <button onclick="pilihRating(this,'😁','Sangat Puas')">😁</button>
-              </div>
-            </div>
-            <div><button class="btn-aksi" onclick="kirimSaran()">📤 Kirim Saran</button></div>
-          </div>
-          <div id="saranTerkirim" class="saran-terkirim"></div>
-        </div>
-
-        <!-- Daftar Saran Publik -->
-        <div class="saran-list-box" id="saranListBox">
-          <h3>📋 Saran dari Pengguna</h3>
-          <div id="saranList"><p style="color:#AAA;font-weight:600;font-size:.88rem">Belum ada saran yang masuk.</p></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== MAPS ====== -->
-  <div id="maps" class="section">
-    <div class="page-wrap">
-      <div class="page-title">🗺️ Panduan Menu</div>
-      <p class="page-subtitle">Tidak tahu harus kemana? Baca panduan ini!</p>
-      <div class="maps-hero">
-        <div style="font-size:4rem;margin-bottom:12px">🧭</div>
-        <h3>Peta Perpustakaan Digital SD Sinar Mulia</h3>
-        <p>Klik tombol "Pergi ke Menu" untuk langsung berpindah ke menu yang kamu inginkan.</p>
-      </div>
-      <div class="maps-grid">
-        <div class="maps-card"><div class="maps-card-icon">🏠</div><h3>Beranda</h3><p>Halaman utama. Baca sejarah singkat, visi dan misi perpustakaan SD Sinar Mulia.</p><button class="go-btn" onclick="show('beranda')">🚀 Pergi ke Beranda</button></div>
-        <div class="maps-card kuning"><div class="maps-card-icon">📖</div><h3>Koleksi Buku</h3><p>Koleksi Buku Cerita, Buku Pelajaran, dan Komik Edukasi lebih dari 60 judul!</p><button class="go-btn" onclick="show('koleksi')">🚀 Lihat Koleksi</button></div>
-        <div class="maps-card biru"><div class="maps-card-icon">⭐</div><h3>Layanan</h3><p>Peminjaman, perpanjangan, dan penghitungan denda keterlambatan.</p><button class="go-btn" onclick="show('layanan')">🚀 Ke Layanan</button></div>
-        <div class="maps-card ungu"><div class="maps-card-icon">🎮</div><h3>Game Edukasi</h3><p>8 game edukasi: Matematika, IPA, IPS, Bahasa, Agama, Tebak Kata, Emoji!</p><button class="go-btn" onclick="show('game')">🚀 Main Game</button></div>
-        <div class="maps-card merah"><div class="maps-card-icon">🎬</div><h3>Video Edukasi</h3><p>Tonton video pembelajaran tentang Perkalian, Metamorfosis, Fotosintesis, dan lainnya.</p><button class="go-btn" onclick="show('video')">🚀 Tonton Video</button></div>
-        <div class="maps-card orange"><div class="maps-card-icon">🎪</div><h3>Event & Kegiatan</h3><p>Jadwal lomba, workshop, dan acara seru dengan tombol daftar via WhatsApp.</p><button class="go-btn" onclick="show('event')">🚀 Lihat Event</button></div>
-        <div class="maps-card teal"><div class="maps-card-icon">📞</div><h3>Kontak & Diskusi</h3><p>Alamat, telepon, jam buka, ruang diskusi, dan kotak saran perpustakaan.</p><button class="go-btn" onclick="show('kontak')">🚀 Ke Kontak</button></div>
-        <div class="maps-card pink"><div class="maps-card-icon">👤</div><h3>About Me</h3><p>Profil Admin Perpustakaan SD Sinar Mulia, program unggulan, kontak, dan CV.</p><button class="go-btn" onclick="show('about')">🚀 Lihat Profil</button></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ====== ABOUT ====== -->
-  <div id="about" class="section">
-    <div class="page-wrap">
-      <div class="page-title">👤 About Me</div>
-      <p class="page-subtitle">Kenali pengelola Perpustakaan SD Sinar Mulia</p>
-      <div class="about-wrap">
-        <div class="about-avatar">👩‍🏫</div>
-        <div class="about-name">Azrah Hamidah NST.</div>
-        <div class="about-sub">🏫 Pustakawan SD Sinar Mulia</div>
-        <div class="about-stats">
-          <div class="stat"><span class="stat-num">14+</span><span class="stat-lbl">Tahun Pengalaman</span></div>
-          <div class="stat"><span class="stat-num">500+</span><span class="stat-lbl">Koleksi Buku</span></div>
-          <div class="stat"><span class="stat-num">200+</span><span class="stat-lbl">Anggota Aktif</span></div>
-        </div>
-        <div class="about-card">
-          <h3>👋 Sapa Saya!😁😁😁</h3>
-          <p style="margin-bottom:16px">Halo! Saya Azrah, pustakawan dan admin SD Sinar Mulia sejak tahun 2010. Saya berdedikasi untuk menciptakan suasana perpustakaan yang menyenangkan dan membuat anak-anak semakin cinta membaca!</p>
-          <div class="contact-links">
-            <div style="font-weight:700;color:var(--hijau);margin-bottom:4px">📋 Informasi Kontak:</div>
-            <a href="https://drive.google.com/file/d/1IAb7KRsTeZ_DDY5-UzanqW6R9Z5e2Obc/view?usp=drive_link" target="_blank" rel="noopener" class="contact-link-item"><span class="ci">📄</span> Curriculum Vitae (CV)</a>
-            <a href="https://wa.me/6282277225725" target="_blank" rel="noopener" class="contact-link-item"><span class="ci">📱</span> +62 822-7722-5725</a>
-            <a href="https://www.instagram.com/zraah_h_?igsh=MXVuM3Q4YnQxZjRseA==" target="_blank" rel="noopener" class="contact-link-item"><span class="ci">📸</span> @zraah_h_</a>
-            <a href="mailto:azrahhamidahnst@gmail.com" class="contact-link-item"><span class="ci">📧</span> azrahhamidahnst@gmail.com</a>
-          </div>
-        </div>
-        <div class="about-card">
-          <h3>🌟 Program Unggulan</h3>
-          <div class="chips">
-            <span class="chip">📚 Pojok Baca</span><span class="chip">🎬 Nonton Bareng</span><span class="chip">✏️ Menulis Kreatif</span><span class="chip">🔬 Sains Seru</span><span class="chip">🏆 Lomba Baca</span>
-          </div>
-        </div>
-        <div class="about-card">
-          <h3>💌 Pesan</h3>
-          <p>"Setiap buku yang kamu buka adalah jendela menuju dunia yang lebih luas. Jangan berhenti membaca, karena ilmu adalah bekal terbaik untuk masa depanmu!" 🌟</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- end #app -->
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-/* ============= STORAGE HELPERS ============= */
-// Use localStorage as persistent storage substitute
-// (Note: In production use a real backend/database)
-function storeGet(key) { try { return JSON.parse(localStorage.getItem(key)); } catch(e) { return null; } }
-function storeSet(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
-
-/* ============= AUTH ============= */
-let userData = {};
-let currentUser = '';
-
-function toggleAuth(mode) {
-  document.getElementById('registerBox').style.display = mode==='login' ? 'none' : 'block';
-  document.getElementById('loginBox').style.display = mode==='login' ? 'block' : 'none';
+function heading1(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_1,
+    alignment: AlignmentType.CENTER,
+    spacing: { before: 400, after: 200 },
+    children: [new TextRun({ text, bold: true, size: 28, font: "Times New Roman", allCaps: true })]
+  });
 }
 
-function daftar() {
-  const nama = document.getElementById('reg-nama').value.trim();
-  const pass = document.getElementById('reg-pass').value.trim();
-  if (!nama || !pass) { alert('⚠️ Harap isi nama dan password!'); return; }
-  let users = storeGet('users') || {};
-  if (users[nama]) { alert('⚠️ Nama sudah terdaftar!'); return; }
-  users[nama] = pass;
-  storeSet('users', users);
-  alert('✅ Pendaftaran berhasil! Silakan login.');
-  toggleAuth('login');
+function heading2(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_2,
+    spacing: { before: 300, after: 150 },
+    children: [new TextRun({ text, bold: true, size: 26, font: "Times New Roman" })]
+  });
 }
 
-function masuk() {
-  const nama = document.getElementById('login-nama').value.trim();
-  const pass = document.getElementById('login-pass').value.trim();
-  const users = storeGet('users') || {};
-  // Allow demo login even without registration
-  if (!nama || !pass) { alert('⚠️ Isi nama dan password!'); return; }
-  if (users[nama] && users[nama] !== pass) { alert('❌ Password salah!'); return; }
-  if (!users[nama]) {
-    // auto-register on first login
-    users[nama] = pass;
-    storeSet('users', users);
-  }
-  currentUser = nama;
-  document.getElementById('auth').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('namaUser').textContent = nama;
-  soalBaruMath(); soalBaruBI(); soalBaruAgama(); soalBaruIPA(); soalBaruIPS(); soalBaruTebakKata(); soalBaruEmoji();
-  loadChatMessages(); loadSaranList();
-  updateOnlineCount();
+function heading3(text) {
+  return new Paragraph({
+    heading: HeadingLevel.HEADING_3,
+    spacing: { before: 240, after: 120 },
+    children: [new TextRun({ text, bold: true, size: 24, font: "Times New Roman" })]
+  });
 }
 
-function logout() { location.reload(); }
-
-/* ============= SIDEBAR ============= */
-function openSidebar() {
-  document.getElementById('mobileSidebar').classList.add('open');
-  document.getElementById('sidebarOverlay').classList.add('open');
-}
-function closeSidebar() {
-  document.getElementById('mobileSidebar').classList.remove('open');
-  document.getElementById('sidebarOverlay').classList.remove('open');
-}
-function toggleAccordion(id) {
-  const body = document.getElementById(id);
-  const icon = document.getElementById(id+'-icon');
-  body.classList.toggle('open');
-  if (icon) icon.textContent = body.classList.contains('open') ? '▲' : '▼';
+function para(runs, indent = true) {
+  return new Paragraph({
+    spacing: { before: 100, after: 100, line: 360 },
+    indent: indent ? { firstLine: 720 } : {},
+    children: Array.isArray(runs) ? runs : [normal(runs)]
+  });
 }
 
-/* ============= NAV DROPDOWN ============= */
-function toggleNavDropdown(el) {
-  const dd = el.closest('.nav-dropdown');
-  dd.classList.toggle('open');
+function bulletPara(text) {
+  return new Paragraph({
+    spacing: { before: 80, after: 80, line: 360 },
+    indent: { left: 720, hanging: 360 },
+    numbering: { reference: "bullets", level: 0 },
+    children: [normal(text)]
+  });
 }
-function closeDropdowns() {
-  document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+
+function numbered(text) {
+  return new Paragraph({
+    spacing: { before: 80, after: 80, line: 360 },
+    indent: { left: 720, hanging: 360 },
+    numbering: { reference: "numbers", level: 0 },
+    children: [normal(text)]
+  });
 }
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-dropdown')) closeDropdowns();
+
+function pageBreak() {
+  return new Paragraph({ children: [new PageBreak()] });
+}
+
+function emptyLine() {
+  return new Paragraph({ children: [normal("")], spacing: { before: 0, after: 0 } });
+}
+
+// ---- TITLE PAGE ----
+const titlePage = [
+  new Paragraph({ spacing: { before: 1440, after: 200 }, alignment: AlignmentType.CENTER, children: [bold("PENGARUH LIBRARY ANXIETY TERHADAP PEMENUHAN KEBUTUHAN INFORMASI PEMUSTAKA MAHASISWA BARU DI PERPUSTAKAAN X", 28)] }),
+  emptyLine(),
+  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 100, after: 100 }, children: [normal("Tema: Perilaku Pengguna Perpustakaan dan Faktor Psikologis dalam Pencarian Informasi", 24)] }),
+  pageBreak(),
+];
+
+// ---- DAFTAR ISI ----
+const daftarIsi = [
+  new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 0, after: 400 }, children: [bold("DAFTAR ISI", 28)] }),
+  new Paragraph({ children: [normal("BAB I PENDAHULUAN", 22)], spacing: { before: 80, after: 40 } }),
+  new Paragraph({ children: [normal("    1.1. Latar Belakang", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    1.2. Rumusan Masalah", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    1.3. Tujuan Penelitian", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    1.4. Batasan Masalah", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    1.5. Manfaat Penelitian", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("BAB II LANDASAN TEORI", 22)], spacing: { before: 80, after: 40 } }),
+  new Paragraph({ children: [normal("    2.1. Perpustakaan Perguruan Tinggi", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    2.2. Pemustaka Perpustakaan", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    2.3. Kebutuhan Informasi", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    2.4. Pengertian Kecemasan Secara Umum", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    2.5. Library Anxiety", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [bold("    2.6. Psikologi Perpustakaan", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    2.7. Penelitian Sejenis Sebelumnya", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [bold("    2.8. Kerangka Konseptual", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("BAB III METODOLOGI PENELITIAN", 22)], spacing: { before: 80, after: 40 } }),
+  new Paragraph({ children: [normal("    3.1. Jenis Penelitian", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    3.2. Data dan Sumber Data", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    3.3. Teknik Pengumpulan Data", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    3.4. Teknik Analisis Data", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("    3.5. Teknik Penyajian Data", 22)], spacing: { before: 40, after: 40 } }),
+  new Paragraph({ children: [normal("DAFTAR PUSTAKA", 22)], spacing: { before: 80, after: 40 } }),
+  pageBreak(),
+];
+
+// ---- BAB I ----
+const bab1 = [
+  heading1("BAB I"),
+  heading1("PENDAHULUAN"),
+  heading2("1.1. Latar Belakang"),
+  para("Perpustakaan perguruan tinggi merupakan pilar utama dalam ekosistem akademik yang berfungsi sebagai pusat sumber belajar, penelitian, dan pelestarian ilmu pengetahuan. Di tengah zaman yang semakin modern akan informasi, peran perpustakaan menjadi semakin krusial sebagai penyedia akses terhadap informasi yang baik dan berkualitas bagi mahasiswa. Namun, realitas di lapangan menunjukkan adanya pertentangan; meskipun perpustakaan menyediakan sumber daya yang melimpah, tidak semua mahasiswa mampu memanfaatkannya dengan optimal. Terdapat hambatan psikologis signifikan yang seringkali tidak kasat mata namun berdampak besar, yaitu fenomena yang dikenal sebagai library anxiety atau kecemasan perpustakaan."),
+  para([normal("Fenomena "), italic("library anxiety"), normal(" pertama kali didefinisikan secara mendalam oleh (Mellon 1986). Melalui penelitian kualitatifnya, Mellon menemukan bahwa mayoritas mahasiswa memandang perpustakaan bukan sebagai tempat yang mendukung, melainkan sebagai lingkungan yang mengancam dan membingungkan.")]),
+  para("Terdapat tiga konsep kunci yang melandasi kecemasan ini: (1) mahasiswa merasa keterampilan riset mereka jauh di bawah rekan-rekan mereka, (2) mereka merasa malu untuk mengakui ketidakmampuan tersebut, dan (3) mereka menganggap bahwa bertanya kepada pustakawan hanya akan memperjelas kebodohan mereka (Mellon 1986). Perasaan ini menciptakan tembok penghalang yang membuat mahasiswa lebih memilih menghindari perpustakaan daripada harus menghadapi rasa malu tersebut."),
+  para([normal("Seiring berjalannya waktu, pemicu kecemasan ini berkembang melampaui sekadar rasa malu personal. Penelitian terbaru menunjukkan bahwa kompleksitas institusional berperan besar. (Mcpherson 2015) mengidentifikasi bahwa ukuran bangunan perpustakaan yang besar, tata letak gedung yang rumit, serta organisasi koleksi yang membingungkan seringkali membuat mahasiswa mengalami disorientasi ruang atau kesulitan memahami tata letak fisik koleksi, lokasi koleksi, dan alur layanan di dalam gedung perpustakaan. Ketidakmampuan navigasi fisik ini, jika dikombinasikan dengan kurangnya pengalaman menggunakan perpustakaan di masa sekolah menengah, akan menciptakan tekanan mental yang menghambat proses pencarian informasi (Mcpherson 2015).")]),
+  para([normal("Selain faktor fisik dan psikologis, revolusi teknologi informasi juga menghadirkan dimensi baru dalam "), italic("library anxiety"), normal(". Saat ini, perpustakaan tidak hanya berupa tumpukan buku fisik, melainkan juga gerbang menuju pangkalan data daring (online databases) dan sistem temu kembali informasi yang kompleks. Mahasiswa yang memiliki kemahiran komputer rendah cenderung merasa terintimidasi oleh prosedur pencarian digital, yang pada akhirnya meningkatkan level kecemasan mereka secara keseluruhan saat mencoba memenuhi kebutuhan referensi akademik mereka.")]),
+  para("Lebih jauh lagi, aspek lingkungan binaan (built environment) juga tidak dapat diabaikan. Desain interior perpustakaan, mulai dari sistem pencahayaan, dekorasi, hingga ketersediaan ruang belajar yang memadai, sangat mempengaruhi kenyamanan psikologis mahasiswa (Nieves-whitmore 2021). Desain yang kurang memperhatikan aspek kemanusiaan dapat memperburuk perasaan terasing, sementara desain yang inklusif dapat membantu menurunkan level kecemasan."),
+  para([normal("Dampak dari "), italic("library anxiety"), normal(" ini sangat serius terhadap keberhasilan akademik. Mahasiswa yang terjebak dalam kecemasan cenderung memiliki kepuasan yang rendah dan keterlibatan yang minim terhadap sumber daya perpustakaan (Pang, Quinto, and Orillo 2025). Ketika kebutuhan informasi mahasiswa tidak terpenuhi baik karena mereka takut bertanya, bingung mencari, atau frustrasi dengan teknologi maka kualitas karya ilmiah dan capaian pembelajaran mereka akan menurun.")]),
+  para([normal("Di Perpustakaan X, gejala-gejala kecemasan ini mulai tampak melalui misalnya: rendahnya statistik kunjungan pada area koleksi tertentu atau banyaknya mahasiswa yang hanya menggunakan area lobi untuk mengerjakan tugas tanpa menyentuh koleksi referensi. Tanpa adanya penanganan yang tepat, "), italic("library anxiety"), normal(" akan menjadi penghambat utama dalam mewujudkan visi perpustakaan sebagai jantung akademik. Oleh karena itu, penelitian mendalam mengenai \"Pengaruh Library Anxiety terhadap Pemenuhan Kebutuhan Informasi Mahasiswa Baru di Perpustakaan X\" menjadi sangat mendesak untuk dilakukan sebagai dasar perbaikan layanan dan strategi literasi informasi ke depan.")]),
+  heading2("1.2. Rumusan Masalah"),
+  para("Berdasarkan latar belakang tersebut, permasalahan dalam penelitian ini dirumuskan sebagai berikut:"),
+  bulletPara("Apa saja dimensi library anxiety yang dialami oleh pemustaka mahasiswa baru ketika memanfaatkan layanan, fasilitas, dan sumber informasi yang tersedia di Perpustakaan X dalam proses pencarian informasi?"),
+  bulletPara("Bagaimana library anxiety mempengaruhi kemampuan pemustaka mahasiswa baru dalam menemukan, mengakses, dan memanfaatkan sumber informasi di Perpustakaan X untuk memenuhi kebutuhan informasi mereka?"),
+  heading2("1.3. Tujuan Penelitian"),
+  para("Penelitian ini bertujuan untuk:"),
+  bulletPara("Mengetahui dimensi-dimensi library anxiety yang dialami oleh pemustaka mahasiswa baru ketika memanfaatkan layanan, fasilitas, dan sumber informasi yang tersedia di Perpustakaan X dalam proses pencarian informasi."),
+  bulletPara("Menganalisis pengaruh library anxiety terhadap kemampuan pemustaka mahasiswa baru dalam menemukan, mengakses, dan memanfaatkan sumber informasi di Perpustakaan X dalam rangka pemenuhan kebutuhan informasi mereka."),
+  heading2("1.4. Batasan Masalah"),
+  para("Agar penelitian ini lebih terfokus, maka peneliti membatasi ruang lingkup sebagai berikut:"),
+  bulletPara("Subjek penelitian dalam penelitian ini adalah mahasiswa baru (semester awal) yang menjadi pemustaka di Perpustakaan X."),
+  bulletPara("Variabel yang diteliti meliputi library anxiety sebagai variabel independen (X) dan pemenuhan kebutuhan informasi sebagai variabel dependen (Y)."),
+  bulletPara("Library anxiety dalam penelitian ini dibatasi pada beberapa dimensi yang berkaitan dengan kecemasan dalam menggunakan perpustakaan, seperti rasa tidak percaya diri dalam mencari informasi, kesulitan memahami tata letak perpustakaan, kecemasan dalam menggunakan teknologi informasi, serta keengganan untuk bertanya kepada pustakawan."),
+  bulletPara("Pemenuhan kebutuhan informasi yang dimaksud dalam penelitian ini terbatas pada kemampuan mahasiswa baru dalam menemukan, mengakses, dan memanfaatkan sumber informasi yang tersedia di Perpustakaan X."),
+  bulletPara("Penelitian ini hanya dilakukan di Perpustakaan X dan tidak membahas kondisi perpustakaan lain."),
+  heading2("1.5. Manfaat Penelitian"),
+  heading3("1.5.1. Manfaat Teoretis"),
+  para("Penelitian ini diharapkan dapat memberikan kontribusi dalam pengembangan ilmu perpustakaan dan informasi, khususnya yang berkaitan dengan konsep library anxiety dan pemenuhan kebutuhan informasi pemustaka. Selain itu, penelitian ini juga diharapkan dapat menjadi referensi atau bahan kajian bagi penelitian selanjutnya yang membahas perilaku pemustaka dalam memanfaatkan layanan dan sumber informasi di perpustakaan perguruan tinggi."),
+  heading3("1.5.2. Manfaat Praktis"),
+  bulletPara("Bagi Pustakawan/Pengelola Perpustakaan X: Hasil penelitian ini diharapkan dapat menjadi bahan evaluasi bagi pengelola Perpustakaan X dalam memahami tingkat kecemasan yang dialami oleh mahasiswa baru serta faktor-faktor yang mempengaruhi pemanfaatan layanan perpustakaan. Dengan demikian, perpustakaan dapat merancang strategi layanan, program literasi informasi, dan penyediaan fasilitas yang lebih ramah bagi pemustaka."),
+  bulletPara("Bagi Mahasiswa: Penelitian ini diharapkan dapat memberikan pemahaman kepada mahasiswa, khususnya mahasiswa baru, mengenai pentingnya memanfaatkan layanan dan sumber informasi di perpustakaan serta membantu mereka mengurangi rasa kecemasan dalam menggunakan fasilitas perpustakaan."),
+  pageBreak(),
+];
+
+// ---- BAB II ----
+const bab2 = [
+  heading1("BAB II"),
+  heading1("LANDASAN TEORI"),
+  heading2("2.1. Perpustakaan Perguruan Tinggi"),
+  heading3("2.1.1. Pengertian Perpustakaan"),
+  para("Perpustakaan merupakan salah satu lembaga yang memiliki peran strategis dalam dunia pendidikan. Secara umum, perpustakaan dapat diartikan sebagai suatu unit kerja yang bertugas mengumpulkan, menyimpan, dan menyajikan berbagai sumber informasi kepada penggunanya. Menurut Undang-Undang Republik Indonesia Nomor 43 Tahun 2007 tentang Perpustakaan, perpustakaan adalah institusi pengelola koleksi karya tulis, karya cetak, dan/atau karya rekam secara profesional dengan sistem yang baku guna memenuhi kebutuhan pendidikan, penelitian, pelestarian, informasi, dan rekreasi para pemustaka."),
+  para("Perpustakaan dalam konteks akademik tidak sekadar berfungsi sebagai tempat penyimpanan buku, melainkan telah bertransformasi menjadi pusat sumber belajar yang menyediakan berbagai layanan berbasis teknologi untuk mendukung kebutuhan akademik pemustaka (Jaya 2025). Kehadiran teknologi informasi telah membawa perubahan fungsi perpustakaan sehingga memberikan peluang yang besar bagi pemustaka dalam mengakses informasi secara lebih efisien dan efektif (Syukrinur 2022)."),
+  heading3("2.1.2. Pengertian Perpustakaan Perguruan Tinggi"),
+  para("Perpustakaan perguruan tinggi adalah perpustakaan yang terdapat pada perguruan tinggi, badan bawahannya, maupun lembaga yang bekerja sama dengan perguruan tinggi, dengan tujuan utamanya membantu perguruan tinggi dalam mencapai tujuannya."),
+  para("Menurut Sulistyo (2003) Perpustakaan Perguruan Tinggi adalah perpustakaan yang terdapat pada perguruan tinggi, badan bawahannya maupun lembaga yang berafiliasi dengan perguruan tinggi, dengan tujuan utama membantu perguruan tinggi mencapai tujuannya. Sedangkan menurut Sutarno (2003: 35) Perpustakaan Perguruan Tinggi merupakan perpustakaan yang berada dalam suatu perguruan tinggi dan yang sederajat yang berfungsi mencapai Tri Dharma Perguruan Tinggi, sedangkan penggunanya adalah seluruh civitas akademika. Secara umum dapat disimpulkan bahwa pengertian perpustakaan adalah suatu institusi unit kerja yang menyimpan koleksi bahan pustaka secara sistematis dan mengelolanya dengan cara khusus sebagai sumber informasi dan dapat digunakan oleh pemakainya."),
+  heading3("2.1.3. Fungsi dan Peran Perpustakaan Perguruan Tinggi"),
+  para("Fungsi perpustakaan perguruan tinggi berkaitan erat dengan tri dharma perguruan tinggi, yaitu pendidikan, penelitian, dan pengabdian kepada masyarakat. Sebagaimana yang tercantum dalam Undang-Undang Perpustakaan pada pasal 3, yaitu perpustakaan berfungsi sebagai wahana pendidikan, penelitian, pelestarian, informasi, dan rekreasi untuk meningkatkan kecerdasan dan keberdayaan bangsa."),
+  para("(Syukrinur 2022) dalam tulisannya mengelaborasi fungsi-fungsi perpustakaan sebagai berikut: fungsi pendidikan, di mana perpustakaan merupakan tempat belajar bagi para pemustaka; fungsi penelitian, di mana perpustakaan menjadi penyedia berbagai referensi untuk keperluan penelitian; fungsi informasi, yaitu perpustakaan menyediakan informasi yang dibutuhkan oleh pemustaka; fungsi penyimpanan; dan fungsi rekreasi. Peran perpustakaan perguruan tinggi juga semakin berkembang seiring dengan transformasi digital yang mendorong perpustakaan untuk berinovasi dalam layanannya demi memenuhi kebutuhan pemustaka yang terus berkembang."),
+  heading2("2.2. Pemustaka Perpustakaan"),
+  heading3("2.2.1. Pengertian Pemustaka"),
+  para("Pemustaka merupakan pengguna perpustakaan, baik perseorangan maupun kelompok, yang memanfaatkan layanan perpustakaan. Berdasarkan Undang-Undang Nomor 43 Tahun 2007 tentang Perpustakaan, pemustaka adalah pengguna perpustakaan, yaitu perseorangan, kelompok orang, masyarakat, atau lembaga yang memanfaatkan fasilitas layanan perpustakaan. Di lingkungan perguruan tinggi, pemustaka terdiri atas mahasiswa, dosen, tenaga kependidikan, serta pihak lain yang memiliki kepentingan akademik."),
+  para("Pemustaka di perpustakaan perguruan tinggi memiliki karakteristik dan kebutuhan yang berbeda-beda tergantung pada latar belakang akademik dan tujuan kunjungannya. Dalam konteks penelitian ini, pemustaka yang menjadi fokus adalah mahasiswa sebagai pengguna utama perpustakaan perguruan tinggi."),
+  heading3("2.2.2. Karakteristik Pemustaka Mahasiswa"),
+  para("Menurut Sarwono (2008, dalam Permatasari, et al 2021) mengemukakan bahwa mahasiswa adalah setiap orang yang secara resmi terdaftar untuk mengikuti pelajaran di perguruan tinggi dengan batas usia sekitar 18-30 tahun. Mahasiswa adalah kelompok dalam masyarakat yang memiliki status khusus karena keterikatannya dengan institusi perguruan tinggi. Mereka juga dipandang sebagai calon intelektual atau cendekiawan muda yang berada dalam lapisan masyarakat tertentu dan kerap disematkan berbagai predikat."),
+  para("Karakteristik pemustaka mahasiswa terbagi berdasarkan tahun studi, program studi, dan tingkat literasi informasi yang dimiliki. Era digital mendorong peningkatan kebutuhan informasi yang dihadapi mahasiswa, khususnya dalam konteks akademik. Penelitian menunjukkan bahwa mahasiswa membutuhkan informasi sebagai penunjang perkuliahan melalui platform perpustakaan digital (Alwannia, et al 2025). Selain itu, preferensi mahasiswa terhadap sumber informasi pun beragam; sebagian lebih menyukai buku digital untuk kemudahan akses, sementara yang lain tetap memilih buku cetak untuk pengalaman membaca yang mendalam."),
+  heading3("2.2.3. Mahasiswa Baru sebagai Pemustaka Perpustakaan"),
+  para("Mahasiswa baru merupakan kelompok pemustaka yang paling rentan menghadapi ketidaknyamanan saat pertama kali menggunakan perpustakaan perguruan tinggi. Hal ini disebabkan oleh minimnya pengalaman mereka dalam memanfaatkan berbagai layanan dan fasilitas perpustakaan yang lebih kompleks dibandingkan perpustakaan sekolah. Pendidikan pemakai (user education) di perpustakaan perguruan tinggi menjadi gerbang bagi sivitas akademika, terutama mahasiswa baru, dalam memanfaatkan fasilitas dan informasi yang ada di perpustakaan secara optimal."),
+  para("Mahasiswa baru sering kali belum mengetahui tentang keberadaan perpustakaan, letak koleksi, serta bagaimana menggunakan fasilitas yang ada seperti menelusur dengan mesin pencarian online, memanfaatkan koleksi e-jurnal maupun e-book sebagai sumber informasi. Kondisi inilah yang kemudian memicu munculnya perasaan cemas atau yang dikenal dengan istilah library anxiety ketika mereka harus menggunakan perpustakaan untuk pertama kalinya. Penelitian (Abdurokhim and Laugu 2024) menemukan bahwa library anxiety juga dapat dialami oleh mahasiswa baru penyandang disabilitas tunanetra di perpustakaan perguruan tinggi."),
+  heading2("2.3. Kebutuhan Informasi"),
+  heading3("2.3.1. Pengertian Kebutuhan Informasi"),
+  para("Kebutuhan informasi merupakan dorongan yang muncul dalam diri seseorang untuk mencari dan memperoleh informasi yang diperlukan guna memenuhi tujuan tertentu. Menurut Perdana (2021 dalam Alwannia, et al 2025), manusia mengandalkan informasi untuk memenuhi berbagai kebutuhan seperti menambah pengetahuan, meningkatkan keterampilan, mengurangi ketidakpastian, dan memperoleh kepuasan. Kebutuhan informasi bersifat dinamis dan terus berkembang seiring dengan perubahan situasi dan tuntutan lingkungan akademik."),
+  para("Dalam konteks perpustakaan, kebutuhan informasi menjadi landasan utama bagi seluruh aktivitas layanan yang disediakan. (Rahayu and Rohmadi 2023) dalam penelitiannya menemukan bahwa kecemasan perpustakaan berpengaruh signifikan terhadap pemenuhan kebutuhan informasi pemustaka, dengan koefisien determinasi sebesar 64,2%. Artinya, semakin tinggi tingkat kecemasan yang dialami pemustaka, semakin rendah kemampuannya dalam memenuhi kebutuhan informasi yang dibutuhkan."),
+  heading3("2.3.2. Jenis-Jenis Kebutuhan Informasi"),
+  para("Berbagai ahli telah mengelompokkan kebutuhan informasi ke dalam beberapa kategori. Salah satu teori yang banyak digunakan adalah teori Uses and Gratifications yang membagi kebutuhan informasi ke dalam lima aspek: (1) kebutuhan kognitif, yaitu kebutuhan yang berkaitan dengan perolehan pengetahuan dan pemahaman; (2) kebutuhan afektif, yaitu kebutuhan yang berkaitan dengan pengalaman emosional dan estetika; (3) kebutuhan integrasi personal, yaitu kebutuhan yang berkaitan dengan penguatan kepercayaan diri dan kredibilitas; (4) kebutuhan integrasi sosial, yaitu kebutuhan yang berkaitan dengan interaksi sosial; dan (5) kebutuhan pelepasan ketegangan, yaitu kebutuhan yang berhubungan dengan hiburan dan pelarian."),
+  para("Aspek kognitif mendorong mahasiswa mencari sumber informasi yang akurat dan mudah diakses, sehingga buku digital dan jurnal elektronik menjadi pilihan utama. Aspek afektif lebih terpenuhi melalui buku cetak yang memberikan pengalaman emosional dan imajinatif saat membaca. Selain itu, aspek integrasi personal dan sosial mendorong mahasiswa menggunakan berbagai sumber informasi untuk meningkatkan kredibilitas akademik dan menjalin interaksi sosial dalam lingkungan belajar (Alwannia, et al 2025)."),
+  heading3("2.3.3. Faktor yang Mempengaruhi Kebutuhan Informasi"),
+  para("Kebutuhan informasi seseorang dipengaruhi oleh berbagai faktor, baik yang bersifat internal maupun eksternal. Faktor internal meliputi tingkat pendidikan, latar belakang pengetahuan, minat dan motivasi, serta kemampuan literasi informasi. Sementara faktor eksternal meliputi lingkungan sosial, perkembangan teknologi, ketersediaan sumber informasi, dan aksesibilitas layanan perpustakaan."),
+  para("Kecemasan perpustakaan (library anxiety) merupakan salah satu faktor yang terbukti mempengaruhi kemampuan mahasiswa dalam memenuhi kebutuhan informasinya. Library anxiety yang dialami mahasiswa dapat berujung pada rendahnya pemanfaatan layanan perpustakaan, sehingga kebutuhan informasi mereka tidak terpenuhi secara optimal (Rahayu and Rohmadi 2023). Selain itu, ketersediaan koleksi perpustakaan yang sesuai dengan kebutuhan pemustaka juga menjadi faktor penting dalam pemenuhan kebutuhan informasi akademik mahasiswa (Reva Andini et al. 2024)."),
+  heading3("2.3.4. Proses Pencarian Informasi"),
+  para("Proses pencarian informasi merupakan serangkaian aktivitas yang dilakukan seseorang untuk menemukan informasi yang dibutuhkan. Perilaku pencarian informasi mahasiswa di perguruan tinggi menunjukkan strategi yang sistematis dan berlapis. Mahasiswa menggunakan perpustakaan digital untuk memenuhi kebutuhan akademik yang mendesak dan efisien, sementara buku cetak digunakan untuk bacaan yang memerlukan pemahaman mendalam dan kenyamanan membaca (Alwannia, et al 2025)."),
+  para("Hambatan dalam proses pencarian informasi dapat berupa keterbatasan pengetahuan tentang penggunaan perpustakaan, kurangnya kompetensi literasi informasi, maupun adanya kecemasan saat berada di perpustakaan. Penelitian Wijayanto dan Christiani (2024 dalam Ramadhan et al. 2025) menunjukkan bahwa perilaku pencarian informasi mahasiswa dipengaruhi oleh konteks dan tujuan penggunaan, bukan semata-mata kemudahan teknologi."),
+  heading2("2.4. Pengertian Kecemasan Secara Umum"),
+  heading3("2.4.1. Pengertian Kecemasan"),
+  para("Kecemasan (anxiety) merupakan kondisi psikologis yang ditandai oleh perasaan tidak nyaman, ketakutan, dan kekhawatiran yang berlebihan terhadap suatu situasi atau objek tertentu. Kecemasan dapat bersifat situasional, yaitu muncul akibat kondisi atau lingkungan tertentu, maupun bersifat trait, yaitu merupakan bagian dari kepribadian seseorang. Kecemasan situasional lebih relevan dalam konteks penggunaan perpustakaan, karena terkait langsung dengan pengalaman seseorang saat berada di perpustakaan."),
+  para("Kecemasan sering muncul ketika seseorang berada di tempat yang dirasa asing atau baru ia temui. Kondisi ini sangat relevan dengan pengalaman mahasiswa baru yang untuk pertama kalinya mengunjungi perpustakaan perguruan tinggi yang jauh lebih besar dan kompleks dibandingkan perpustakaan yang pernah mereka gunakan sebelumnya. Kecemasan dalam konteks akademik dapat menghambat kemampuan belajar dan menurunkan performa akademik jika tidak ditangani dengan baik."),
+  heading3("2.4.2. Pengertian Library Anxiety"),
+  para([normal("Library anxiety"), normal(" atau kecemasan perpustakaan merupakan konsep yang pertama kali diperkenalkan oleh Constance A. Mellon pada tahun 1986. Mellon mendefinisikan library anxiety sebagai perasaan yang dialami oleh pemustaka saat berada di perpustakaan, yang meliputi perasaan takut, cemas, bingung, tidak berdaya, dan tidak percaya diri dalam menggunakan perpustakaan. Dalam penelitian Mellon menggunakan metode jurnal pribadi, mayoritas informan memiliki pengalaman tidak baik saat menggunakan perpustakaan, dan banyak hambatan yang dirasakan dalam melakukan penelusuran informasi yang membuat mereka merasa tersesat (Ravena and Dewi 2021).")]),
+  para("(Khasanah and Zatadini 2023) mendefinisikan library anxiety sebagai perasaan bingung, takut, dan rasa frustasi yang dialami oleh pemustaka ketika minimnya pengalaman dalam proses pencarian informasi di perpustakaan. Kondisi ini sangat umum terjadi dan dapat menghambat performa akademik mahasiswa."),
+  heading3("2.4.3. Faktor-Faktor Terjadinya Kecemasan di Perpustakaan"),
+  para("(Mellon 1986) mengidentifikasi empat faktor utama yang menyebabkan kecemasan di perpustakaan, yaitu: (a) the size of the library, yaitu ukuran atau besarnya perpustakaan yang membuat pemustaka merasa kebingungan; (b) a lack of knowledge about where things were located, yaitu kurangnya pengetahuan tentang letak berbagai hal di dalam perpustakaan; (c) how to begin, yaitu ketidaktahuan tentang bagaimana memulai suatu kegiatan di perpustakaan; dan (d) what to do, yaitu kebingungan tentang apa yang harus dilakukan di dalam perpustakaan."),
+  para("Dalam perkembangannya, tingkat library anxiety pemustaka ini dapat diukur menggunakan beberapa metode yang telah dikembangkan oleh para ahli. Seperti yang dilakukan oleh Bostick (1992) dalam The Development and Validation of The Library Anxiety Scale yang mendasari terciptanya pengukuran kuantitatif dari kecemasan pemustaka dengan metode LAS atau Library Anxiety Scale."),
+  heading3("2.4.4. Dimensi atau Indikator Library Anxiety"),
+  para("Berbagai instrumen telah dikembangkan untuk mengukur library anxiety, salah satunya adalah Multidimensional Library Anxiety Scale (MLAS) yang dikembangkan oleh Van Kampen. MLAS mengkaji enam faktor library anxiety yang dapat digunakan sebagai dimensi pengukuran dalam penelitian (Ravena and Dewi 2021). Selain MLAS, terdapat pula AQAK: Library Anxiety Scale for Undergraduates Student yang mengidentifikasi lima faktor, yaitu: (1) user knowledge (pengetahuan pengguna), (2) library staff (staf perpustakaan), (3) library environment (lingkungan perpustakaan), (4) information resources (sumber informasi), dan (5) user education (pendidikan pemakai)."),
+  heading3("2.4.5. Dampak Library Anxiety terhadap Penggunaan Perpustakaan"),
+  para("Library anxiety memberikan dampak yang cukup signifikan terhadap pemanfaatan perpustakaan oleh mahasiswa. Kecemasan yang tidak ditangani dengan baik dapat membuat mahasiswa menjadi enggan untuk berkunjung ke perpustakaan, tidak memanfaatkan layanan yang tersedia secara optimal, bahkan cenderung menghindari penggunaan perpustakaan secara keseluruhan. Kondisi ini pada akhirnya dapat berkontribusi terhadap rendahnya tingkat kunjungan fisik ke perpustakaan."),
+  para("Penelitian (Rahayu and Rohmadi 2023) di Perpustakaan UIN Sunan Kalijaga Yogyakarta menunjukkan bahwa terdapat pengaruh positif yang signifikan antara kecemasan perpustakaan dan pemenuhan kebutuhan informasi pemustaka, di mana semakin tinggi tingkat kecemasan maka semakin rendah kemampuan pemustaka dalam memenuhi kebutuhannya."),
+  heading2("2.5. Library Anxiety"),
+  heading3("2.5.1. Konsep Library Anxiety"),
+  para("Konsep library anxiety pertama kali dikemukakan oleh Constance A. Mellon pada tahun 1986 melalui sebuah penelitian grounded theory. Mellon menemukan bahwa sebagian besar mahasiswa yang diteliti mengalami perasaan tidak nyaman, takut, dan cemas saat harus menggunakan perpustakaan untuk pertama kalinya. Konsep ini kemudian berkembang dan menjadi salah satu topik yang banyak diteliti dalam bidang ilmu perpustakaan dan informasi (Ravena and Dewi 2021)."),
+  para("Perkembangan konsep library anxiety menunjukkan bahwa kecemasan ini bukan hanya terbatas pada mahasiswa baru, tetapi juga dapat dialami oleh mahasiswa tingkat akhir yang harus menggunakan layanan referensi dan database akademik yang lebih kompleks."),
+  heading3("2.5.2. Scala Library Anxiety"),
+  para("Scala atau skala pengukuran library anxiety dikembangkan oleh berbagai ahli guna mengoperasionalisasikan konsep kecemasan perpustakaan ke dalam instrumen yang dapat diukur secara empiris. Bostick (1993) mengembangkan Library Anxiety Scale (LAS) yang kemudian menjadi salah satu instrumen pengukuran library anxiety yang paling banyak digunakan. LAS mengukur lima dimensi utama kecemasan perpustakaan yang mencakup berbagai aspek interaksi pemustaka dengan perpustakaan."),
+  para("Selain LAS, terdapat pula MLAS (Multidimensional Library Anxiety Scale) yang dikembangkan oleh Van Kampen dengan enam faktor pengukuran, serta AQAK: Library Anxiety Scale for Undergraduates Student yang memiliki lima faktor."),
+  heading3("2.5.3. Teori Mellon"),
+  para("Teori library anxiety yang dikemukakan oleh Constance A. Mellon pada tahun 1986 merupakan landasan utama dalam penelitian-penelitian tentang kecemasan di perpustakaan. Mellon menggunakan pendekatan grounded theory dalam penelitiannya terhadap mahasiswa baru yang menggunakan perpustakaan untuk pertama kalinya. Hasilnya menunjukkan bahwa sebagian besar mahasiswa mengalami perasaan cemas yang bersumber dari empat hal utama, yaitu ukuran perpustakaan, ketidaktahuan tentang letak koleksi, cara memulai kegiatan di perpustakaan, dan ketidaktahuan tentang apa yang harus dilakukan."),
+  heading3("2.5.4. Teori Anxiety Uncertainty Management (AUM)"),
+  para("Teori Anxiety Uncertainty Management (AUM) dikembangkan oleh William B. Gudykunst sebagai salah satu teori komunikasi lintas budaya yang menjelaskan bagaimana individu mengelola kecemasan dan ketidakpastian dalam situasi komunikasi baru. Dalam konteks perpustakaan, teori AUM dapat diaplikasikan untuk memahami bagaimana mahasiswa baru mengelola kecemasan dan ketidakpastian yang mereka rasakan."),
+  para("Teori AUM menjelaskan bahwa ketidakpastian berkaitan dengan ketidakmampuan seseorang untuk memprediksi dan menjelaskan perilaku orang lain maupun situasi yang dihadapinya, sementara kecemasan merupakan perasaan tidak nyaman yang muncul akibat ketidakpastian tersebut."),
+
+  // ===== BAGIAN BARU: PSIKOLOGI PERPUSTAKAAN =====
+  heading2("2.6. Psikologi Perpustakaan"),
+  heading3("2.6.1. Pengertian Psikologi Perpustakaan"),
+  para("Psikologi perpustakaan (library psychology) merupakan cabang ilmu terapan yang mengintegrasikan prinsip-prinsip psikologi ke dalam konteks layanan dan pengelolaan perpustakaan. Bidang ini mempelajari aspek-aspek perilaku, kognitif, emosional, dan sosial dari pengguna perpustakaan serta pengaruhnya terhadap cara mereka berinteraksi dengan sumber daya dan layanan informasi yang tersedia (Fister 2010)."),
+  para("Secara lebih luas, psikologi perpustakaan dapat didefinisikan sebagai studi ilmiah tentang hubungan antara kondisi psikologis individu dengan aktivitas penggunaan perpustakaan, mencakup motivasi, persepsi, sikap, kecemasan, kepuasan, dan perilaku pencarian informasi pengguna. Ilmu ini berupaya memahami mengapa seseorang memanfaatkan atau tidak memanfaatkan perpustakaan, serta faktor-faktor psikologis apa saja yang memengaruhi efektivitas penggunaan layanan dan koleksi perpustakaan (Nahl and Bilal 2007)."),
+  para([normal("Dalam konteks Indonesia, psikologi perpustakaan mulai mendapat perhatian seiring dengan berkembangnya kajian tentang perilaku pemustaka. Berbagai penelitian telah mengungkapkan bahwa kondisi psikologis seperti kecemasan ("), italic("library anxiety"), normal("), motivasi, dan efikasi diri memiliki pengaruh signifikan terhadap pemanfaatan perpustakaan, terutama di lingkungan perguruan tinggi (Rahayu and Rohmadi 2023). Dengan memahami psikologi pemustaka, pustakawan dan pengelola perpustakaan dapat merancang layanan dan lingkungan perpustakaan yang lebih kondusif dan ramah pengguna.")]),
+  heading3("2.6.2. Ruang Lingkup Psikologi Perpustakaan"),
+  para("Psikologi perpustakaan mencakup beberapa ruang lingkup kajian utama yang saling berkaitan:"),
+  para([bold("a. Psikologi Kognitif dalam Perpustakaan")], false),
+  para("Psikologi kognitif dalam perpustakaan berfokus pada bagaimana pengguna memproses, menyimpan, dan memanggil kembali informasi yang mereka peroleh. Aspek ini mencakup studi tentang persepsi pengguna terhadap sistem temu kembali informasi, strategi kognitif yang digunakan dalam pencarian informasi, serta beban kognitif (cognitive load) yang dialami pengguna saat mengoperasikan sistem perpustakaan digital (Kuhlthau 2004). Mahasiswa yang memiliki beban kognitif tinggi cenderung mengalami kebingungan dan frustrasi saat menggunakan sistem katalog atau database elektronik perpustakaan."),
+  para([bold("b. Psikologi Emosional dan Afektif")], false),
+  para([normal("Dimensi emosional dalam interaksi pemustaka dengan perpustakaan merupakan salah satu fokus utama psikologi perpustakaan. Emosi-emosi seperti kecemasan, frustrasi, ketidakberdayaan, maupun kepuasan dan kegembiraan semuanya berperan penting dalam menentukan kualitas pengalaman pengguna di perpustakaan. Kuhlthau (2004) dalam Information Search Process (ISP) Model-nya secara eksplisit mengidentifikasi bahwa proses pencarian informasi tidak hanya melibatkan aspek kognitif, tetapi juga dimensi afektif yang sangat memengaruhi perilaku pengguna. Pada tahap awal pencarian, pengguna seringkali merasakan ketidakpastian dan kecemasan; seiring dengan kemajuan pencarian dan ditemukannya informasi yang relevan, emosi berangsur berubah menjadi kepercayaan diri dan kepuasan.")]),
+  para([bold("c. Psikologi Sosial dalam Konteks Perpustakaan")], false),
+  para("Psikologi sosial menelaah bagaimana interaksi sosial di dalam perpustakaan memengaruhi perilaku pemustaka. Studi ini mencakup dinamika hubungan antara pemustaka dengan pustakawan (reference interview), pengaruh kelompok teman sebaya terhadap keputusan penggunaan perpustakaan, serta persepsi sosial tentang perpustakaan sebagai ruang publik (Agosto and Hughes-Hassell 2005). Temuan dalam bidang ini menunjukkan bahwa sikap dan perilaku pustakawan dalam melayani pemustaka sangat berpengaruh terhadap tingkat kecemasan dan kepuasan pemustaka (Yolanfika, et al 2023)."),
+  para([bold("d. Psikologi Lingkungan Perpustakaan")], false),
+  para("Psikologi lingkungan (environmental psychology) mengkaji bagaimana kondisi fisik dan desain ruang perpustakaan memengaruhi kondisi psikologis pengguna. Aspek-aspek seperti pencahayaan, akustik, tata letak ruang, warna interior, dan ketersediaan fasilitas yang nyaman terbukti berpengaruh terhadap konsentrasi, kenyamanan, dan produktivitas pemustaka (Nieves-whitmore 2021). Perpustakaan yang dirancang dengan mempertimbangkan aspek psikologi lingkungan dapat menciptakan suasana yang mendukung pembelajaran dan menurunkan tingkat kecemasan penggunanya."),
+  heading3("2.6.3. Manfaat Psikologi Perpustakaan"),
+  para("Penerapan psikologi perpustakaan memberikan berbagai manfaat nyata bagi pengembangan layanan dan pengelolaan perpustakaan, di antaranya:"),
+  para([bold("a. Peningkatan Kualitas Layanan Perpustakaan")], false),
+  para("Pemahaman mendalam tentang psikologi pengguna memungkinkan pustakawan untuk merancang layanan yang lebih responsif terhadap kebutuhan emosional dan kognitif pemustaka. Pustakawan yang memahami kondisi psikologis pengguna akan mampu memberikan layanan yang lebih empatik, sabar, dan efektif, terutama dalam menangani pemustaka yang mengalami kecemasan atau kebingungan (Jaya 2025). Pelayanan yang berorientasi psikologis ini terbukti dapat meningkatkan kepuasan pemustaka dan mendorong penggunaan perpustakaan yang lebih intensif."),
+  para([bold("b. Pengurangan Library Anxiety")], false),
+  para([normal("Salah satu manfaat terpenting dari penerapan psikologi perpustakaan adalah kemampuannya dalam mengidentifikasi dan mengatasi "), italic("library anxiety"), normal(". Dengan memahami akar psikologis dari kecemasan perpustakaan, pengelola dapat mengembangkan program-program intervensi yang tepat sasaran, seperti orientasi perpustakaan yang ramah, pembuatan panduan visual yang intuitif, serta pelatihan keterampilan literasi informasi yang terstruktur (Abizar Algipari et al. 2023).")]),
+  para([bold("c. Optimalisasi Desain Ruang Perpustakaan")], false),
+  para("Pengetahuan psikologi perpustakaan, khususnya psikologi lingkungan, memberikan landasan ilmiah bagi pengelola dalam mendesain atau merenovasi ruang perpustakaan. Desain yang mempertimbangkan faktor psikologis seperti kebutuhan privasi, kebutuhan akan interaksi sosial, pencahayaan yang optimal, dan tata letak yang intuitif dapat secara signifikan meningkatkan kenyamanan dan produktivitas pemustaka (Nieves-whitmore 2021)."),
+  para([bold("d. Pengembangan Program Literasi Informasi yang Efektif")], false),
+  para("Psikologi perpustakaan memberikan wawasan berharga tentang bagaimana cara terbaik menyampaikan keterampilan literasi informasi kepada pemustaka. Dengan memahami proses kognitif dan kondisi emosional mahasiswa dalam belajar menggunakan perpustakaan, pustakawan dapat merancang program instruksional yang lebih efektif, menarik, dan sesuai dengan kebutuhan psikologis pemustaka (Kuhlthau 2004)."),
+  para([bold("e. Peningkatan Aksesibilitas dan Inklusi")], false),
+  para("Psikologi perpustakaan juga berkontribusi pada upaya menjadikan perpustakaan lebih inklusif dan aksesibel bagi semua kelompok pengguna, termasuk mereka yang memiliki kebutuhan khusus. Pemahaman tentang kebutuhan psikologis kelompok marginal seperti mahasiswa penyandang disabilitas, mahasiswa dari latar belakang minoritas, atau mahasiswa baru yang belum familiar dengan lingkungan akademik memungkinkan pengembangan layanan yang lebih inklusif (Abdurokhim and Laugu 2024)."),
+  heading3("2.6.4. Tujuan Psikologi Perpustakaan"),
+  para("Psikologi perpustakaan sebagai bidang kajian memiliki beberapa tujuan utama yang saling mendukung:"),
+  numbered("Memahami Perilaku Pemustaka: Tujuan pertama dan paling mendasar dari psikologi perpustakaan adalah memperoleh pemahaman yang komprehensif tentang perilaku, motivasi, dan kondisi psikologis pengguna perpustakaan. Pemahaman ini mencakup faktor-faktor yang mendorong atau menghambat penggunaan perpustakaan, serta bagaimana berbagai variabel psikologis seperti sikap, persepsi, dan emosi memengaruhi interaksi pemustaka dengan perpustakaan (Nahl and Bilal 2007)."),
+  numbered("Meningkatkan Pengalaman Pengguna (User Experience): Psikologi perpustakaan bertujuan untuk mengoptimalkan pengalaman pengguna di perpustakaan agar lebih positif, menyenangkan, dan produktif. Hal ini dicapai melalui identifikasi hambatan psikologis yang ada, pengembangan solusi yang tepat, serta evaluasi berkelanjutan terhadap efektivitas intervensi yang dilakukan (Pang, Quinto, and Orillo 2025)."),
+  numbered([normal("Mengurangi Hambatan Psikologis: Tujuan penting lainnya adalah mengidentifikasi dan mengurangi berbagai hambatan psikologis yang menghalangi pemustaka dalam memanfaatkan perpustakaan secara optimal. Hambatan-hambatan ini dapat berupa "), italic("library anxiety"), normal(", rendahnya efikasi diri, persepsi negatif tentang perpustakaan, atau kurangnya motivasi intrinsik dalam memanfaatkan sumber daya perpustakaan (Khasanah and Zatadini 2023).")]),
+  numbered("Mendukung Pembelajaran dan Prestasi Akademik: Psikologi perpustakaan bertujuan untuk mendukung keberhasilan akademik mahasiswa dengan memastikan bahwa perpustakaan berfungsi sebagai lingkungan pembelajaran yang kondusif secara psikologis. Perpustakaan yang ramah secara psikologis akan mendorong mahasiswa untuk lebih aktif memanfaatkan sumber daya informasi yang tersedia, sehingga meningkatkan kualitas pembelajaran dan prestasi akademik mereka (Rahayu and Rohmadi 2023)."),
+  numbered("Memandu Kebijakan dan Pengembangan Layanan: Psikologi perpustakaan menyediakan landasan ilmiah bagi pengambilan keputusan dalam pengembangan kebijakan dan layanan perpustakaan. Temuan-temuan dari penelitian psikologi perpustakaan dapat digunakan sebagai dasar dalam perumusan standar layanan, pengembangan program orientasi, desain sistem temu kembali informasi, serta perencanaan pengembangan koleksi yang lebih sesuai dengan kebutuhan psikologis pemustaka (Syukrinur 2022)."),
+  numbered("Mengembangkan Kompetensi Psikologis Pustakawan: Psikologi perpustakaan juga bertujuan untuk meningkatkan kesadaran dan kompetensi pustakawan dalam memahami dan merespons kondisi psikologis pemustaka. Pustakawan yang memiliki pemahaman psikologi yang baik akan mampu memberikan layanan yang lebih humanis, empati, dan efektif dalam membantu pemustaka mengatasi tantangan yang mereka hadapi (Yolanfika, et al 2023)."),
+  heading3("2.6.5. Hubungan Psikologi Perpustakaan dengan Library Anxiety"),
+  para([normal("Psikologi perpustakaan dan "), italic("library anxiety"), normal(" memiliki hubungan yang sangat erat. Library anxiety merupakan salah satu topik utama dalam kajian psikologi perpustakaan, dan pemahaman tentang psikologi perpustakaan memberikan kerangka konseptual yang komprehensif untuk menjelaskan fenomena kecemasan ini. Dari perspektif psikologi kognitif, library anxiety dapat dipahami sebagai akibat dari kelebihan beban kognitif (cognitive overload) yang dialami mahasiswa saat menghadapi kompleksitas sistem perpustakaan (Kuhlthau 2004).")]),
+  para([normal("Dari perspektif psikologi emosional, "), italic("library anxiety"), normal(" mencerminkan respons afektif negatif terhadap lingkungan perpustakaan yang dirasa mengancam atau tidak familiar. Sementara dari perspektif psikologi sosial, kecemasan ini dapat diperkuat atau diperlemah oleh dinamika interaksi sosial yang terjadi di dalam perpustakaan, baik antara pemustaka dengan pustakawan maupun antara pemustaka dengan sesama pengguna lainnya (Mellon 1986).")]),
+  para([normal("Dengan demikian, psikologi perpustakaan memberikan pemahaman yang lebih holistik dan mendalam tentang "), italic("library anxiety"), normal(", serta menawarkan berbagai pendekatan intervensi berbasis bukti untuk mengatasi permasalahan ini. Dalam konteks penelitian ini, pemahaman tentang psikologi perpustakaan menjadi fondasi penting dalam menganalisis pengaruh "), italic("library anxiety"), normal(" terhadap pemenuhan kebutuhan informasi mahasiswa baru di Perpustakaan X.")]),
+  
+  // ===== PENELITIAN SEJENIS =====
+  heading2("2.7. Penelitian Sejenis Sebelumnya"),
+  para("Beberapa penelitian terdahulu yang relevan dengan topik library anxiety di perpustakaan perguruan tinggi telah banyak dilakukan, baik di tingkat nasional maupun internasional. (Ravena and Dewi 2021) melakukan penelitian kualitatif dengan pendekatan studi kasus tentang library anxiety pada mahasiswa tingkat akhir di UPT Perpustakaan Politeknik Negeri Semarang. Hasil penelitian menunjukkan bahwa library anxiety pada masing-masing mahasiswa tingkat akhir memiliki pengalaman yang berbeda-beda, dengan dua faktor yang paling banyak dialami, yaitu pemahaman tentang tata cara penggunaan perpustakaan dan kenyamanan dalam menggunakan teknologi."),
+  para("(Yuliana and Syahputra 2022) meneliti pengaruh transformasi digital terhadap library anxiety di UPT Perpustakaan UIN Ar-Raniry Banda Aceh dengan metode kuantitatif deskriptif dan sampel sebanyak 100 pemustaka. (Khasanah and Zatadini 2023) meneliti pengaruh library anxiety dalam akses layanan referensi mahasiswa di UPT Perpustakaan IAIN Kediri, menemukan bahwa library anxiety berpengaruh sebesar 49,4% terhadap akses layanan referensi. (Abizar Algipari et al. 2023) meneliti fenomena library anxiety di Perpustakaan UPI dengan metode kualitatif. Rohmadi (2024) meneliti pengaruh kecemasan perpustakaan terhadap pemenuhan kebutuhan informasi pemustaka di UIN Sunan Kalijaga Yogyakarta, menemukan pengaruh sebesar 64,2%."),
+  para("(Abdurokhim and Laugu 2024) secara khusus meneliti library anxiety pada mahasiswa baru penyandang disabilitas tunanetra di Perpustakaan UIN Sunan Kalijaga Yogyakarta, menggunakan metode kualitatif dengan pendekatan deskriptif. Berbagai penelitian tersebut memperkuat posisi library anxiety sebagai fenomena yang nyata dan perlu mendapat perhatian serius dari pengelola perpustakaan perguruan tinggi."),
+
+  // ===== KERANGKA KONSEPTUAL =====
+  heading2("2.8. Kerangka Konseptual"),
+  para("Kerangka konseptual dalam penelitian ini dibangun berdasarkan sintesis teori-teori yang telah diuraikan pada sub-bab sebelumnya, khususnya teori Library Anxiety Mellon (1986), Library Anxiety Scale Bostick (1993), teori Anxiety Uncertainty Management (AUM) oleh Gudykunst, konsep psikologi perpustakaan, serta teori kebutuhan informasi dalam konteks pemustaka perguruan tinggi."),
+  para([normal("Penelitian ini berfokus pada hubungan antara dua variabel utama, yaitu "), italic("Library Anxiety"), normal(" sebagai variabel independen (X) dan Pemenuhan Kebutuhan Informasi sebagai variabel dependen (Y). Kecemasan perpustakaan yang dialami oleh mahasiswa baru diduga berpengaruh terhadap kemampuan mereka dalam memenuhi kebutuhan informasi akademis melalui layanan perpustakaan.")]),
+  new Paragraph({
+    spacing: { before: 200, after: 200 },
+    alignment: AlignmentType.CENTER,
+    children: [bold("Variabel X: Library Anxiety (Kecemasan Perpustakaan)", 24)]
+  }),
+  para("Berdasarkan instrumen AQAK: Library Anxiety Scale for Undergraduates Students dan Library Anxiety Scale (LAS) Bostick (1993), library anxiety dalam penelitian ini diukur melalui lima dimensi:"),
+  numbered("Hambatan Pengetahuan tentang Perpustakaan (Library Knowledge Barriers): Ketidaktahuan pemustaka tentang tata cara penggunaan perpustakaan, sistem klasifikasi koleksi, dan prosedur layanan."),
+  numbered("Hambatan dengan Staf Perpustakaan (Barriers with Staff): Perasaan segan, takut, atau tidak nyaman dalam berinteraksi dan bertanya kepada pustakawan."),
+  numbered("Hambatan Kenyamanan dengan Perpustakaan (Library Comfort Barriers): Perasaan tidak nyaman, tertekan, atau terasing saat berada di dalam lingkungan fisik perpustakaan."),
+  numbered("Hambatan Afektif (Affective Barriers): Perasaan cemas, khawatir, tidak percaya diri, atau rendah diri yang muncul dalam konteks penggunaan perpustakaan."),
+  numbered("Hambatan Mekanis dan Teknologi (Mechanical and Technological Barriers): Kesulitan dan kecemasan dalam menggunakan perangkat teknologi perpustakaan, seperti OPAC, komputer, dan database digital."),
+  new Paragraph({
+    spacing: { before: 200, after: 200 },
+    alignment: AlignmentType.CENTER,
+    children: [bold("Variabel Y: Pemenuhan Kebutuhan Informasi", 24)]
+  }),
+  para("Pemenuhan kebutuhan informasi dalam penelitian ini mengacu pada kemampuan mahasiswa baru dalam menemukan, mengakses, dan memanfaatkan sumber informasi yang tersedia di Perpustakaan X untuk keperluan akademik. Variabel ini diukur berdasarkan beberapa indikator:"),
+  numbered("Kemampuan menemukan informasi yang dibutuhkan (koleksi buku, jurnal, sumber digital)."),
+  numbered("Kemampuan mengakses layanan dan fasilitas perpustakaan secara mandiri."),
+  numbered("Kemampuan memanfaatkan informasi yang ditemukan untuk keperluan perkuliahan dan tugas akademik."),
+  numbered("Tingkat kepuasan dalam proses pencarian dan pemanfaatan informasi di perpustakaan."),
+  new Paragraph({
+    spacing: { before: 200, after: 200 },
+    alignment: AlignmentType.CENTER,
+    children: [bold("Hubungan Antar Variabel", 24)]
+  }),
+  para([normal("Berdasarkan kerangka teori yang telah dibangun, penelitian ini mengajukan proposisi bahwa "), italic("library anxiety"), normal(" (X) berpengaruh negatif terhadap pemenuhan kebutuhan informasi (Y) mahasiswa baru di Perpustakaan X. Artinya, semakin tinggi tingkat kecemasan perpustakaan yang dialami mahasiswa baru, maka semakin rendah kemampuan mereka dalam memenuhi kebutuhan informasi akademik melalui perpustakaan. Proposisi ini sejalan dengan temuan (Rahayu and Rohmadi 2023) yang menemukan koefisien determinasi sebesar 64,2% dalam hubungan antara kecemasan perpustakaan dan pemenuhan kebutuhan informasi.")]),
+  para("Psikologi perpustakaan berfungsi sebagai perspektif payung (overarching perspective) dalam penelitian ini yang menjembatani pemahaman tentang kondisi psikologis mahasiswa baru dengan pengalaman mereka dalam menggunakan perpustakaan. Teori AUM (Anxiety Uncertainty Management) Gudykunst memberikan penjelasan tentang mekanisme psikologis yang mendasari munculnya kecemasan dalam situasi baru seperti penggunaan perpustakaan perguruan tinggi untuk pertama kalinya."),
+  new Paragraph({
+    spacing: { before: 240, after: 120 },
+    alignment: AlignmentType.CENTER,
+    children: [bold("Gambar 2.1. Kerangka Konseptual Penelitian", 22)]
+  }),
+
+  // Table representing conceptual framework
+  new Table({
+    alignment: AlignmentType.CENTER,
+    width: { size: 8000, type: WidthType.DXA },
+    columnWidths: [3200, 800, 3200, 800],
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            width: { size: 3200, type: WidthType.DXA },
+            shading: { fill: "D5E8F0", type: ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 180, right: 180 },
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 2, color: "2E75B6" },
+              bottom: { style: BorderStyle.SINGLE, size: 2, color: "2E75B6" },
+              left: { style: BorderStyle.SINGLE, size: 2, color: "2E75B6" },
+              right: { style: BorderStyle.SINGLE, size: 2, color: "2E75B6" },
+            },
+            children: [
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 60, after: 40 }, children: [bold("Variabel X", 22)] }),
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 40 }, children: [bold("Library Anxiety", 22)] }),
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 20 }, children: [normal("(Kecemasan Perpustakaan)", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 80, after: 20 }, children: [normal("Dimensi:", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 20, after: 20 }, children: [normal("1. Hambatan Pengetahuan", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("2. Hambatan dengan Staf", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("3. Hambatan Kenyamanan", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("4. Hambatan Afektif", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 80 }, children: [normal("5. Hambatan Teknologi", 20)] }),
+            ]
+          }),
+          new TableCell({
+            width: { size: 800, type: WidthType.DXA },
+            margins: { top: 120, bottom: 120, left: 60, right: 60 },
+            verticalAlign: "center",
+            borders: {
+              top: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              bottom: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              left: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              right: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [bold("→", 32)] })]
+          }),
+          new TableCell({
+            width: { size: 3200, type: WidthType.DXA },
+            shading: { fill: "E2EFD9", type: ShadingType.CLEAR },
+            margins: { top: 120, bottom: 120, left: 180, right: 180 },
+            borders: {
+              top: { style: BorderStyle.SINGLE, size: 2, color: "375623" },
+              bottom: { style: BorderStyle.SINGLE, size: 2, color: "375623" },
+              left: { style: BorderStyle.SINGLE, size: 2, color: "375623" },
+              right: { style: BorderStyle.SINGLE, size: 2, color: "375623" },
+            },
+            children: [
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 60, after: 40 }, children: [bold("Variabel Y", 22)] }),
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 40, after: 40 }, children: [bold("Pemenuhan Kebutuhan", 22)] }),
+              new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 0, after: 40 }, children: [bold("Informasi", 22)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 80, after: 20 }, children: [normal("Indikator:", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 20, after: 20 }, children: [normal("1. Kemampuan Menemukan", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("   Informasi", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("2. Kemampuan Mengakses", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 20 }, children: [normal("3. Kemampuan Memanfaatkan", 20)] }),
+              new Paragraph({ alignment: AlignmentType.LEFT, spacing: { before: 10, after: 80 }, children: [normal("4. Tingkat Kepuasan", 20)] }),
+            ]
+          }),
+          new TableCell({
+            width: { size: 800, type: WidthType.DXA },
+            margins: { top: 120, bottom: 120, left: 60, right: 60 },
+            verticalAlign: "center",
+            borders: {
+              top: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              bottom: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              left: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+              right: { style: BorderStyle.NONE, size: 0, color: "FFFFFF" },
+            },
+            children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [normal("", 14)] })]
+          }),
+        ]
+      })
+    ]
+  }),
+  new Paragraph({ spacing: { before: 80, after: 80 }, alignment: AlignmentType.CENTER, children: [italic("Sumber: Dikembangkan dari Mellon (1986), Bostick (1993), Rahayu & Rohmadi (2023)", 20)] }),
+  para("Kerangka konseptual di atas menggambarkan bahwa library anxiety yang dialami mahasiswa baru (Variabel X) berdampak langsung terhadap kemampuan mereka dalam memenuhi kebutuhan informasi akademik melalui perpustakaan (Variabel Y). Penelitian ini menggunakan pendekatan kuantitatif dengan instrumen kuesioner skala Likert untuk mengukur kedua variabel tersebut secara empiris di Perpustakaan X."),
+  pageBreak(),
+];
+
+// ---- BAB III ----
+const bab3 = [
+  heading1("BAB III"),
+  heading1("METODOLOGI PENELITIAN"),
+  heading2("3.1. Jenis Penelitian"),
+  para("Penelitian ini menggunakan pendekatan kuantitatif, yaitu metode penelitian yang berlandaskan pada filsafat positivisme, digunakan untuk meneliti populasi atau sampel tertentu, teknik pengambilan sampel pada umumnya dilakukan secara random, pengumpulan data menggunakan instrumen penelitian, analisis data bersifat kuantitatif/statistik dengan tujuan untuk menguji hipotesis yang telah ditetapkan (Sugiyono, 2019)."),
+  para("Pendekatan kuantitatif, yang seringkali terkait dengan angka dan statistik, memberikan kekuatan analitis yang kuat untuk memahami hubungan antar variabel. Sementara itu, pendekatan kualitatif menawarkan kedalaman dalam memahami dinamika sosial dan konteks yang kompleks (Arif Rachman et al, 2024)."),
+  para("Disebut sebagai metode tradisional karena telah digunakan sejak lama dan menjadi kebiasaan dalam penelitian. Selain itu, metode ini dinamakan positivistik karena berlandaskan pada filsafat positivisme. Metode kuantitatif juga disebut ilmiah karena memenuhi prinsip-prinsip keilmuan, seperti bersifat konkret, empiris, objektif, terukur, rasional, dan tersusun secara sistematis."),
+  para("Penelitian kuantitatif pada dasarnya memandang tingkah laku manusia dapat diramal dan realitas sosial bersifat objektif serta dapat diukur dengan instrumen yang telah terstandarisasi (Syahrizal and Jailani 2023). Dengan demikian, penelitian ini berupaya mengukur fenomena yang diteliti melalui angket/kuesioner yang terstruktur dan dianalisis menggunakan teknik statistik yang relevan."),
+  heading2("3.2. Data dan Sumber Data"),
+  para("Data merupakan kumpulan fakta, informasi, atau bahan mentah yang dikumpulkan selama proses penelitian untuk kemudian diolah, dianalisis, dan diinterpretasikan guna menjawab pertanyaan penelitian (Hildawati et al. 2024). Dalam penelitian ini, data yang dikumpulkan terdiri dari dua jenis berdasarkan sumbernya."),
+  heading3("3.2.1. Data Primer"),
+  para("Data primer adalah data yang diperoleh langsung dari sumber aslinya melalui observasi, survei, atau eksperimen, yang biasanya dianggap lebih akurat dan relevan karena langsung terkait dengan konteks penelitian (Hildawati et al. 2024). Dalam penelitian ini, data primer diperoleh melalui kuesioner yang disebarkan langsung kepada responden yang menjadi sampel penelitian."),
+  heading3("3.2.2. Data Sekunder"),
+  para("Data sekunder adalah data yang berasal dari literatur, laporan, atau database yang sudah ada sebelumnya (Hildawati et al. 2024). Data sekunder dalam penelitian ini bersumber dari buku-buku referensi, jurnal ilmiah, laporan penelitian terdahulu, serta dokumen-dokumen resmi yang relevan dengan topik penelitian."),
+  heading2("3.3. Teknik Pengumpulan Data"),
+  para("Teknik Pengumpulan Data Kuantitatif adalah proses untuk mengumpulkan informasi yang dapat diukur dan dihitung secara numerik. Tujuannya adalah untuk mengidentifikasi pola, tren, atau hubungan antara variabel-variabel tertentu."),
+  heading3("3.3.1. Kuesioner"),
+  para("Penggunaan kuesioner sebagai teknik pengumpulan data kuantitatif telah menjadi salah satu pendekatan yang umum digunakan dalam riset ilmiah. Menurut Creswell (2014), kuesioner adalah alat yang dirancang untuk mengumpulkan informasi dari responden dalam bentuk jawaban tertulis atas serangkaian pertanyaan yang telah disiapkan peneliti. Kuesioner yang digunakan dalam penelitian ini adalah kuesioner tertutup dengan skala Likert."),
+  para("Skala Likert berisikan 5 (lima) tingkatan jawaban sebagai berikut:"),
+  // Likert table
+  new Table({
+    width: { size: 6000, type: WidthType.DXA },
+    columnWidths: [1500, 3000, 1500],
+    rows: [
+      new TableRow({
+        tableHeader: true,
+        children: ["Skor","Tingkatan","Singkatan"].map(t => new TableCell({
+          width: { size: t === "Tingkatan" ? 3000 : 1500, type: WidthType.DXA },
+          shading: { fill: "2E75B6", type: ShadingType.CLEAR },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          borders: { top: { style: BorderStyle.SINGLE, size: 1, color: "FFFFFF" }, bottom: { style: BorderStyle.SINGLE, size: 1, color: "FFFFFF" }, left: { style: BorderStyle.SINGLE, size: 1, color: "FFFFFF" }, right: { style: BorderStyle.SINGLE, size: 1, color: "FFFFFF" } },
+          children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: t, bold: true, size: 22, color: "FFFFFF", font: "Times New Roman" })] })]
+        }))
+      }),
+      ...[[5,"Sangat Setuju","SS"],[4,"Setuju","S"],[3,"Netral","N"],[2,"Tidak Setuju","TS"],[1,"Sangat Tidak Setuju","STS"]].map(([s,t,sg]) =>
+        new TableRow({ children: [String(s),String(t),String(sg)].map((val, i) => new TableCell({
+          width: { size: i === 1 ? 3000 : 1500, type: WidthType.DXA },
+          margins: { top: 80, bottom: 80, left: 120, right: 120 },
+          borders: { top: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" }, bottom: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" }, left: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" }, right: { style: BorderStyle.SINGLE, size: 1, color: "CCCCCC" } },
+          children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [normal(val)] })]
+        })) })
+      )
+    ]
+  }),
+  emptyLine(),
+  heading3("3.3.2. Dokumentasi"),
+  para("Dokumentasi, dari asal kata dokumen, yang artinya barang-barang tertulis. Di dalam melaksanakan metode dokumentasi, penelitian menyelidiki hal-hal berupa transkip, catatan, buku, surat, prasasti, notulen rapat, agenda, arsip, jurnal, video dan sebagainya. Dokumentasi dilakukan untuk melengkapi data yang tidak bisa diperoleh melalui kuesioner serta untuk memperkuat data primer yang telah dikumpulkan."),
+  heading2("3.4. Teknik Analisis Data"),
+  para("Data penelitian kuantitatif yang telah dikumpulkan melalui kegiatan lapangan pada dasarnya masih berupa data mentah (raw data). Untuk dapat menggunakan data sebagai landasan empiris dalam menjawab rumusan masalah atau menguji hipotesis penelitian, maka perlu dilakukan rangkaian proses pengolahan serta analisis data. Kegiatan analisis data dalam penelitian kuantitatif meliputi pengolahan dan penyajian data, melakukan berbagai perhitungan untuk mendeskripsikan data, dan melakukan analisis untuk menguji hipotesis."),
+  para("Perhitungan dan analisis data kuantitatif dilakukan dengan menggunakan Teknik Statistik, yang mencakup:"),
+  bulletPara("Pengeditan Data (Editing)"),
+  bulletPara("Coding dan Transformasi Data"),
+  bulletPara("Tabulasi Data: memasukkan data pada tabel-tabel tertentu dan mengatur angka-angka serta menghitungnya."),
+  heading2("3.5. Teknik Penyajian Data"),
+  para("Penyajian data merupakan bagian yang tidak terpisahkan dari keseluruhan proses penelitian. Dengan penyajian yang baik, proses analisis data menjadi lebih mudah dan efisien, serta memungkinkan pembaca untuk mendapatkan gambaran yang bermakna dari data yang disajikan."),
+  para("Dalam penelitian ini, data disajikan dalam beberapa bentuk sebagai berikut:"),
+  bulletPara("Penyajian dalam Bentuk Tabel: Tabel merupakan bentuk penyajian data yang paling umum digunakan dalam penelitian kuantitatif. Penyajian data dalam bentuk tabel memudahkan pembaca dalam membaca dan membandingkan data secara sistematis."),
+  bulletPara("Penyajian dalam Bentuk Grafik dan Diagram: Grafik atau diagram biasanya dibuat berdasarkan tabel dan merupakan visualisasi data pada tabel yang bersangkutan. Bentuk grafik yang digunakan antara lain diagram batang (bar chart), diagram lingkaran (pie chart), dan histogram."),
+  bulletPara("Penyajian dalam Bentuk Narasi/Deskripsi: Selain tabel dan grafik, data juga disajikan dalam bentuk narasi atau deskripsi verbal untuk menjelaskan dan menginterpretasikan hasil analisis statistik."),
+  pageBreak(),
+];
+
+// ---- DAFTAR PUSTAKA ----
+const daftarPustaka = [
+  heading1("DAFTAR PUSTAKA"),
+  // Original references
+  ...[
+    "Abdurokhim, Muhamad, and Nurdin Laugu. 2024. \"Library Anxiety Pada Mahasiswa Baru Penyandang Disabilitas Tunanetra Di Perpustakaan UIN Sunan Kalijaga Yogyakarta.\" Pustaka Karya: Jurnal Ilmiah Ilmu Perpustakaan dan Informasi 12(2): 121–36.",
+    "Abizar Algipari, Farahdiba Fajrina, Fauziyah Azizah, Taghsya Aghniya Yasyfa, Wanda Nadriah Fajrianti Rabbah, and Ahmad Fuadin. 2023. \"Edu Lib.\" EDULIB: Journal of Library and Information Science 13(2): 200–209.",
+    "Agosto, D. E., and S. Hughes-Hassell. 2005. People, Places, and Questions: An Investigation of the Everyday Life Information-Seeking Behaviors of Urban Young Adults. Library & Information Science Research, 27(2): 141–163.",
+    "Arif Rachman, Yochanan, Andi Ilham Samanlangi, Hery Purnomo. 2024. Metode Penelitian Kuantitatif, Kualitatif dan R&D. Karawang: CV Saba Jaya Publisher.",
+    "Fister, B. 2010. Fear of Reference. Chronicle of Higher Education. The Library Babel Fish. https://www.chronicle.com/blogs/librarybabelfish",
+    "Hildawati, Lalu Suhirman, Bayu Fitrah Prisuna, Liza Husnita, Budi Mardikawati, Santi Isnaini, Wakhyudin, et al. 2024. Buku Ajar Metodologi Penelitian Kuantitatif & Aplikasi Pengolahan Analisis Data Statistik. Cet 1. Jambi: PT. Sonpedia Publishing Indonesia.",
+    "Jaya, IN. Sutrisna. 2025. \"Membangun Budaya Literasi Digital.\" Media Sains Informasi dan Perpustakaan 5(2): 11–21.",
+    "Khasanah, Uswatun, and Indah Galuh Zatadini. 2023. \"Pengaruh Library Anxiety Dalam Akses Layanan Referensi Mahasiswa Di Upt Perpustakaan IAIN Kediri.\" Publis Journal: Publication Library and Information Science 7(1): 60–76.",
+    "Kuhlthau, C. C. 2004. Seeking Meaning: A Process Approach to Library and Information Services. 2nd ed. Westport, CT: Libraries Unlimited.",
+    "Mcpherson, Marisa Alicia. 2015. \"Library Anxiety among University Students: A Survey.\" Journal of Information & Library Science 41(4): 317–25.",
+    "Mellon, Constance A. 1986. \"Library Anxiety: A Grounded Theory and Its Development.\" College & Research Libraries 47(2): 160–65.",
+    "Nahl, D., and D. Bilal (Eds.). 2007. Information and Emotion: The Emergent Affective Paradigm in Information Behavior Research and Theory. Medford, NJ: Information Today.",
+    "Nieves-whitmore, Kaeli. 2021. \"The Design of Academic Library.\" Library Hi Tech News 38(5): 1–4.",
+    "Pang, Nan, Joana Quinto, and Jhoanne Orillo. 2025. \"Integrating Systematic Review and Instrument Development: A Study on Library Usage Anxiety and Satisfaction in Chinese Higher Education.\" Social Sciences & Humanities Open 12: 101973.",
+    "Permatasari, Retno, Miftahul Arifin, and Raup Padilah. 2021. \"Studi Deskriptif Dampak Psikologis Mahasiswa Program Studi Bimbingan dan Konseling Universitas PGRI Banyuwangi.\" Jurnal Bina Ilmu Cendikia 2(1): 128–41.",
+    "Praja, Bayu Amengku, and Defrin Donna Kusuma. 2024. \"Tingkat Library Anxiety Mahasiswa Terhadap Pemanfaatan Layanan Jurnal Elektronik (Studi Pada Perpustakaan Universitas Brawijaya).\" JUREMI: Jurnal Riset Ekonomi 3(6): 713–28.",
+    "Rahayu, Rahayu, and Djazim Rohmadi. 2023. \"Pengaruh Kecemasan Di Perpustakaan Terhadap Pemenuhan Kebutuhan Informasi Pemustaka Pada Perpustakaan UIN Sunan Kalijaga Yogyakarta.\" Fihris: Jurnal Ilmu Perpustakaan dan Informasi 18(1): 96–113.",
+    "Ramadhan, Riki Dinul, Astin Yendani, Wirdatul Khunsa, and Vita Amelia. 2025. \"Analisis Kebutuhan Informasi Mahasiswa Fakultas Hukum Di Universitas Lancang Kuning.\" Libraria: Jurnal Ilmu Perpustakaan dan Informasi 14(2): 161–70.",
+    "Ravena, Rika, and Athanasia Octaviani Puspita Dewi. 2021. \"Library Anxiety Pada Mahasiswa Tingkat Akhir: Studi Kualitatif Di UPT Perpustakaan Politeknik Negeri Semarang.\" Anuva: Jurnal Kajian Budaya, Perpustakaan, dan Informasi 5(4): 527–42.",
+    "Reva Andini, Raudatul Ulfa, Debora Kristian Sitanggang, and Vita Amelia. 2024. \"Analisis Kesesuaian Koleksi Berdasarkan Kebutuhan Mahasiswa Program Studi Kehutanan.\" TADWIN: Jurnal Ilmu Perpustakaan dan Informasi 5(2): 159–66.",
+    "Syahrizal, Hasan, and M.Syahran Jailani. 2023. \"Jenis-Jenis Pengumpulan Data Dalam Penelitian Kualitatif.\" QOSIM Jurnal Pendidikan Sosial & Humaniora 1(1): 13–23.",
+    "Syukrinur. 2022. \"Revitalisasi Fungsi Perpustakaan Perguruan Tinggi: Upaya Peningkatan Kualitas Layanan Dan Pembelajaran.\" LIBRIA 14(2): 247–57.",
+    "Wafa Huwaiza Alwannia, Azarine Nuhaa Callista Luqman Nanda, and Prijana. 2025. \"Hubungan Antara Kebutuhan Informasi Dengan Preferensi Pemilihan Buku Cetak Dan Digital Di Kalangan Mahasiswa.\" Palimpsest: Jurnal Ilmu Informasi dan Perpustakaan 16(2): 150–62.",
+    "Yolanfika, Alvina, Nurhayani Nurhayani, and Yusniah Yusniah. 2023. \"Upaya Pustakawan Dalam Menghadapi Library Anxiety Di Perpustakaan Dan Kearsipan Daerah Kota Langsa.\" Edu Society: Jurnal Pendidikan, Ilmu Sosial Dan Pengabdian Kepada Masyarakat 3(1): 902–12.",
+    "Yuliana, Cut Putroe, and Hisyam Syahputra. 2022. \"Pengaruh Transformasi Digital Terhadap Library Anxiety Di UPT. Perpustakaan UIN Ar-Raniry Banda Aceh.\" JIPIS: Jurnal Ilmu Perpustakaan dan Informasi Islam 1(1): 54–59.",
+  ].map(ref => new Paragraph({
+    spacing: { before: 60, after: 60, line: 320 },
+    indent: { left: 720, hanging: 720 },
+    children: [normal(ref, 22)]
+  }))
+];
+
+const doc = new Document({
+  numbering: {
+    config: [
+      {
+        reference: "bullets",
+        levels: [{ level: 0, format: LevelFormat.BULLET, text: "\u2022", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }]
+      },
+      {
+        reference: "numbers",
+        levels: [{ level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 720, hanging: 360 } } } }]
+      }
+    ]
+  },
+  styles: {
+    default: {
+      document: { run: { font: "Times New Roman", size: 24 } }
+    },
+    paragraphStyles: [
+      { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true, run: { size: 28, bold: true, font: "Times New Roman" }, paragraph: { spacing: { before: 400, after: 200 }, outlineLevel: 0, alignment: AlignmentType.CENTER } },
+      { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true, run: { size: 26, bold: true, font: "Times New Roman" }, paragraph: { spacing: { before: 300, after: 150 }, outlineLevel: 1 } },
+      { id: "Heading3", name: "Heading 3", basedOn: "Normal", next: "Normal", quickFormat: true, run: { size: 24, bold: true, font: "Times New Roman" }, paragraph: { spacing: { before: 240, after: 120 }, outlineLevel: 2 } },
+    ]
+  },
+  sections: [{
+    properties: {
+      page: {
+        size: { width: 11906, height: 16838 },
+        margin: { top: 1440, right: 1440, bottom: 1440, left: 1800 }
+      }
+    },
+    children: [
+      ...titlePage,
+      ...daftarIsi,
+      ...bab1,
+      ...bab2,
+      ...bab3,
+      ...daftarPustaka,
+    ]
+  }]
 });
 
-/* ============= NAVIGASI ============= */
-function show(id, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('nav.desktop-nav a').forEach(a => a.classList.remove('active-nav'));
-  if (el && el.tagName === 'A') el.classList.add('active-nav');
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-/* ============= EVENT NOTIF ============= */
-function hideNotif() {
-  document.getElementById('eventNotifBox').style.display = 'none';
-  document.getElementById('notifBtnShow').style.display = 'block';
-}
-function showNotif() {
-  document.getElementById('eventNotifBox').style.display = 'block';
-  document.getElementById('notifBtnShow').style.display = 'none';
-}
-
-/* ============= KOLEKSI ============= */
-const dataBuku = {
-  cerita: [
-    {judul:'Malin Kundang',icon:'🧒',warna:'#FFECB3',sinopsis:'Kisah anak durhaka yang dikutuk menjadi batu oleh ibunya.',kat:'Legenda'},
-    {judul:'Sangkuriang',icon:'🏔️',warna:'#B2EBF2',sinopsis:'Kisah cinta terlarang yang melahirkan Gunung Tangkuban Perahu.',kat:'Legenda'},
-    {judul:'Bawang Merah Bawang Putih',icon:'🌸',warna:'#FCE4EC',sinopsis:'Kisah kebaikan vs keserakahan yang berujung kebahagiaan.',kat:'Dongeng'},
-    {judul:'Keong Mas',icon:'🐚',warna:'#E8F5E9',sinopsis:'Putri cantik yang dikutuk menjadi keong mas.',kat:'Dongeng'},
-    {judul:'Timun Mas',icon:'🥒',warna:'#F1F8E9',sinopsis:'Gadis pemberani yang lari dari raksasa dengan benih ajaib.',kat:'Dongeng'},
-    {judul:'Putri Salju',icon:'❄️',warna:'#E3F2FD',sinopsis:'Putri cantik yang diracuni apel merah oleh ibu tiri.',kat:'Dongeng'},
-    {judul:'Si Kancil & Buaya',icon:'🦊',warna:'#FFF3E0',sinopsis:'Kancil yang cerdik berhasil menyeberangi sungai penuh buaya.',kat:'Fabel'},
-    {judul:'Ande-Ande Lumut',icon:'🦋',warna:'#EDE7F6',sinopsis:'Pemuda tampan yang dicari para gadis di seluruh negeri.',kat:'Legenda'},
-    {judul:'Lutung Kasarung',icon:'🐒',warna:'#E0F7FA',sinopsis:'Pangeran yang dikutuk menjadi lutung demi keadilan.',kat:'Legenda'},
-    {judul:'Cinderella',icon:'👗',warna:'#FCE4EC',sinopsis:'Gadis baik hati menemukan cinta sejati melalui sepatu kaca.',kat:'Dongeng'},
-    {judul:'Jaka Tarub',icon:'👘',warna:'#FFF8E1',sinopsis:'Pemuda yang menikahi bidadari setelah menyembunyikan selendangnya.',kat:'Legenda'},
-    {judul:'Putri Tidur',icon:'🌹',warna:'#FCE4EC',sinopsis:'Putri yang tertidur 100 tahun karena sihir penyihir jahat.',kat:'Dongeng'},
-    {judul:'Asal Usul Danau Toba',icon:'🏞️',warna:'#E8F5E9',sinopsis:'Kisah sedih seorang ayah dan anak yang menjadi danau besar.',kat:'Legenda'},
-    {judul:'Si Pitung',icon:'🦸',warna:'#FFF3E0',sinopsis:'Pahlawan rakyat Betawi yang melawan penjajah dan tuan tanah.',kat:'Legenda'},
-    {judul:'Roro Jonggrang',icon:'🏯',warna:'#EDE7F6',sinopsis:'Kisah cinta dan kutukan yang melahirkan Candi Prambanan.',kat:'Legenda'},
-    {judul:'Nyi Roro Kidul',icon:'🌊',warna:'#E0F7FA',sinopsis:'Ratu laut selatan yang menjaga lautan dengan kekuatannya.',kat:'Legenda'},
-    {judul:'Hansel & Gretel',icon:'🍭',warna:'#FFECB3',sinopsis:'Kakak adik yang tersesat di hutan dan bertemu penyihir jahat.',kat:'Dongeng'},
-    {judul:'Si Kabayan',icon:'😄',warna:'#E8F5E9',sinopsis:'Kisah lucu pemuda Sunda yang penuh akal dan humor.',kat:'Humor'},
-    {judul:'Gadis Penjual Korek Api',icon:'🕯️',warna:'#F3E5F5',sinopsis:'Kisah mengharukan gadis kecil di malam musim dingin.',kat:'Dongeng'},
-    {judul:'Aladdin',icon:'🧞',warna:'#FFF3E0',sinopsis:'Pemuda miskin yang menemukan lampu ajaib berisi jin.',kat:'Dongeng'},
-    {judul:'Siti Nurbaya',icon:'💌',warna:'#FCE4EC',sinopsis:'Kisah cinta yang terhalang adat dan paksaan keluarga.',kat:'Sastra'},
-    {judul:'Sang Kura-Kura & Kelinci',icon:'🐢',warna:'#E8F5E9',sinopsis:'Lomba lari yang mengajarkan bahwa konsisten itu menang.',kat:'Fabel'},
-    {judul:'Harimau & Tikus',icon:'🐯',warna:'#FFF8E1',sinopsis:'Harimau yang sombong dibantu tikus kecil yang ia remehkan.',kat:'Fabel'},
-    {judul:'Pinokio',icon:'🤥',warna:'#E3F2FD',sinopsis:'Boneka kayu yang hidungnya memanjang setiap kali berbohong.',kat:'Dongeng'},
-  ],
-  pelajaran: [
-    {judul:'Matematika Dasar',icon:'🔢',warna:'#E3F2FD',sinopsis:'Belajar penjumlahan, pengurangan, perkalian, dan pembagian.',kat:'Matematika'},
-    {judul:'Bahasa Indonesia',icon:'📝',warna:'#FFF3E0',sinopsis:'Tata bahasa, menulis, membaca, dan berbicara yang baik dan benar.',kat:'Bahasa'},
-    {judul:'IPA (Sains)',icon:'🔬',warna:'#E8F5E9',sinopsis:'Mengenal alam, tumbuhan, hewan, dan fenomena ilmu pengetahuan alam.',kat:'Sains'},
-    {judul:'Bahasa Inggris',icon:'🌍',warna:'#EDE7F6',sinopsis:'Belajar kosakata, percakapan, dan tata bahasa Inggris dasar.',kat:'Bahasa'},
-    {judul:'IPS (Ilmu Pengetahuan Sosial)',icon:'🗺️',warna:'#E0F7FA',sinopsis:'Sejarah, geografi, ekonomi, dan kehidupan sosial masyarakat.',kat:'Sosial'},
-    {judul:'Pendidikan Agama Islam',icon:'🕌',warna:'#FFF8E1',sinopsis:'Aqidah, ibadah, akhlak, dan Al-Quran untuk siswa SD.',kat:'Agama'},
-    {judul:'PKn (Kewarganegaraan)',icon:'🇮🇩',warna:'#FFEBEE',sinopsis:'Pancasila, UUD, hak dan kewajiban warga negara Indonesia.',kat:'PKn'},
-    {judul:'Matematika Lanjutan',icon:'📐',warna:'#E3F2FD',sinopsis:'Pecahan, geometri, pengukuran, dan statistik dasar.',kat:'Matematika'},
-    {judul:'Seni Budaya',icon:'🎨',warna:'#FCE4EC',sinopsis:'Seni rupa, musik, tari, dan prakarya untuk kreativitas siswa.',kat:'Seni'},
-    {judul:'Penjaskes',icon:'⚽',warna:'#E8F5E9',sinopsis:'Pendidikan jasmani, kesehatan, dan olahraga untuk siswa SD.',kat:'Olahraga'},
-    {judul:'Buku Pintar IPA Kelas 4',icon:'🧪',warna:'#E0F7FA',sinopsis:'Rangkuman materi IPA kelas 4 SD lengkap dan mudah dipahami.',kat:'Sains'},
-    {judul:'Bahasa Inggris Kelas 5',icon:'✏️',warna:'#EDE7F6',sinopsis:'Materi Bahasa Inggris lengkap untuk kelas 5 SD.',kat:'Bahasa'},
-    {judul:'Matematika Kelas 6',icon:'📊',warna:'#E3F2FD',sinopsis:'Persiapan ujian matematika kelas 6 dengan latihan soal.',kat:'Matematika'},
-    {judul:'Atlas Indonesia',icon:'🗺️',warna:'#E8F5E9',sinopsis:'Peta lengkap 34 provinsi Indonesia dengan info geografi.',kat:'Sosial'},
-    {judul:'Ensiklopedi Hewan',icon:'🦁',warna:'#FFF3E0',sinopsis:'Informasi lengkap tentang 500+ hewan di seluruh dunia.',kat:'Sains'},
-    {judul:'Kamus Bahasa Indonesia',icon:'📖',warna:'#FCE4EC',sinopsis:'Kamus lengkap Bahasa Indonesia untuk siswa SD-SMP.',kat:'Bahasa'},
-    {judul:'Buku Cerita Rakyat',icon:'📜',warna:'#FFF8E1',sinopsis:'Kumpulan cerita rakyat dari 34 provinsi di Indonesia.',kat:'Sastra'},
-    {judul:'Matematika Asyik',icon:'🎲',warna:'#E3F2FD',sinopsis:'Matematika disajikan dengan cara yang menyenangkan dan interaktif.',kat:'Matematika'},
-    {judul:'Sains Seru SD',icon:'🌱',warna:'#E8F5E9',sinopsis:'Eksperimen sains sederhana yang bisa dilakukan di rumah.',kat:'Sains'},
-    {judul:'Geografi Nusantara',icon:'🏝️',warna:'#E0F7FA',sinopsis:'Mengenal keindahan dan kekayaan alam kepulauan Indonesia.',kat:'Geografi'},
-    {judul:'Pancasila & Karakter',icon:'⭐',warna:'#FFF8E1',sinopsis:'Nilai-nilai Pancasila dalam kehidupan sehari-hari siswa.',kat:'PKn'},
-    {judul:'Bahasa Arab Dasar',icon:'🌙',warna:'#FFF8E1',sinopsis:'Pengenalan huruf hijaiyah dan kosakata Arab dasar.',kat:'Bahasa'},
-    {judul:'Buku Latihan Soal USBN',icon:'📋',warna:'#FFEBEE',sinopsis:'Bank soal lengkap untuk persiapan Ujian Sekolah Berstandar Nasional.',kat:'Ujian'},
-    {judul:'Komputer & TIK',icon:'💻',warna:'#E3F2FD',sinopsis:'Teknologi Informasi dan Komunikasi untuk siswa SD.',kat:'TIK'},
-  ],
-  komik: [
-    {judul:'Komik Sains',icon:'🧪',warna:'#E0F7FA',sinopsis:'Petualangan sains yang seru dan mudah dipahami lewat gambar.',kat:'Sains'},
-    {judul:'Komik Agama',icon:'🕌',warna:'#FFF8E1',sinopsis:'Kisah para nabi dan nilai-nilai agama dalam format komik.',kat:'Agama'},
-    {judul:'Komik Matematika',icon:'🔢',warna:'#F3E5F5',sinopsis:'Soal-soal matematika dalam alur cerita petualangan seru.',kat:'Matematika'},
-    {judul:'Komik Adab',icon:'🤝',warna:'#E8F5E9',sinopsis:'Pelajaran sopan santun dan adab sehari-hari lewat tokoh lucu.',kat:'Karakter'},
-    {judul:'Petualangan Dora',icon:'🎒',warna:'#E3F2FD',sinopsis:'Dora dan teman-temannya bertualang sambil belajar Bahasa Inggris.',kat:'Bahasa'},
-    {judul:'Komik Sejarah RI',icon:'🏴',warna:'#FFEBEE',sinopsis:'Perjuangan pahlawan kemerdekaan Indonesia dalam komik berwarna.',kat:'Sejarah'},
-    {judul:'Doraemon - Belajar Sains',icon:'🤖',warna:'#E3F2FD',sinopsis:'Nobita dan Doraemon belajar sains dengan alat ajaib yang seru.',kat:'Sains'},
-    {judul:'Komik IPS Seru',icon:'🌏',warna:'#E0F7FA',sinopsis:'Perjalanan seru keliling Indonesia dan dunia bersama tokoh lucu.',kat:'Sosial'},
-    {judul:'Superhero Lingkungan',icon:'🌿',warna:'#E8F5E9',sinopsis:'Kisah anak-anak yang menjadi pahlawan pelindung lingkungan.',kat:'Lingkungan'},
-    {judul:'Komik Kesehatan',icon:'🏥',warna:'#FCE4EC',sinopsis:'Belajar hidup sehat dan menjaga kebersihan diri lewat komik.',kat:'Kesehatan'},
-    {judul:'Detektif Cilik',icon:'🔍',warna:'#FFF3E0',sinopsis:'Petualangan detektif kecil yang memecahkan misteri di sekolah.',kat:'Misteri'},
-    {judul:'Komik Pancasila',icon:'⭐',warna:'#FFF8E1',sinopsis:'Nilai-nilai Pancasila diceritakan lewat tokoh-tokoh yang menggemaskan.',kat:'PKn'},
-    {judul:'Petualangan Luar Angkasa',icon:'🚀',warna:'#E3F2FD',sinopsis:'Ekspedisi ke luar angkasa yang penuh pelajaran tentang tata surya.',kat:'Sains'},
-    {judul:'Komik Dinosaurus',icon:'🦕',warna:'#E8F5E9',sinopsis:'Cerita seru kehidupan dinosaurus dan kepunahannya.',kat:'Sains'},
-    {judul:'Si Unyil',icon:'🎭',warna:'#FFF3E0',sinopsis:'Petualangan sehari-hari Unyil dan teman-temannya yang penuh nilai moral.',kat:'Karakter'},
-    {judul:'Komik Cuaca & Iklim',icon:'🌦️',warna:'#E0F7FA',sinopsis:'Belajar tentang cuaca, musim, dan perubahan iklim lewat komik.',kat:'Sains'},
-    {judul:'Ninja Matematika',icon:'🥷',warna:'#F3E5F5',sinopsis:'Ninja yang menyelesaikan soal matematika untuk mengalahkan musuh.',kat:'Matematika'},
-    {judul:'Komik Cerita Nusantara',icon:'🏮',warna:'#FFF8E1',sinopsis:'Kumpulan cerita rakyat Nusantara dalam format komik berwarna.',kat:'Budaya'},
-    {judul:'Petualangan Bawah Laut',icon:'🐠',warna:'#E0F7FA',sinopsis:'Menjelajahi keindahan dan keanekaragaman hayati laut Indonesia.',kat:'Sains'},
-    {judul:'Komik Pahlawan Nasional',icon:'🦅',warna:'#FFEBEE',sinopsis:'Kisah keberanian para pahlawan nasional dalam bingkai komik.',kat:'Sejarah'},
-    {judul:'Si Kancil Adventures',icon:'🦊',warna:'#FFF3E0',sinopsis:'Petualangan baru Si Kancil yang mengajarkan nilai kejujuran.',kat:'Fabel'},
-    {judul:'Komik Teknologi',icon:'📱',warna:'#E3F2FD',sinopsis:'Mengenal dunia teknologi modern yang seru dan bermanfaat.',kat:'TIK'},
-    {judul:'Komik Olahraga',icon:'🏆',warna:'#E8F5E9',sinopsis:'Semangat berlatih dan sportivitas dalam olahraga favorit.',kat:'Olahraga'},
-    {judul:'Petualangan Museum',icon:'🏛️',warna:'#FCE4EC',sinopsis:'Menjelajahi museum dan belajar sejarah dengan cara yang menyenangkan.',kat:'Sejarah'},
-  ]
-};
-
-function tampilBuku(kategori, btn) {
-  document.querySelectorAll('.circle-btn').forEach(b => b.classList.remove('active-circle'));
-  if (btn) btn.classList.add('active-circle');
-  const grid = document.getElementById('bukuGrid');
-  grid.innerHTML = dataBuku[kategori].map(b => `
-    <div class="buku-card">
-      <div class="buku-thumb" style="background:${b.warna}">${b.icon}</div>
-      <div class="buku-info">
-        <div class="buku-judul">${b.judul}</div>
-        <div class="buku-sinopsis">${b.sinopsis}</div>
-        <span class="buku-badge">${b.kat}</span>
-      </div>
-    </div>
-  `).join('');
-}
-
-/* ============= LAYANAN ============= */
-let sisaHari = 3;
-
-function showLayanan(jenis, btn) {
-  document.querySelectorAll('#layanan .circle-btn').forEach(b => b.classList.remove('active-circle'));
-  if (btn) btn.classList.add('active-circle');
-  const box = document.getElementById('layananBox');
-  if (jenis === 'peminjaman') {
-    box.innerHTML = `<div class="layanan-box"><h3>📥 Informasi Peminjaman</h3>
-      <div class="info-row"><span class="label">📚 Buku Cerita</span><span class="val">Total 24 | Dipinjam 8 | <b>Tersedia 16</b></span></div>
-      <div class="info-row"><span class="label">📘 Buku Pelajaran</span><span class="val">Total 24 | Dipinjam 6 | <b>Tersedia 18</b></span></div>
-      <div class="info-row"><span class="label">🦸 Komik</span><span class="val">Total 24 | Dipinjam 4 | <b>Tersedia 20</b></span></div>
-      <div class="info-row"><span class="label">⏳ Batas Pinjam</span><span class="val">Maksimal <b>7 hari</b></span></div>
-    </div>`;
-  }
-  if (jenis === 'perpanjangan') {
-    box.innerHTML = `<div class="layanan-box"><h3>🔄 Perpanjangan Pinjaman</h3>
-      <div class="info-row"><span class="label">Sisa hari saat ini</span><span class="val" id="sisaHariTxt"><b>${sisaHari}</b> hari</span></div>
-      <label style="display:block;margin:16px 0 6px;font-weight:700">Tambah berapa hari?</label>
-      <input class="layanan-input" type="number" id="tambahHari" min="1" max="7" placeholder="contoh: 3">
-      <button class="btn-aksi" onclick="tambahWaktu()">✅ Perpanjang</button>
-      <div id="hasilPerpanjang"></div>
-    </div>`;
-  }
-  if (jenis === 'pengembalian') {
-    box.innerHTML = `<div class="layanan-box"><h3>📤 Hitung Denda Keterlambatan</h3>
-      <p style="color:var(--teks-sub);font-weight:600;margin-bottom:16px">Denda keterlambatan: <b>Rp 1.000 / hari</b></p>
-      <label style="display:block;margin-bottom:6px;font-weight:700">Jumlah hari terlambat:</label>
-      <input class="layanan-input" type="number" id="hariTelat" min="0" placeholder="contoh: 2" oninput="hitungDenda()">
-      <div id="hasilDenda"></div>
-    </div>`;
-  }
-}
-
-function tambahWaktu() {
-  const tambah = parseInt(document.getElementById('tambahHari').value);
-  if (isNaN(tambah)||tambah<1) { alert('Masukkan jumlah hari yang valid!'); return; }
-  sisaHari += tambah;
-  document.getElementById('sisaHariTxt').innerHTML = `<b>${sisaHari}</b> hari`;
-  document.getElementById('hasilPerpanjang').innerHTML = `<div class="result-text">✅ Berhasil diperpanjang! Sisa waktu: <b>${sisaHari} hari</b></div>`;
-}
-
-function hitungDenda() {
-  const hari = parseInt(document.getElementById('hariTelat').value)||0;
-  const total = hari*1000;
-  document.getElementById('hasilDenda').innerHTML = hari>0
-    ? `<div class="result-text">⚠️ Terlambat <b>${hari} hari</b> → Total denda: <b>Rp ${total.toLocaleString('id-ID')}</b></div>`
-    : '';
-}
-
-/* ============= KONTAK TABS ============= */
-function switchKontakTab(id, btn) {
-  document.querySelectorAll('.diskusi-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.diskusi-panel').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('panel-'+id).classList.add('active');
-}
-
-/* ============= RUANG DISKUSI (persistent via localStorage) ============= */
-function loadChatMessages() {
-  const msgs = storeGet('chatMessages') || [];
-  const container = document.getElementById('chatMessages');
-  // Keep welcome message, add stored
-  msgs.forEach(m => appendChatBubble(m.user, m.text, m.time, m.user === currentUser, false));
-  scrollChat();
-}
-
-function appendChatBubble(user, text, time, isMine, save) {
-  const container = document.getElementById('chatMessages');
-  const initials = user.charAt(0).toUpperCase();
-  const div = document.createElement('div');
-  div.className = 'chat-msg' + (isMine ? ' mine' : '');
-  div.innerHTML = `
-    <div class="chat-avatar">${isMine ? initials : initials}</div>
-    <div>
-      ${!isMine ? `<div style="font-size:.72rem;font-weight:800;color:var(--hijau);margin-bottom:3px">${escHtml(user)}</div>` : ''}
-      <div class="chat-bubble">${escHtml(text)}</div>
-      <div class="chat-meta">${time}</div>
-    </div>`;
-  container.appendChild(div);
-  if (save) {
-    const msgs = storeGet('chatMessages') || [];
-    msgs.push({user, text, time});
-    storeSet('chatMessages', msgs);
-  }
-  scrollChat();
-}
-
-function scrollChat() {
-  const c = document.getElementById('chatMessages');
-  if (c) c.scrollTop = c.scrollHeight;
-}
-
-function kirimChat() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const time = new Date().toLocaleString('id-ID', {dateStyle:'short', timeStyle:'short'});
-  appendChatBubble(currentUser, text, time, true, true);
-  input.value = '';
-}
-
-function updateOnlineCount() {
-  // Simulate online users with random small number
-  const n = Math.floor(Math.random()*4)+1;
-  const el = document.getElementById('onlineCount');
-  if (el) el.textContent = `● ${n} online`;
-}
-
-function escHtml(s) {
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-/* ============= KOTAK SARAN (persistent) ============= */
-let ratingDipilih = '';
-
-function pilihRating(btn, emot, label) {
-  document.querySelectorAll('.rating-emot button').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  ratingDipilih = emot+' '+label;
-}
-
-function loadSaranList() {
-  const saranArr = storeGet('saranPublik') || [];
-  renderSaranList(saranArr);
-}
-
-function renderSaranList(arr) {
-  const el = document.getElementById('saranList');
-  if (!arr.length) { el.innerHTML = '<p style="color:#AAA;font-weight:600;font-size:.88rem">Belum ada saran yang masuk.</p>'; return; }
-  el.innerHTML = arr.map(s => `
-    <div class="saran-item">
-      <div class="si-head">
-        <span class="si-nama">👤 ${escHtml(s.nama)}${s.sosmed?' <span style="color:#AAA;font-weight:600;font-size:.8rem">('+escHtml(s.sosmed)+')</span>':''}</span>
-        <span class="si-rating">${s.rating}</span>
-      </div>
-      <div class="si-pesan">${escHtml(s.pesan)}</div>
-      <div class="si-tgl">🕐 ${s.waktu}</div>
-    </div>
-  `).join('');
-}
-
-function kirimSaran() {
-  const nama = document.getElementById('saran-nama').value.trim();
-  const sosmed = document.getElementById('saran-sosmed').value.trim();
-  const pesan = document.getElementById('saran-pesan').value.trim();
-  if (!nama||!pesan) { alert('⚠️ Harap isi nama dan pesan!'); return; }
-  if (!ratingDipilih) { alert('⚠️ Harap pilih rating!'); return; }
-  const waktu = new Date().toLocaleString('id-ID', {dateStyle:'long', timeStyle:'short'});
-  const entry = {nama, sosmed, pesan, rating:ratingDipilih, waktu};
-
-  // Save to localStorage
-  const arr = storeGet('saranPublik') || [];
-  arr.unshift(entry); // newest first
-  storeSet('saranPublik', arr);
-  renderSaranList(arr);
-
-  const kotak = document.getElementById('saranTerkirim');
-  kotak.style.display = 'block';
-  kotak.innerHTML = `<div style="font-size:1.3rem;margin-bottom:6px">✅ Terima kasih! Saran kamu sudah tersimpan.</div>`;
-  document.getElementById('saran-nama').value = '';
-  document.getElementById('saran-sosmed').value = '';
-  document.getElementById('saran-pesan').value = '';
-  document.querySelectorAll('.rating-emot button').forEach(b=>b.classList.remove('selected'));
-  ratingDipilih = '';
-  setTimeout(()=>{ kotak.style.display='none'; }, 3000);
-}
-
-/* ============= GAME ============= */
-let skor = 0;
-function tambahSkor() { skor++; document.getElementById('skorTotal').textContent = skor; }
-function setHasil(elId, benar) {
-  const el = document.getElementById(elId);
-  el.textContent = benar ? '🎉 Benar! Skor bertambah!' : '❌ Salah, coba lagi!';
-  el.className = 'hasil-game '+(benar?'benar':'salah');
-}
-
-// KALKULATOR
-function hitung(op) {
-  const a = parseFloat(document.getElementById('angka1').value);
-  const b = parseFloat(document.getElementById('angka2').value);
-  const el = document.getElementById('hasilKalkulator');
-  if (isNaN(a)||isNaN(b)) { el.textContent='⚠️ Isi kedua angka!'; el.className='hasil-game salah'; return; }
-  let h; if(op==='+')h=a+b; else if(op==='-')h=a-b; else if(op==='*')h=a*b; else h=b!==0?(a/b):'Tidak bisa dibagi 0!';
-  el.textContent = 'Hasil: '+h; el.className='hasil-game benar';
-}
-
-// MATEMATIKA
-let aMath,bMath,opMath;
-const ops=['+','-','×'];
-function soalBaruMath() {
-  aMath=Math.floor(Math.random()*10)+1; bMath=Math.floor(Math.random()*10)+1;
-  opMath=ops[Math.floor(Math.random()*ops.length)];
-  document.getElementById('soalMath').textContent=`${aMath} ${opMath} ${bMath} = ?`;
-  document.getElementById('jawabanMath').value='';
-  document.getElementById('hasilMath').textContent=''; document.getElementById('hasilMath').className='hasil-game';
-}
-function jawabanBenarMath() { if(opMath==='+')return aMath+bMath; if(opMath==='-')return aMath-bMath; return aMath*bMath; }
-function cekMath() { const j=parseInt(document.getElementById('jawabanMath').value); const ok=j===jawabanBenarMath(); setHasil('hasilMath',ok); if(ok){tambahSkor();setTimeout(soalBaruMath,1000);} }
-
-// BAHASA INDONESIA
-const soalBI_data=[
-  {singkat:'mkn',lengkap:'makan'},{singkat:'bljr',lengkap:'belajar'},{singkat:'mnm',lengkap:'minum'},
-  {singkat:'bku',lengkap:'buku'},{singkat:'sklh',lengkap:'sekolah'},{singkat:'jln',lengkap:'jalan'},
-  {singkat:'tmn',lengkap:'teman'},{singkat:'rmh',lengkap:'rumah'},{singkat:'mmbca',lengkap:'membaca'},
-  {singkat:'mnls',lengkap:'menulis'},{singkat:'pljrn',lengkap:'pelajaran'},{singkat:'grk',lengkap:'gerak'},
-];
-let iBI=0;
-function soalBaruBI() {
-  iBI=Math.floor(Math.random()*soalBI_data.length);
-  document.getElementById('soalBI').textContent=soalBI_data[iBI].singkat;
-  document.getElementById('jawabanBI').value=''; document.getElementById('hasilBI').textContent=''; document.getElementById('hasilBI').className='hasil-game';
-}
-function cekBI() { const j=document.getElementById('jawabanBI').value.trim().toLowerCase(); const ok=j===soalBI_data[iBI].lengkap; setHasil('hasilBI',ok); if(ok){tambahSkor();setTimeout(soalBaruBI,1000);} }
-
-// AGAMA
-const soalAgama_data=[
-  {soal:'Siapa nabi terakhir dalam Islam?',jawab:'muhammad'},{soal:'Kitab suci umat Islam adalah?',jawab:'alquran'},
-  {soal:'Berapa jumlah rukun Islam?',jawab:'5'},{soal:'Hari raya umat Islam setelah puasa Ramadan?',jawab:'idul fitri'},
-  {soal:'Siapa malaikat yang menyampaikan wahyu?',jawab:'jibril'},{soal:'Berapa jumlah rukun iman?',jawab:'6'},
-  {soal:'Bulan puasa umat Islam dinamakan?',jawab:'ramadan'},{soal:'Tempat ibadah umat Islam disebut?',jawab:'masjid'},
-];
-let iAgama=0;
-function soalBaruAgama() {
-  iAgama=Math.floor(Math.random()*soalAgama_data.length);
-  document.getElementById('soalAgama').textContent=soalAgama_data[iAgama].soal;
-  document.getElementById('jawabanAgama').value=''; document.getElementById('hasilAgama').textContent=''; document.getElementById('hasilAgama').className='hasil-game';
-}
-function cekAgama() { const j=document.getElementById('jawabanAgama').value.trim().toLowerCase(); const ok=j.includes(soalAgama_data[iAgama].jawab); setHasil('hasilAgama',ok); if(ok){tambahSkor();setTimeout(soalBaruAgama,1000);} }
-
-// IPA PILIHAN GANDA
-const soalIPA_data=[
-  {soal:'Proses tumbuhan membuat makanan disebut?',opsi:['Fotosintesis','Respirasi','Evaporasi','Fermentasi'],jawab:0},
-  {soal:'Planet terbesar di tata surya adalah?',opsi:['Saturnus','Jupiter','Uranus','Neptunus'],jawab:1},
-  {soal:'Organ pernapasan manusia adalah?',opsi:['Jantung','Hati','Paru-paru','Ginjal'],jawab:2},
-  {soal:'Hewan yang mengalami metamorfosis sempurna?',opsi:['Kecoak','Belalang','Kupu-kupu','Capung'],jawab:2},
-  {soal:'Zat yang diperlukan tumbuhan untuk fotosintesis?',opsi:['O₂ dan air','CO₂ dan cahaya','CO₂, air, dan cahaya','Gula dan air'],jawab:2},
-  {soal:'Benda padat berubah menjadi cair disebut?',opsi:['Membeku','Mencair','Menguap','Mengembun'],jawab:1},
-  {soal:'Gaya yang dihasilkan magnet disebut?',opsi:['Gaya gesek','Gaya magnet','Gaya gravitasi','Gaya pegas'],jawab:1},
-];
-let iIPA=0;
-function soalBaruIPA() {
-  iIPA=Math.floor(Math.random()*soalIPA_data.length);
-  const s=soalIPA_data[iIPA];
-  document.getElementById('soalIPA').textContent=s.soal;
-  document.getElementById('hasilIPA').textContent=''; document.getElementById('hasilIPA').className='hasil-game';
-  const opsiEl=document.getElementById('opsiIPA');
-  opsiEl.innerHTML=s.opsi.map((o,i)=>`<button class="opt-btn" onclick="cekIPA(this,${i})">${o}</button>`).join('');
-}
-function cekIPA(btn, idx) {
-  const ok=idx===soalIPA_data[iIPA].jawab;
-  document.querySelectorAll('#opsiIPA .opt-btn').forEach((b,i)=>{
-    if(i===soalIPA_data[iIPA].jawab) b.classList.add('benar-opt');
-    else if(i===idx&&!ok) b.classList.add('salah-opt');
-    b.disabled=true;
-  });
-  setHasil('hasilIPA',ok); if(ok){tambahSkor();setTimeout(soalBaruIPA,1500);}
-}
-
-// IPS
-const soalIPS_data=[
-  {soal:'Ibu kota Indonesia adalah?',jawab:'jakarta'},{soal:'Suku terbesar di Indonesia adalah?',jawab:'jawa'},
-  {soal:'Gunung tertinggi di Indonesia adalah?',jawab:'puncak jaya'},{soal:'Danau terbesar di Indonesia adalah?',jawab:'danau toba'},
-  {soal:'Presiden pertama Indonesia adalah?',jawab:'soekarno'},{soal:'Bendera Indonesia terdiri dari warna apa?',jawab:'merah putih'},
-  {soal:'Hari kemerdekaan Indonesia diperingati tiap tanggal berapa?',jawab:'17 agustus'},
-  {soal:'Mata uang Indonesia adalah?',jawab:'rupiah'},
-];
-let iIPS=0;
-function soalBaruIPS() {
-  iIPS=Math.floor(Math.random()*soalIPS_data.length);
-  document.getElementById('soalIPS').textContent=soalIPS_data[iIPS].soal;
-  document.getElementById('jawabanIPS').value=''; document.getElementById('hasilIPS').textContent=''; document.getElementById('hasilIPS').className='hasil-game';
-}
-function cekIPS() { const j=document.getElementById('jawabanIPS').value.trim().toLowerCase(); const ok=j.includes(soalIPS_data[iIPS].jawab); setHasil('hasilIPS',ok); if(ok){tambahSkor();setTimeout(soalBaruIPS,1000);} }
-
-// TEBAK KATA
-const tebakKata_data=[
-  {def:'Tempat orang menyimpan dan meminjam buku.',jawab:'perpustakaan'},
-  {def:'Orang yang mengajar di sekolah.',jawab:'guru'},
-  {def:'Benda yang digunakan untuk menulis.',jawab:'pensil'},
-  {def:'Tempat anak-anak belajar setiap hari.',jawab:'sekolah'},
-  {def:'Buku yang berisi gambar dan cerita bergambar.',jawab:'komik'},
-  {def:'Kegiatan membaca yang dilakukan setiap hari.',jawab:'literasi'},
-  {def:'Alat untuk menghitung angka.',jawab:'kalkulator'},
-  {def:'Orang yang menulis buku.',jawab:'penulis'},
-];
-let iTK=0;
-function soalBaruTebakKata() {
-  iTK=Math.floor(Math.random()*tebakKata_data.length);
-  document.getElementById('soalTebakKata').textContent=tebakKata_data[iTK].def;
-  document.getElementById('jawabanTebakKata').value=''; document.getElementById('hasilTebakKata').textContent=''; document.getElementById('hasilTebakKata').className='hasil-game';
-}
-function cekTebakKata() { const j=document.getElementById('jawabanTebakKata').value.trim().toLowerCase(); const ok=j===tebakKata_data[iTK].jawab; setHasil('hasilTebakKata',ok); if(ok){tambahSkor();setTimeout(soalBaruTebakKata,1000);} }
-
-// TEBAK EMOJI
-const emoji_data=[
-  {emoji:'🌧️🌈',jawab:'hujan pelangi'},{emoji:'🌊🏄',jawab:'surfing'},{emoji:'📚✏️',jawab:'belajar'},
-  {emoji:'🌙⭐',jawab:'malam'},{emoji:'🍎🌳',jawab:'pohon apel'},{emoji:'🐟🌊',jawab:'ikan laut'},
-  {emoji:'🦋🌸',jawab:'kupu kupu bunga'},{emoji:'🚀🌙',jawab:'roket bulan'},{emoji:'🎨🖌️',jawab:'melukis'},
-  {emoji:'🏊💦',jawab:'berenang'},{emoji:'⚽🏟️',jawab:'sepak bola'},{emoji:'🎵🎤',jawab:'menyanyi'},
-];
-let iEmoji=0;
-function soalBaruEmoji() {
-  iEmoji=Math.floor(Math.random()*emoji_data.length);
-  document.getElementById('soalEmoji').textContent=emoji_data[iEmoji].emoji;
-  document.getElementById('jawabanEmoji').value=''; document.getElementById('hasilEmoji').textContent=''; document.getElementById('hasilEmoji').className='hasil-game';
-}
-function cekEmoji() {
-  const j=document.getElementById('jawabanEmoji').value.trim().toLowerCase();
-  const jawaban=emoji_data[iEmoji].jawab;
-  const words=jawaban.split(' ');
-  const ok=words.some(w=>j.includes(w));
-  setHasil('hasilEmoji',ok); if(ok){tambahSkor();setTimeout(soalBaruEmoji,1000);}
-}
-</script>
-</body>
-</html>
+Packer.toBuffer(doc).then(buffer => {
+  require('fs').writeFileSync('/home/claude/metopel_with_bab2.docx', buffer);
+  console.log('Done!');
+});
